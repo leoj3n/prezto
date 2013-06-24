@@ -10,5 +10,85 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
+# -------- Customize to your needs...
 
+# RVM
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+# mysql
+export PATH="/usr/local/mysql/bin:$PATH"
+
+# php
+export PATH="$(brew --prefix josegonzalez/php/php54)/bin:$PATH"
+
+# hub
+eval "$(hub alias -s)"
+
+# Composer scripts
+PATH=$HOME/.composer/bin:$PATH
+
+# WP-CLI Bash completions
+
+autoload bashcompinit
+bashcompinit
+source $HOME/.composer/vendor/wp-cli/wp-cli/utils/wp-completion.bash
+
+# Git
+
+alias gs="git status"
+alias gl="git log"
+alias glo="git log --oneline --graph --color"
+alias glor="git log --oneline --reverse --color"
+alias gb="git branch"
+alias gm="git merge"
+alias gc="git commit"
+alias gcam="git commit -am"
+alias gco="git checkout"
+alias rb="git rebase"
+alias fa="git fetch --all"
+alias au="git update-index --assume-unchanged"
+#alias gbu="git branch -u origin/master"
+alias psh="git push"
+alias pll="git pull"
+
+# Other
+
+alias c="clear"
+alias lsd="ls -Ad .*"
+alias vup="vagrant up"
+alias vds="vagrant destroy"
+alias kextl="sudo kextload /System/Library/Extensions/AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext"
+alias kextu="sudo kextunload /System/Library/Extensions/AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext > /dev/null 2>&1"
+# Flush Directory Service cache
+alias flush="dscacheutil -flushcache"
+alias whois="whois -h whois-servers.net"
+alias wanip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias ss="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
+# View HTTP traffic
+#alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+
+### Functions
+
+function sublp() {
+  proj=~/Documents/Sublime/$1.sublime-project
+  subl --project $proj
+
+  # print project folders
+  awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/path\042/){print $(i+1)} } }' $proj
+}
+
+# From http://stackoverflow.com/questions/370047/#370255
+function path_remove() {
+  IFS=:
+  # convert it to an array
+  t=($PATH)
+  unset IFS
+  # perform any array operations to remove elements from the array
+  t=(${t[@]%%$1})
+  IFS=:
+  # output the new array
+  echo "${t[*]}"
+}
+
+# saved for reference
+### export PATH=/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php/php5.4.4/bin:/usr/local/bin:$PATH:/opt/local/bin #omgwtfbbq
