@@ -33,34 +33,34 @@ autoload bashcompinit
 bashcompinit
 source $HOME/.composer/vendor/wp-cli/wp-cli/utils/wp-completion.bash
 
+# Always open everything in Finder's list view
+defaults write com.apple.Finder FXPreferredViewStyle Nlsv
+
 # Git
 
-alias gs="git status"
-alias gl="git log"
-alias glo="git log --oneline --graph --color"
-alias glor="git log --oneline --reverse --color"
-alias gb="git branch"
-alias gm="git merge"
-alias gc="git commit"
-alias gcam="git commit -am"
-alias gco="git checkout"
-alias rb="git rebase"
-alias fa="git fetch --all"
-alias au="git update-index --assume-unchanged"
-#alias gbu="git branch -u origin/master"
-alias psh="git push"
-alias pll="git pull"
+alias gfa="gf --all"
+alias gau="g update-index --assume-unchanged"
+alias grm="git status | grep deleted | awk '{print \$3}' | xargs git rm"
 
 # Other
 
+alias t="type"
 alias c="clear"
+alias ep="sublp"
+alias se="smartextract"
+alias ...="cd ../.."
+# alias -- -="cd -" # not working in zsh prezto
 alias lsd="ls -Ad .*"
-alias vup="vagrant up"
-alias vds="vagrant destroy"
+alias vu="vagrant up"
+alias vs="vagrant ssh"
+alias vh="vagrant halt"
+alias vr="vagrant reload"
+alias vd="vagrant destroy"
+alias vp="vagrant provision"
+alias pubkey="more ~/.ssh/id_rsa.pub | pbcopy | echo '=> Public key copied to pasteboard.'"
 alias kextl="sudo kextload /System/Library/Extensions/AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext"
 alias kextu="sudo kextunload /System/Library/Extensions/AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext > /dev/null 2>&1"
-# Flush Directory Service cache
-alias flush="dscacheutil -flushcache"
+alias flush="dscacheutil -flushcache" # Flush Directory Service cache
 alias whois="whois -h whois-servers.net"
 alias wanip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias ss="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
@@ -68,6 +68,10 @@ alias ss="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resou
 #alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
 ### Functions
+
+function h() {
+  cd ~/$1;
+}
 
 function sublp() {
   proj=~/Documents/Sublime/$1.sublime-project
@@ -90,5 +94,29 @@ function path_remove() {
   echo "${t[*]}"
 }
 
-# saved for reference
-### export PATH=/Applications/MAMP/Library/bin:/Applications/MAMP/bin/php/php5.4.4/bin:/usr/local/bin:$PATH:/opt/local/bin #omgwtfbbq
+# credit: http://nparikh.org/notes/zshrc.txt
+# Usage: smartextract <file>
+# Description: extracts archived files / mounts disk images
+# Note: .dmg/hdiutil is Mac OS X-specific.
+smartextract () {
+    if [ -f $1 ]; then
+        case $1 in
+            *.tar.bz2)  tar -jxvf $1                        ;;
+            *.tar.gz)   tar -zxvf $1                        ;;
+            *.bz2)      bunzip2 $1                          ;;
+            *.dmg)      hdiutil mount $1                    ;;
+            *.gz)       gunzip $1                           ;;
+            *.tar)      tar -xvf $1                         ;;
+            *.tbz2)     tar -jxvf $1                        ;;
+            *.tgz)      tar -zxvf $1                        ;;
+            *.zip)      unzip $1                            ;;
+            *.ZIP)      unzip $1                            ;;
+            *.pax)      cat $1 | pax -r                     ;;
+            *.pax.Z)    uncompress $1 --stdout | pax -r     ;;
+            *.Z)        uncompress $1                       ;;
+            *)          echo "'$1' cannot be extracted/mounted via smartextract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}

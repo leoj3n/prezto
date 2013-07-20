@@ -32,8 +32,12 @@ zstyle ':prezto:load' pmodule \
   'spectrum' \
   'utility' \
   'completion' \
+  'git' \
+  'node' \
+  'osx' \
+  'syntax-highlighting' \
+  'history-substring-search' \
   'prompt' \
-  'git'
 
 #
 # Editor
