@@ -19,6 +19,7 @@ fi
 
 export EDITOR='vi'
 export VISUAL='subl'
+export GIT_EDITOR='vi'
 export PAGER='less'
 
 #

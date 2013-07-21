@@ -39,6 +39,8 @@ defaults write com.apple.Finder FXPreferredViewStyle Nlsv
 # Git
 
 alias gfa="gf --all"
+alias gcam="gca -m"
+alias uom="-u origin master"
 alias gau="g update-index --assume-unchanged"
 alias grm="git status | grep deleted | awk '{print \$3}' | xargs git rm"
 
