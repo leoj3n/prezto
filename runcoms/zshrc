@@ -12,38 +12,35 @@ fi
 
 # -------- Customize to your needs...
 
-# RVM
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-
-# mysql
-export PATH="/usr/local/mysql/bin:$PATH"
-
-# php
-export PATH="$(brew --prefix josegonzalez/php/php54)/bin:$PATH"
-
-# hub
-eval "$(hub alias -s)"
-
-# Composer scripts
-PATH=$HOME/.composer/bin:$PATH
-
 # WP-CLI Bash completions
 
 autoload bashcompinit
 bashcompinit
 source $HOME/.composer/vendor/wp-cli/wp-cli/utils/wp-completion.bash
 
+### Defaults
+
 # Always open everything in Finder's list view
+
 defaults write com.apple.Finder FXPreferredViewStyle Nlsv
+
+### Aliases
 
 # Git
 
-alias gfa="gf --all"
+#alias hub="$GOPATH/bin/gh"
+eval "$(hub alias -s)"
+
 alias gcam="gca -m"
-alias gpuom="gp -u origin master"
+alias gfa="gf --all"
 alias gpuo="gp -u origin"
+alias gpuom="gp -u origin master"
 alias gau="g update-index --assume-unchanged"
+alias gnau="g update-index --no-assume-unchanged"
 alias grm="git status | grep deleted | awk '{print \$3}' | xargs git rm"
+
+# Roots
+alias reroots="rm -rf rootstheme.com && gfc -p retlehs/rootstheme.com && cd rootstheme.com && vu"
 
 # Other
 

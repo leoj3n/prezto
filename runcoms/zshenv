@@ -31,6 +31,12 @@ if [[ -z "$LANG" ]]; then
 fi
 
 #
+# Go
+#
+
+export GOPATH='/Users/leoj/.go'
+
+#
 # Paths
 #
 
@@ -44,6 +50,11 @@ typeset -gU cdpath fpath mailpath path
 # Set the list of directories that Zsh searches for programs.
 path=(
   /usr/local/{bin,sbin}
+  $(brew --prefix josegonzalez/php/php54)/bin
+  /usr/local/mysql/bin
+  $HOME/.composer/bin
+  $GOPATH/bin
+  $HOME/.rvm/bin
   $path
 )
 
@@ -60,6 +71,7 @@ export LESS='-F -g -i -M -R -S -w -X -z-4'
 if (( $+commands[lesspipe.sh] )); then
   export LESSOPEN='| /usr/bin/env lesspipe.sh %s 2>&-'
 fi
+
 
 #
 # Temporary Files
