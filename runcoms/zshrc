@@ -35,6 +35,7 @@ alias gcam="gca -m"
 alias gfa="gf --all"
 alias gpuo="gp -u origin"
 alias gpuom="gp -u origin master"
+function gbp() { gf origin pull/$1/head:$2; }
 alias gau="g update-index --assume-unchanged"
 alias gnau="g update-index --no-assume-unchanged"
 alias grm="git status | grep deleted | awk '{print \$3}' | xargs git rm"
