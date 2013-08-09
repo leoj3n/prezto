@@ -12,39 +12,53 @@ fi
 
 # -------- Customize to your needs...
 
+# Vassh
+
+source /Users/leoj/Documents/Sys\ Adm/Scripts/vassh.sh
+
 # WP-CLI Bash completions
 
 autoload bashcompinit
 bashcompinit
 source $HOME/.composer/vendor/wp-cli/wp-cli/utils/wp-completion.bash
 
-### Defaults
+# Git Bash Completion
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  #. $(brew --prefix)/etc/bash_completion
+fi
+
+# Defaults
 
 # Always open everything in Finder's list view
 
 defaults write com.apple.Finder FXPreferredViewStyle Nlsv
 
-### Aliases
+# Aliases
 
-# Git
+## Git
 
+# ---
 #alias hub="$GOPATH/bin/gh"
 eval "$(hub alias -s)"
-
+# ---
+alias ngh="/usr/local/bin/gh"
 alias gcam="gca -m"
 alias gfa="gf --all"
 alias gpuo="gp -u origin"
 alias gpuom="gp -u origin master"
 function gbp() { gf origin pull/$1/head:$2; }
-alias gau="g update-index --assume-unchanged"
-alias gnau="g update-index --no-assume-unchanged"
+alias gih="g update-index --assume-unchanged"
+alias gis="g update-index --no-assume-unchanged"
 alias grm="git status | grep deleted | awk '{print \$3}' | xargs git rm"
+function gcap() { foo=$1; g mv --force $foo "$(tr '[:lower:]' '[:upper:]' <<< ${foo:0:1})${foo:1}"; }
 
-# Roots
+## Roots
+
 alias reroots="rm -rf rootstheme.com && gfc -p retlehs/rootstheme.com && cd rootstheme.com && vu"
 
-# Other
+## Other
 
+alias v="vassh"
 alias t="type"
 alias c="clear"
 alias ep="sublp"
@@ -68,7 +82,7 @@ alias ss="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resou
 # View HTTP traffic
 #alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
-### Functions
+# Functions
 
 function h() {
   cd ~/$1;
@@ -82,7 +96,22 @@ function sublp() {
   awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/path\042/){print $(i+1)} } }' $proj
 }
 
-# From http://stackoverflow.com/questions/370047/#370255
+## Derrived from: http://www.commandlinefu.com/commands/view/6110/create-an-animated-gif-from-a-youtube-video
+
+function ytgif() {
+  tmp=".ytgif";
+  flv="$tmp/yt.flv";
+  rnd="$tmp/$RANDOM";
+  youtube-dl -o "$flv" $1;
+  ytsize=$(wc -c < $flv);
+  mplayer $flv -endpos $[ytsize*.75]"b" -sstep 30 -vo jpeg:outdir="$rnd":smooth=30:progressive -vf scale=320:240 -nosound;
+  convert -delay 30 -loop 0 "$rnd/*.jpg" yt.gif;
+  rm -rf "$rnd";
+  rm -ri .ytgif;
+}
+
+## From http://stackoverflow.com/questions/370047/#370255
+
 function path_remove() {
   IFS=:
   # convert it to an array
@@ -95,10 +124,11 @@ function path_remove() {
   echo "${t[*]}"
 }
 
-# credit: http://nparikh.org/notes/zshrc.txt
-# Usage: smartextract <file>
-# Description: extracts archived files / mounts disk images
-# Note: .dmg/hdiutil is Mac OS X-specific.
+## credit: http://nparikh.org/notes/zshrc.txt
+## Usage: smartextract <file>
+## Description: extracts archived files / mounts disk images
+## Note: .dmg/hdiutil is Mac OS X-specific.
+
 smartextract () {
     if [ -f $1 ]; then
         case $1 in
