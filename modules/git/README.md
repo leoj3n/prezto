@@ -113,6 +113,8 @@ Aliases
   - `giR` resets the current index interactively.
   - `gix` removes files/directories from the index (recursively).
   - `giX` removes files/directories from the index (recursively and forced).
+  - `gih` hides files/directories from the index
+  - `gis` shows hidden files/directories from the index
 
 ### Log
 
