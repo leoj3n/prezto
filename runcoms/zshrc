@@ -72,6 +72,9 @@ alias vh="vagrant halt"
 alias vr="vagrant reload"
 alias vd="vagrant destroy"
 alias vp="vagrant provision"
+alias pp="sudo lsof -i"
+alias skel="skelgen"
+alias snginx="nginx -s stop"
 alias pubkey="more ~/.ssh/id_rsa.pub | pbcopy | echo '=> Public key copied to pasteboard.'"
 alias kextl="sudo kextload /System/Library/Extensions/AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext"
 alias kextu="sudo kextunload /System/Library/Extensions/AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext > /dev/null 2>&1"
@@ -86,6 +89,31 @@ alias ss="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resou
 
 function h() {
   cd ~/$1;
+}
+
+# From, for example, src/BootstrapShortcodes:
+# $ skelgen "Shortcode_Button" "Shortcode/Button"
+# (OR)
+# $ skelgen "Shortcode_Button"
+# <return>
+# > Wrote skeleton for "Shortcode_ButtonTest"
+# > to "Tests/Shortcode/ButtonTest.php".
+function skelgen() {
+  local ns=${PWD##*/}"\\"
+  local out=$(echo $1 | tr "_" "/")
+  local src=out
+
+  if [ ! "x$2" = "x" ]; then
+    local out=$2
+  fi
+
+  if $(echo $out | grep --quiet "/"); then
+    local begin=$(echo $out | cut -d/ -f1)
+  fi
+
+  mkdir -p "Tests/"$begin
+
+  phpunit-skelgen --bootstrap "../../vendor/autoload.php" --test -- $ns$1 $src".php" $1"Test" "Tests/${out}Test.php"
 }
 
 function sublp() {
