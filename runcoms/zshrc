@@ -92,15 +92,13 @@ function h() {
 }
 
 # From, for example, src/BootstrapShortcodes:
-# $ skelgen "Shortcode_Button" "Shortcode/Button"
-# (OR)
-# $ skelgen "Shortcode_Button"
-# <return>
-# > Wrote skeleton for "Shortcode_ButtonTest"
-# > to "Tests/Shortcode/ButtonTest.php".
+# $ skelgen Attribute_Text                # this command,
+# $ skelgen Attribute_Text Attribute/Text # or this command, cause:
+# > Wrote skeleton for "Attribute_TextTest" to "../../tests/Attribute/TextTest.php".
 function skelgen() {
   local ns=${PWD##*/}"\\"
-  local out=$(echo $1 | tr "_" "/")
+  local class=$(echo ${1%.php} | tr "/" "_")
+  local out=$(echo ${1%.php} | tr "_" "/")
   local src=out
 
   if [ ! "x$2" = "x" ]; then
@@ -111,9 +109,10 @@ function skelgen() {
     local begin=$(echo $out | cut -d/ -f1)
   fi
 
-  mkdir -p "Tests/"$begin
+  local tst="../../tests/"
+  mkdir -p $tst$begin
 
-  phpunit-skelgen --bootstrap "../../vendor/autoload.php" --test -- $ns$1 $src".php" $1"Test" "Tests/${out}Test.php"
+  phpunit-skelgen --bootstrap "../../vendor/autoload.php" --test -- $ns$class $src".php" $ns$class"Test" $tst$out"Test.php"
 }
 
 function sublp() {
