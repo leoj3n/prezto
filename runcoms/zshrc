@@ -3,6 +3,7 @@
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
+#   Joel Kuzmarski <leoj3n@gmail.com>
 #
 
 # Source Prezto.
@@ -12,10 +13,6 @@ fi
 
 # -------- Customize to your needs...
 
-# Vassh
-
-source /Users/leoj/Documents/Sys\ Adm/Scripts/vassh.sh
-
 # WP-CLI Bash completions
 
 autoload bashcompinit
@@ -23,24 +20,21 @@ bashcompinit
 source $HOME/.composer/vendor/wp-cli/wp-cli/utils/wp-completion.bash
 
 # Git Bash Completion
+
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
   #. $(brew --prefix)/etc/bash_completion
 fi
 
 # Defaults
 
-# Always open everything in Finder's list view
+## Always open everything in Finder's list view
 
 defaults write com.apple.Finder FXPreferredViewStyle Nlsv
 
 # Aliases
 
-## Git
+##  Git Aliases
 
-# ---
-#alias hub="$GOPATH/bin/gh"
-eval "$(hub alias -s)"
-# ---
 alias ngh="/usr/local/bin/gh"
 alias gcam="gca -m"
 alias gfa="gf --all"
@@ -49,14 +43,24 @@ alias gpuom="gp -u origin master"
 function gbp() { gf origin pull/$1/head:$2; }
 alias gih="g update-index --assume-unchanged"
 alias gis="g update-index --no-assume-unchanged"
+alias gdh='git ls-files -v | grep "^h " | cut -d" " -f2-'
 alias grm="git status | grep deleted | awk '{print \$3}' | xargs git rm"
-function gcap() { foo=$1; g mv --force $foo "$(tr '[:lower:]' '[:upper:]' <<< ${foo:0:1})${foo:1}"; }
+alias gic="gcase"
+function gpr() { ngh pr --fetch $3 --user $1 --repo $2; }
 
-## Roots
+## Hub Aliases
 
-alias reroots="rm -rf rootstheme.com && gfc -p retlehs/rootstheme.com && cd rootstheme.com && vu"
+#alias hub="$GOPATH/bin/gh" # Hub clone written in Go (doesn't work... yet?)
+eval "$(hub alias -s)"
 
-## Other
+## Roots Aliases
+
+alias devroots="cd /Users/leoj/Sites/www/dev/1/wp-content/themes/roots"
+
+alias reroots="rm -rf rootstheme.com && gfc -p retlehs/rootstheme.com "\
+"&& cd rootstheme.com && vu"
+
+## Other Aliases
 
 alias v="vassh"
 alias t="type"
@@ -73,28 +77,52 @@ alias vr="vagrant reload"
 alias vd="vagrant destroy"
 alias vp="vagrant provision"
 alias pp="sudo lsof -i"
+alias zpr="cd ~/.zprezto"
 alias skel="skelgen"
 alias snginx="nginx -s stop"
-alias pubkey="more ~/.ssh/id_rsa.pub | pbcopy | echo '=> Public key copied to pasteboard.'"
-alias kextl="sudo kextload /System/Library/Extensions/AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext"
-alias kextu="sudo kextunload /System/Library/Extensions/AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext > /dev/null 2>&1"
+
+alias pubkey="more ~/.ssh/id_rsa.pub | pbcopy | echo '=> Public key "\
+"copied to pasteboard.'"
+
+alias kextl="sudo kextload /System/Library/Extensions/AppleUSBTopCase"\
+".kext/Contents/PlugIns/AppleUSBTCKeyboard.kext"
+
+alias kextu="sudo kextunload /System/Library/Extensions/AppleUSBTopCase"\
+".kext/Contents/PlugIns/AppleUSBTCKeyboard.kext > /dev/null 2>&1"
+
 alias flush="dscacheutil -flushcache" # Flush Directory Service cache
 alias whois="whois -h whois-servers.net"
 alias wanip="dig +short myip.opendns.com @resolver1.opendns.com"
-alias ss="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
-# View HTTP traffic
-#alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+
+alias ss="open /System/Library/Frameworks/ScreenSaver"\
+".framework/Versions/A/Resources/ScreenSaverEngine.app"
 
 # Functions
+
+## Uppercase the first letter of a git-indexed-file filename
+
+function gcase() {
+  foo=$1;
+  g mv --force $foo "$(tr '[:lower:]' '[:upper:]' <<< ${foo:0:1})${foo:1}";
+}
+
+## E-T Phone Home
 
 function h() {
   cd ~/$1;
 }
 
-# From, for example, src/BootstrapShortcodes:
-# $ skelgen Attribute_Text                # this command,
-# $ skelgen Attribute_Text Attribute/Text # or this command, cause:
-# > Wrote skeleton for "Attribute_TextTest" to "../../tests/Attribute/TextTest.php".
+## Generates phpunit-skelgen CLI args using a single input
+# Expects to run from 'src/YourPackage' like so:
+#
+# $ skelgen My_Class          # single argument
+# $ skelgen My_Class My/Class # two arguments; second is an optional path
+#
+# These commands are equivelant and both return:
+#
+# > Wrote skeleton for "My_ClassTest" to
+# >  "../../tests/My/ClassTest.php".
+
 function skelgen() {
   local ns=${PWD##*/}"\\"
   local class=$(echo ${1%.php} | tr "/" "_")
@@ -112,8 +140,11 @@ function skelgen() {
   local tst="../../tests/"
   mkdir -p $tst$begin
 
-  phpunit-skelgen --bootstrap "../../vendor/autoload.php" --test -- $ns$class $src".php" $ns$class"Test" $tst$out"Test.php"
+  phpunit-skelgen --bootstrap "../../vendor/autoload.php" --test \
+    -- $ns$class $src".php" $ns$class"Test" $tst$out"Test.php"
 }
+
+## Opens a Sublime Text project and prints directory paths metadata
 
 function sublp() {
   proj=~/Documents/Sublime/$1.sublime-project
@@ -123,7 +154,7 @@ function sublp() {
   awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/path\042/){print $(i+1)} } }' $proj
 }
 
-## Derrived from: http://www.commandlinefu.com/commands/view/6110/create-an-animated-gif-from-a-youtube-video
+## Converts YouTube -> Gif
 
 function ytgif() {
   tmp=".ytgif";
@@ -137,7 +168,8 @@ function ytgif() {
   rm -ri .ytgif;
 }
 
-## From http://stackoverflow.com/questions/370047/#370255
+## Removes an item from the path
+# Credit: http://stackoverflow.com/questions/370047/#370255
 
 function path_remove() {
   IFS=:
@@ -151,10 +183,11 @@ function path_remove() {
   echo "${t[*]}"
 }
 
-## credit: http://nparikh.org/notes/zshrc.txt
-## Usage: smartextract <file>
-## Description: extracts archived files / mounts disk images
-## Note: .dmg/hdiutil is Mac OS X-specific.
+## Extracts or mounts of files
+# Credit: http://nparikh.org/notes/zshrc.txt
+# Usage: smartextract <file>
+# Description: extracts archived files / mounts disk images
+# Note: .dmg/hdiutil is Mac OS X-specific.
 
 smartextract () {
     if [ -f $1 ]; then

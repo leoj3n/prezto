@@ -3,6 +3,15 @@
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
+#   Joel Kuzmarski <leoj3n@gmail.com>
 #
 
+# Source some files
+
+## Ruby Version Manager
+
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+## Vassh
+
+source /Users/leoj/Documents/Sys\ Adm/bin/vassh.sh
