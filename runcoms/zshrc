@@ -47,7 +47,10 @@ alias gdh='git ls-files -v | grep "^h " | cut -d" " -f2-'
 alias grm="git status | grep deleted | awk '{print \$3}' | xargs git rm"
 alias gic="gcase"
 function gpr() { ngh pr --fetch $3 --user $1 --repo $2; }
-
+function giap() {
+  g ls-files -co --exclude-standard | grep $1 | xargs git add
+}
+alias vpu='v sudo WP_TESTS_DIR=/home/vagrant/svn/wp-tests vendor/bin/phpunit'
 ## Hub Aliases
 
 #alias hub="$GOPATH/bin/gh" # Hub clone written in Go (doesn't work... yet?)
@@ -66,6 +69,7 @@ alias v="vassh"
 alias t="type"
 alias c="clear"
 alias ep="sublp"
+alias epp="ep ${PWD##*/}"
 alias se="smartextract"
 alias ...="cd ../.."
 # alias -- -="cd -" # not working in zsh prezto
@@ -80,6 +84,9 @@ alias pp="sudo lsof -i"
 alias zpr="cd ~/.zprezto"
 alias skel="skelgen"
 alias snginx="nginx -s stop"
+alias masq="$(brew --prefix)/etc/dnsmasq.conf"
+alias remasq="sudo launchctl stop homebrew.mxcl.dnsmasq && sudo launchctl"\
+"start homebrew.mxcl.dnsmasq"
 
 alias pubkey="more ~/.ssh/id_rsa.pub | pbcopy | echo '=> Public key "\
 "copied to pasteboard.'"
@@ -110,6 +117,13 @@ function gcase() {
 
 function h() {
   cd ~/$1;
+}
+
+## lsmod
+
+function lsmod() {
+  ls -l | awk '{k=0;for(i=0;i<=8;i++) \
+    k+=((substr($1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf("%0o ",k);print}'
 }
 
 ## Generates phpunit-skelgen CLI args using a single input
