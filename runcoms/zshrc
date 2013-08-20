@@ -60,8 +60,8 @@ eval "$(hub alias -s)"
 
 alias devroots="cd /Users/leoj/Sites/www/dev/1/wp-content/themes/roots"
 
-alias reroots="rm -rf rootstheme.com && gfc -p retlehs/rootstheme.com "\
-"&& cd rootstheme.com && vu"
+alias reroots="rm -rf roots.io && gfc -p retlehs/roots.io"\
+" && cd roots.io && vu"
 
 ## Other Aliases
 
@@ -86,7 +86,7 @@ alias skel="skelgen"
 alias snginx="nginx -s stop"
 alias masq="$(brew --prefix)/etc/dnsmasq.conf"
 alias remasq="sudo launchctl stop homebrew.mxcl.dnsmasq && sudo launchctl"\
-"start homebrew.mxcl.dnsmasq"
+" start homebrew.mxcl.dnsmasq"
 
 alias pubkey="more ~/.ssh/id_rsa.pub | pbcopy | echo '=> Public key "\
 "copied to pasteboard.'"
