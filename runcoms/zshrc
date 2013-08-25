@@ -47,17 +47,20 @@ alias gdh='git ls-files -v | grep "^h " | cut -d" " -f2-'
 alias grm="git status | grep deleted | awk '{print \$3}' | xargs git rm"
 alias gic="gcase"
 function gpr() { ngh pr --fetch $3 --user $1 --repo $2; }
-function giap() {
+function giap() { # pattern
   g ls-files -co --exclude-standard | grep $1 | xargs git add
 }
 alias vpu='v sudo WP_TESTS_DIR=/home/vagrant/svn/wp-tests vendor/bin/phpunit'
+
 ## Hub Aliases
 
 #alias hub="$GOPATH/bin/gh" # Hub clone written in Go (doesn't work... yet?)
 eval "$(hub alias -s)"
 
-## Roots Aliases
+## WordPress Aliases
 
+alias apps="cd ~/wp/apps"
+alias plugs="cd ~/wp/plugs"
 alias devroots="cd /Users/leoj/Sites/www/dev/1/wp-content/themes/roots"
 
 alias reroots="rm -rf roots.io && gfc -p retlehs/roots.io"\
@@ -166,6 +169,12 @@ function sublp() {
 
   # print project folders
   awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/path\042/){print $(i+1)} } }' $proj
+}
+
+## Shortens GitHub URL
+
+function ghio() {
+  curl -i http://git.io -F "url=https://github.com/"$1 $code -F "code=${2}"
 }
 
 ## Converts YouTube -> Gif
