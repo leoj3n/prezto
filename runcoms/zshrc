@@ -40,13 +40,15 @@ alias gcam="gca -m"
 alias gfa="gf --all"
 alias gpuo="gp -u origin"
 alias gpuom="gp -u origin master"
-function gbp() { gf origin pull/$1/head:$2; }
+function gbp() { gf origin pull/$1/head:$2; } # PR, branchname
 alias gih="g update-index --assume-unchanged"
 alias gis="g update-index --no-assume-unchanged"
 alias gdh='git ls-files -v | grep "^h " | cut -d" " -f2-'
 alias grm="git status | grep deleted | awk '{print \$3}' | xargs git rm"
 alias gic="gcase"
-function gpr() { ngh pr --fetch $3 --user $1 --repo $2; }
+alias gRe="git remote set-url"
+alias gpr="g pull-request"
+#function gpr() { ngh pr --fetch $3 --user $1 --repo $2; }
 function giap() { # pattern
   g ls-files -co --exclude-standard | grep $1 | xargs git add
 }
@@ -61,7 +63,7 @@ eval "$(hub alias -s)"
 
 alias apps="cd ~/wp/apps"
 alias plugs="cd ~/wp/plugs"
-alias devroots="cd /Users/leoj/Sites/www/dev/1/wp-content/themes/roots"
+alias apacheroots="cd /Users/leoj/Sites/www/dev/1/wp-content/themes/roots"
 
 alias reroots="rm -rf roots.io && gfc -p retlehs/roots.io"\
 " && cd roots.io && vu"
