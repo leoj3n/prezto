@@ -38,6 +38,12 @@ fi
 export GOPATH='/Users/leoj/.go'
 
 #
+# Homebrew
+#
+
+export HOMEBREW_GITHUB_API_TOKEN='e9adc10205e39a885c58f1d6534510ce752d448b'
+
+#
 # Paths
 #
 
@@ -50,6 +56,7 @@ typeset -gU cdpath fpath mailpath path
 
 # Set the list of directories that Zsh searches for programs.
 path=(
+  /Applications/Sublime\ Text.app/Contents/SharedSupport/bin
   $(brew --prefix josegonzalez/php/php54)/bin
   /Users/leoj/Documents/Sys\ Adm/bin
   /usr/local/{bin,sbin}

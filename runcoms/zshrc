@@ -13,6 +13,12 @@ fi
 
 # -------- Customize to your needs...
 
+# ZSH online help
+
+unalias run-help
+autoload run-help
+HELPDIR=/usr/local/share/zsh/helpfiles
+
 # WP-CLI Bash completions
 
 autoload bashcompinit
@@ -30,6 +36,12 @@ fi
 ## Always open everything in Finder's list view
 
 defaults write com.apple.Finder FXPreferredViewStyle Nlsv
+
+## Broomstick menubar icons order
+
+defaults write com.zibity.broomstick BMIOloginitem "Yes"
+
+defaults write com.zibity.broomstick apporder "Dropbox|DropIn|Google Drive|Gitifier|Feeds|Gas Mask|Caffeine|Slate|Flux|TotalSpaces|SlimBatteryMonitor|smcFanControl|Meteorologist|WhiteClock"
 
 # Aliases
 
@@ -73,6 +85,12 @@ alias reroots="rm -rf roots.io && gfc -p retlehs/roots.io"\
 alias v="vassh"
 alias t="type"
 alias c="clear"
+alias ta="task add"
+alias tls="task ls"
+function td() { task $1 delete }
+function tdo() { task $1 done }
+alias rss="newsbeuter"
+alias pod="podbeuter"
 alias ep="sublp"
 alias epp="ep ${PWD##*/}"
 alias se="smartextract"
@@ -89,6 +107,7 @@ alias pp="sudo lsof -i"
 alias zpr="cd ~/.zprezto"
 alias skel="skelgen"
 alias snginx="nginx -s stop"
+alias priv="privoxy /usr/local/etc/privoxy/config"
 alias masq="$(brew --prefix)/etc/dnsmasq.conf"
 alias remasq="sudo launchctl stop homebrew.mxcl.dnsmasq && sudo launchctl"\
 " start homebrew.mxcl.dnsmasq"
@@ -121,7 +140,13 @@ function gcase() {
 ## E-T Phone Home
 
 function h() {
-  cd ~/$1;
+  cd ~/$1
+}
+
+## Dash.app lookup
+
+function da() {
+  open dash://$1
 }
 
 ## lsmod
@@ -215,24 +240,37 @@ function path_remove() {
 # Note: .dmg/hdiutil is Mac OS X-specific.
 
 smartextract () {
-    if [ -f $1 ]; then
-        case $1 in
-            *.tar.bz2)  tar -jxvf $1                        ;;
-            *.tar.gz)   tar -zxvf $1                        ;;
-            *.bz2)      bunzip2 $1                          ;;
-            *.dmg)      hdiutil mount $1                    ;;
-            *.gz)       gunzip $1                           ;;
-            *.tar)      tar -xvf $1                         ;;
-            *.tbz2)     tar -jxvf $1                        ;;
-            *.tgz)      tar -zxvf $1                        ;;
-            *.zip)      unzip $1                            ;;
-            *.ZIP)      unzip $1                            ;;
-            *.pax)      cat $1 | pax -r                     ;;
-            *.pax.Z)    uncompress $1 --stdout | pax -r     ;;
-            *.Z)        uncompress $1                       ;;
-            *)          echo "'$1' cannot be extracted/mounted via smartextract()" ;;
-        esac
-    else
-        echo "'$1' is not a valid file"
-    fi
+  if [ -f $1 ]; then
+    case $1 in
+        *.tar.bz2)  tar -jxvf $1                        ;;
+        *.tar.gz)   tar -zxvf $1                        ;;
+        *.bz2)      bunzip2 $1                          ;;
+        *.dmg)      hdiutil mount $1                    ;;
+        *.gz)       gunzip $1                           ;;
+        *.tar)      tar -xvf $1                         ;;
+        *.tbz2)     tar -jxvf $1                        ;;
+        *.tgz)      tar -zxvf $1                        ;;
+        *.zip)      unzip $1                            ;;
+        *.ZIP)      unzip $1                            ;;
+        *.pax)      cat $1 | pax -r                     ;;
+        *.pax.Z)    uncompress $1 --stdout | pax -r     ;;
+        *.Z)        uncompress $1                       ;;
+        *)          echo "'$1' cannot be extracted/mounted via smartextract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
 }
+
+# http://www.commandlinefu.com/commands/view/7294/backup-a-file-with-a-date-time-stamp
+
+buf () {
+  oldname=$1;
+  if [ "$oldname" != "" ]; then
+    datepart=$(date +%Y-%m-%d);
+    firstpart=`echo $oldname | cut -d "." -f 1`;
+    newname=`echo $oldname | sed s/$firstpart/$firstpart.$datepart/`;
+    cp -R ${oldname} ${newname};
+  fi
+}
+
