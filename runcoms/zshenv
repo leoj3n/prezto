@@ -32,18 +32,6 @@ if [[ -z "$LANG" ]]; then
 fi
 
 #
-# Go
-#
-
-export GOPATH='/Users/leoj/.go'
-
-#
-# Homebrew
-#
-
-export HOMEBREW_GITHUB_API_TOKEN='e9adc10205e39a885c58f1d6534510ce752d448b'
-
-#
 # Paths
 #
 
@@ -58,12 +46,10 @@ typeset -gU cdpath fpath mailpath path
 path=(
   /Applications/Sublime\ Text.app/Contents/SharedSupport/bin
   $(brew --prefix josegonzalez/php/php54)/bin
-  /Users/leoj/Documents/Sys\ Adm/bin
   /usr/local/{bin,sbin}
   /usr/local/mysql/bin
   $HOME/.composer/bin
   $HOME/.rvm/bin
-  # $GOPATH/bin
   $path
 )
 

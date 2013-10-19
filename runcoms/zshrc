@@ -19,29 +19,11 @@ unalias run-help
 autoload run-help
 HELPDIR=/usr/local/share/zsh/helpfiles
 
-# WP-CLI Bash completions
-
-autoload bashcompinit
-bashcompinit
-source $HOME/.composer/vendor/wp-cli/wp-cli/utils/wp-completion.bash
-
 # Git Bash Completion
 
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
   #. $(brew --prefix)/etc/bash_completion
 fi
-
-# Defaults
-
-## Always open everything in Finder's list view
-
-defaults write com.apple.Finder FXPreferredViewStyle Nlsv
-
-## Broomstick menubar icons order
-
-defaults write com.zibity.broomstick BMIOloginitem "Yes"
-
-defaults write com.zibity.broomstick apporder "Dropbox|DropIn|Google Drive|Gitifier|Feeds|Gas Mask|Caffeine|Slate|Flux|TotalSpaces|SlimBatteryMonitor|smcFanControl|Meteorologist|WhiteClock"
 
 # Aliases
 
@@ -68,17 +50,12 @@ alias vpu='v sudo WP_TESTS_DIR=/home/vagrant/svn/wp-tests vendor/bin/phpunit'
 
 ## Hub Aliases
 
-#alias hub="$GOPATH/bin/gh" # Hub clone written in Go (doesn't work... yet?)
 eval "$(hub alias -s)"
 
 ## WordPress Aliases
 
 alias apps="cd ~/wp/apps"
 alias plugs="cd ~/wp/plugs"
-alias apacheroots="cd /Users/leoj/Sites/www/dev/1/wp-content/themes/roots"
-
-alias reroots="rm -rf roots.io && gfc -p retlehs/roots.io"\
-" && cd roots.io && vu"
 
 ## Other Aliases
 
@@ -264,7 +241,7 @@ smartextract () {
 
 # http://www.commandlinefu.com/commands/view/7294/backup-a-file-with-a-date-time-stamp
 
-buf () {
+buf() {
   oldname=$1;
   if [ "$oldname" != "" ]; then
     datepart=$(date +%Y-%m-%d);
