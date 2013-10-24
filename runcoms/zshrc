@@ -13,13 +13,13 @@ fi
 
 # -------- Customize to your needs...
 
-# ZSH online help
+# ZSH Online Help
 
 unalias run-help
 autoload run-help
 HELPDIR=/usr/local/share/zsh/helpfiles
 
-# WP-CLI Bash completions
+# WP-CLI Bash Completions
 
 autoload bashcompinit
 bashcompinit
@@ -31,21 +31,9 @@ if [ -f $(brew --prefix)/etc/bash_completion ]; then
   #. $(brew --prefix)/etc/bash_completion
 fi
 
-# Defaults
-
-## Always open everything in Finder's list view
-
-defaults write com.apple.Finder FXPreferredViewStyle Nlsv
-
-## Broomstick menubar icons order
-
-defaults write com.zibity.broomstick BMIOloginitem "Yes"
-
-defaults write com.zibity.broomstick apporder "Dropbox|DropIn|Google Drive|Gitifier|Feeds|Gas Mask|Caffeine|Slate|Flux|TotalSpaces|SlimBatteryMonitor|smcFanControl|Meteorologist|WhiteClock"
-
 # Aliases
 
-##  Git Aliases
+## Git Aliases
 
 alias ngh="/usr/local/bin/gh"
 alias gcam="gca -m"
@@ -79,6 +67,21 @@ alias apacheroots="cd /Users/leoj/Sites/www/dev/1/wp-content/themes/roots"
 
 alias reroots="rm -rf roots.io && gfc -p retlehs/roots.io"\
 " && cd roots.io && vu"
+
+## Homebrew Aliases
+
+alias brl="brew list"
+alias brh="brew home"
+alias bri="brew install"
+alias bru="brew uninstall"
+alias brup="brew update"
+alias brug="brew upgrade"
+
+alias brcl="brew cask list"
+alias brch="brew cask home"
+alias brcs="brew cask search"
+alias brci="brew cask install"
+alias brcu="brew cask uninstall"
 
 ## Other Aliases
 
@@ -127,6 +130,18 @@ alias wanip="dig +short myip.opendns.com @resolver1.opendns.com"
 
 alias ss="open /System/Library/Frameworks/ScreenSaver"\
 ".framework/Versions/A/Resources/ScreenSaverEngine.app"
+
+alias dbon="defaults write com.apple.dashboard mcx-disabled -boolean NO"\
+" && killall Dock"
+
+alias dboff="defaults write com.apple.dashboard mcx-disabled -boolean YES"\
+" && killall Dock"
+
+alias sloff="sudo launchctl unload -w /System/Library/LaunchDaemons/com"\
+".apple.metadata.mds.plist"
+
+alias slon="sudo launchctl load -w /System/Library/LaunchDaemons/com"\
+".apple.metadata.mds.plist"
 
 # Functions
 

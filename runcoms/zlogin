@@ -32,6 +32,3 @@ function precmd() {
     unset timer
   fi
 }
-
-# Start Privoxy
-priv
