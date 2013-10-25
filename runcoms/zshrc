@@ -71,17 +71,23 @@ alias reroots="rm -rf roots.io && gfc -p retlehs/roots.io"\
 ## Homebrew Aliases
 
 alias brl="brew list"
+alias bri="brew info"
 alias brh="brew home"
-alias bri="brew install"
-alias bru="brew uninstall"
+alias brs="brew search"
+alias brin="brew install"
+alias brun="brew uninstall"
 alias brup="brew update"
 alias brug="brew upgrade"
 
 alias brcl="brew cask list"
 alias brch="brew cask home"
 alias brcs="brew cask search"
-alias brci="brew cask install"
-alias brcu="brew cask uninstall"
+alias brcin="brew cask install"
+alias brcun="brew cask uninstall"
+
+## Meteor Aliases
+
+alias m="meteor"
 
 ## Other Aliases
 
