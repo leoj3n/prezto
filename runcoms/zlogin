@@ -3,7 +3,6 @@
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
-#   Joel Kuzmarski <leoj3n@gmail.com>
 #
 
 # Execute code that does not affect the current session in the background.
@@ -21,14 +20,3 @@ if (( $+commands[fortune] )); then
   print
 fi
 
-# Timer
-function preexec() {
-  timer=${timer:-$SECONDS}
-}
-function precmd() {
-  if [ $timer ]; then
-    timer_show=$(($SECONDS - $timer))
-    #export RPROMPT+="%F{cyan}${timer_show}s %{$reset_color%}"
-    unset timer
-  fi
-}

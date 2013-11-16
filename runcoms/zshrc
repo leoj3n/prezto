@@ -83,6 +83,7 @@ alias brup="brew update"
 alias brug="brew upgrade"
 
 alias brcl="brew cask list"
+alias brci="brew cask info"
 alias brch="brew cask home"
 alias brcs="brew cask search"
 alias brcc="brew cask create"
