@@ -14,4 +14,8 @@
 
 ## Vassh
 
-source /Users/leoj/Documents/Sys\ Adm/bin/vassh.sh
+source $HOME/Documents/Sys\ Adm/bin/vassh.sh
+
+## Perlbrew
+
+source $HOME/perl5/perlbrew/etc/bashrc

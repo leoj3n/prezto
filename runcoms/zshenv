@@ -61,7 +61,7 @@ typeset -gU cdpath fpath mailpath path
 path=(
   /Applications/Sublime\ Text.app/Contents/SharedSupport/bin
   /usr/local/opt/php54/bin
-  /Users/leoj/Documents/Sys\ Adm/bin
+  $HOME/Documents/Sys\ Adm/bin
   # /usr/local/{bin,sbin} # Homebrew wants /usr/local/bin at front of $PATH...
   /usr/local/sbin         # We do that in /etc/paths and keep here /sbin
   /usr/local/mysql/bin

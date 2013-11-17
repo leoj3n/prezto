@@ -267,7 +267,7 @@ function ytgif () {
 }
 
 ## Extracts or mounts files
-# Source: nparikh.org/notes/zshrc.txt
+# nparikh.org/notes/zshrc.txt
 
 smartextract () {
   if [ -f $1 ]; then
@@ -305,3 +305,19 @@ buf () {
   fi
 }
 
+## Relinks target-file to source-file
+# https://github.com/adamv/dotfiles/blob/master/install#L3-L16
+
+relink () {
+  if [[ -h "$1" ]]; then
+    echo "Relinking $1"
+    # Symbolic link? Then recreate.
+    rm "$1"
+    ln -sn "$2" "$1"
+  elif [[ ! -e "$1" ]]; then
+    echo "Linking $1 to $2"
+    ln -sn "$2" "$1"
+  else
+    echo "$1 exists as a real file, skipping."
+  fi
+}
