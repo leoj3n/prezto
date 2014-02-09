@@ -71,9 +71,11 @@ Authors
 
 *The authors of these files should be contacted via the [issue tracker][4].*
 
+  - [Joel Kuzmarski](https://github.com/leoj3n)
   - [Sorin Ionescu](https://github.com/sorin-ionescu)
 
 [1]: http://www.kornshell.com
 [2]: http://en.wikipedia.org/wiki/Fortune_(Unix)
 [3]: http://www.manpagez.com/man/1/msgs
-[4]: https://github.com/sorin-ionescu/prezto/issues
+[4]: https://github.com/leoj3n/prezto/issues
+

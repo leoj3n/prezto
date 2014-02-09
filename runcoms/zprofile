@@ -2,8 +2,26 @@
 # Executes commands at login pre-zshrc.
 #
 # Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
+
+###############################################################################
+# Setopts
+###############################################################################
+
+# setopt SH_WORD_SPLIT
+
+###############################################################################
+# Autoloads
+###############################################################################
+
+autoload -U colors && colors
+autoload bashcompinit && bashcompinit
+
+###############################################################################
+# Variables
+###############################################################################
 
 #
 # Browser
@@ -17,9 +35,11 @@ fi
 # Editors
 #
 
-export EDITOR='nano'
-export VISUAL='nano'
 export PAGER='less'
+export EDITOR='vim'
+export VISUAL='subl'
+export GIT_EDITOR='vim'
+export MANPAGER='less -s -M +Gg'
 
 #
 # Language
@@ -30,41 +50,92 @@ if [[ -z "$LANG" ]]; then
 fi
 
 #
-# Paths
+# GTK
 #
 
+export GTK_PATH='/usr/local/lib/gtk-2.0'
+
+#
+# Go
+#
+
+export GOPATH="${HOME}/.go"
+
+#
+# Python
+#
+
+export PYTHONPATH="/usr/local/lib/python2.7/site-packages:${PYTHONPATH}"
+
+###############################################################################
+# Paths
+###############################################################################
+
+#
 # Ensure path arrays do not contain duplicates.
+#
+
 typeset -gU cdpath fpath mailpath path
 
+#
 # Set the the list of directories that cd searches.
+#
+
 # cdpath=(
 #   $cdpath
 # )
 
+#
 # Set the list of directories that Zsh searches for programs.
+#
+
 path=(
-  /usr/local/{bin,sbin}
-  $path
+  '/opt/local/bin'
+  '/usr/local/'{bin,sbin}
+  ${path}
+)
+
+path=(
+  '/usr/local/mysql/bin'
+  "$(brew --prefix josegonzalez/php/php54)/bin"
+  "${HOME}/.composer/bin"
+  "${GOPATH}/bin"
+  '/Applications/Sublime Text.app/Contents/SharedSupport/bin'
+  "${HOME}/bin"
+  ${path}
 )
 
 #
-# Less
+# Set the list of directories that Zsh searches for functions.
 #
 
+fpath=(
+  "${HOME}/.homesick/repos/homeshick/completions"
+  ${fpath}
+)
+
+###############################################################################
+# Less
+###############################################################################
+
+#
 # Set the default Less options.
 # Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
 # Remove -X and -F (exit if the content fits on one screen) to enable it.
+#
+
 export LESS='-F -g -i -M -R -S -w -X -z-4'
 
+#
 # Set the Less input preprocessor.
 # Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
 if (( $#commands[(i)lesspipe(|.sh)] )); then
   export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi
 
-#
+###############################################################################
 # Temporary Files
-#
+###############################################################################
 
 if [[ ! -d "$TMPDIR" ]]; then
   export TMPDIR="/tmp/$LOGNAME"
