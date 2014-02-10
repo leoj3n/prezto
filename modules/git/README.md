@@ -46,6 +46,7 @@ Aliases
   - `gbX` deletes a branch irrespective of its merged status.
   - `gbm` renames a branch.
   - `gbM` renames a branch even if the new branch name already exists.
+  - `gbr` creates a new branch from a pull request ID.
 
 
 ### Commit
@@ -65,6 +66,7 @@ Aliases
   - `gcR` removes the *HEAD* commit.
   - `gcs` displays various types of objects.
   - `gcl` lists lost commits.
+  - `gcam` records all changes to the repository with the given message.
 
 ### Conflict
 
@@ -85,6 +87,7 @@ Aliases
   - `gdu` lists untracked files.
   - `gdk` lists killed files.
   - `gdi` lists ignored files.
+  - `gdh` lists hidden files.
 
 ### Fetch
 
@@ -92,6 +95,8 @@ Aliases
   - `gfc` clones a repository into a new directory.
   - `gfm` fetches from and merges with another repository or local branch.
   - `gfr` fetches from and rebases on another repository or local branch.
+  - `gfa` downloads all objects and references from another repository.
+  - `gfcd` clones a repository into a new directory and changes directory.
 
 ### Grep
 
@@ -113,8 +118,8 @@ Aliases
   - `giR` resets the current index interactively.
   - `gix` removes files/directories from the index (recursively).
   - `giX` removes files/directories from the index (recursively and forced).
-  - `gih` hides files/directories from the index
-  - `gis` shows hidden files/directories from the index
+  - `gih` hides files/directories from the index.
+  - `gis` shows hidden files/directories from the index.
 
 ### Log
 
@@ -145,6 +150,9 @@ Aliases
   - `gpc` updates remote refs along with associated objects and adds *origin*
      as an upstream reference for the current branch.
   - `gpp` pulls and pushes from origin to origin.
+  - `gpuo` updates remote refs along with associated objects and sets upstream to origin.
+  - `gpul` updates remote refs along with associated objects and sets upstream to leoj3n.
+  - `gpuom` updates remote refs along with associated objects and sets upstream to leoj3n for master.
 
 ### Rebase
 
@@ -209,6 +217,12 @@ Aliases
   - `gwx` removes files from the working tree and from the index recursively.
   - `gwX` removes files from the working tree and from the index recursively and
     forcefully.
+
+### Utility
+
+- `guf` fixes files in the index (default removes unstaged deleted files).
+- `guc` uppercases files in the index.
+- `gur` creates a pull request.
 
 ### Shadows
 
@@ -325,6 +339,7 @@ Authors
 
   - [Sorin Ionescu](https://github.com/sorin-ionescu)
   - [Colin Hebert](https://github.com/ColinHebert)
+  - [Joel Kuzmarski](https://github.com/leoj3n)
 
 [1]: http://www.git-scm.com
 [2]: https://github.com/defunkt/hub
