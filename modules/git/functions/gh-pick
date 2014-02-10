@@ -1,0 +1,66 @@
+#
+# Cherry-pick a commit from GitHub URLs
+#
+# For example:
+#   http://github.com/adamv/dotfiles/commit/
+#     2f8c64fb6bd69787943b691212d8a80d42de0614
+#
+# Arguments:
+#   url or "."
+# Returns
+#   cherry pick status
+#
+# Authors:
+#   Adam Vandenberg
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+local url="${1:?Usage: $0 <GitHub-URL-with-commit>}"
+
+#
+# Use clipboard contents if period passed as URL.
+#
+
+if [[ "${url}" = '.' ]]; then
+  url="$(pbp)"
+fi
+
+#
+# Exit with usage if URL doesn't match regex.
+#
+
+if [[ ! "${url}" =~ 'https?://github.com/([^/]*)/([^/]*)/commit/(.*)' ]]; then
+  echo "Usage: $0 <GitHub-URL-with-commit>"
+  return 1
+fi
+
+#
+# Set variables from regex.
+#
+
+local user="${match[ 1 ]}"
+local repo="${match[ 2 ]}"
+local commit="${match[ 3 ]}"
+local repo_url="git://github.com/${user}/${repo}.git"
+
+#
+# Output the extracted info being used.
+#
+
+echo "Remote: ${user}"
+echo "Repo: ${repo} (${repo_url})"
+echo "Commit: ${commit}"
+
+#
+# Add the remote as the username if it doesn't exist.
+#
+
+( git remote | grep -q "${user}" ) || git remote add "${user}" "${repo_url}"
+
+#
+# Fetch the remote and cherry-pick the commit.
+#
+
+git fetch "${user}"
+git cherry-pick -s "${commit}"
+

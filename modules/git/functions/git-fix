@@ -1,0 +1,23 @@
+#
+# Target and fix files in the git index.
+#
+# Default action is to remove unstaged deleted files.
+#
+# Arguments:
+#   [kind]
+#   [action]
+# Returns:
+#   fixed file status
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+local knd='.D'
+local act='rm'
+
+local knd="${1:-'.D'}"
+local act="${2:-'rm'}"
+
+git status | awk "/^${knd} .*$/ {print \$2}" | xargs git "${act}" -f
+

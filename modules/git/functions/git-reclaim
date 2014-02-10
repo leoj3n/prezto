@@ -1,0 +1,17 @@
+#
+# Cleanup and reclaim space in a git repository
+#
+# Arguments:
+#   none
+# Returns:
+#   cleanup status
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+rm -rf '.git/refs/original/'
+git reflog expire --expire=now --all
+git gc --prune=now
+git gc --aggressive --prune=now
+
