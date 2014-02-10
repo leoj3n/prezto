@@ -1,0 +1,16 @@
+#
+# Remove a sensitive file from git history
+#
+# Arguments:
+#   path
+# Returns:
+#   status
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+git filter-branch --force --index-filter \
+  'git rm --cached --ignore-unmatch "$1"' \
+  --prune-empty --tag-name-filter cat -- --all
+

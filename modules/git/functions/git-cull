@@ -1,0 +1,15 @@
+#
+# Delete remote-tracking branches except those under "origin" or "upstream".
+#
+# Arguments:
+#   none
+# Returns
+#   deleted branches
+#
+# Authors:
+#   Adam Vandenberg
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+git branch -r | sed -E "/^ *(origin|upstream)\//d" | xargs git branch -dr
+

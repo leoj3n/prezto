@@ -1,0 +1,17 @@
+#
+# Fetch a pull request into a git branch.
+#
+# Arguments:
+#   pull request ID
+#   [branch name]
+# Returns:
+#   new git branch
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+local bnm="${2:-"pr-$1"}"
+
+git fetch origin "pull/$1/head:${bnm}" && git checkout "${bnm}"
+

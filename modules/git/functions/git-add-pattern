@@ -1,0 +1,14 @@
+#
+# Add files to git index by a pattern.
+#
+# Arguments:
+#   pattern
+# Returns:
+#   files added to the index
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+git ls-files -co --exclude-standard | grep "$1" | xargs git add
+
