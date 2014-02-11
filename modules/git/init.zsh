@@ -2,6 +2,7 @@
 # Provides Git aliases and functions.
 #
 # Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
