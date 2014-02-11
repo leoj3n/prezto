@@ -2,6 +2,7 @@
 # Defines Homebrew aliases.
 #
 # Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
@@ -31,3 +32,23 @@ alias caski='brew cask install'
 alias caskl='brew cask list'
 alias casks='brew cask search'
 alias caskx='brew cask uninstall'
+
+alias brl='brew list'
+alias bri='brew info'
+alias brh='brew home'
+alias brs='brew search'
+alias brup='brew update'
+alias brug='brew upgrade'
+alias brin='brew install'
+alias brun='brew uninstall'
+
+alias brcl='brew cask list'
+alias brci='brew cask info'
+alias brce='brew cask edit'
+alias brch='brew cask home'
+alias brcs='brew cask search'
+alias brcc='brew cask create'
+alias brcin='brew cask install'
+alias brcun='brew cask uninstall'
+alias brcls='brew-cask-list-since'
+
