@@ -1,0 +1,40 @@
+#
+# Generate phpunit-skelgen CLI args using a single input.
+#
+# Arguments:
+#   class
+#   [path]
+# Returns:
+#   location of test
+#
+# Expects to run from 'src/YourPackage' like so:
+#   $ skelgen My_Class          # single argument
+#   $ skelgen My_Class My/Class # two arguments; second is an optional path
+#
+# These examples are equivelant and both return:
+#   > Wrote skeleton for "My_ClassTest" to
+#   >  "../../tests/My/ClassTest.php".
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+local ns="${PWD##*/}\\"
+local tst='../../tests/'
+local out="$(echo "${1%.php}" | tr '_' '/')"
+local class="$(echo "${1%.php}" | tr '/' '_')"
+
+local src="${out}"
+
+if [[ -n "$2" ]]; then
+  out="$2"
+fi
+
+if $(echo "${out}" | grep --quiet '/'); then
+  local begin="$(echo "${out}" | cut -d/ -f1)"
+fi
+
+mkdir -p "${tst}${begin}"
+
+phpunit-skelgen --bootstrap '../../vendor/autoload.php' --test \
+  -- "${ns}${class}" "${src}.php" "${ns}${class}Test" "${tst}${out}Test.php"
