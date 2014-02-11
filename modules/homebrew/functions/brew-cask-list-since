@@ -1,0 +1,23 @@
+#
+# List casks added since a human-readable time
+#
+# Arguments:
+#   [since]
+# Returns:
+#   list of casks
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+local since="${*:-'5 days'}"
+
+(
+  cd "${TAPS}/phinze-cask" && \
+  git log \
+    --since="${since}" \
+    --name-status \
+    --pretty='format:' 'Casks/' \
+    | grep '^A' \
+    | sed 's!^.*Casks/\(.*\).rb$!\1!'
+)
