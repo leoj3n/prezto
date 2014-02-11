@@ -10,7 +10,7 @@
 # Setopts
 ###############################################################################
 
-# setopt SH_WORD_SPLIT
+# setopt SH_WORD_SPLIT # bash-style handling of spaces and parens.
 
 ###############################################################################
 # Autoloads
