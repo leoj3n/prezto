@@ -32,9 +32,7 @@ zstyle ':prezto:*:*' color 'yes'
 # Set the Zsh functions to load (man zshcontrib).
 #
 
-# zstyle ':prezto:load' zfunction 'zmv' 'chpwd_recent_dirs' 'cdr' 'add-zsh-hook'
-
-# add-zsh-hook chpwd chpwd_recent_dirs
+zstyle ':prezto:load' zfunction 'zmv' 'chpwd_recent_dirs' 'cdr' 'add-zsh-hook'
 
 #
 # Set the Prezto modules to load (browse modules).
@@ -50,10 +48,21 @@ zstyle ':prezto:load' pmodule \
   'spectrum' \
   'utility' \
   'completion' \
+  'archive' \
+  'bower' \
+  'filetype' \
   'git' \
+  'homebrew' \
+  'internet' \
+  'meteor' \
   'node' \
   'osx' \
   'ruby' \
+  'sublime' \
+  'taskwarrior' \
+  'url' \
+  'vagrant' \
+  'wordpress' \
   'syntax-highlighting' \
   'history-substring-search' \
   'prompt'
