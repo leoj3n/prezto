@@ -2,6 +2,7 @@
 # Sets directory options and defines directory aliases.
 #
 # Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
 #   James Cox <james@imaj.es>
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
@@ -28,3 +29,6 @@ unsetopt CLOBBER            # Do not overwrite existing files with > and >>.
 
 alias d='dirs -v'
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
+
+alias ...='cd ../..'
+alias -- -='cd -' # FIXME: Not working in zsh prezto
