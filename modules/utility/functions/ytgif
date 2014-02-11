@@ -1,0 +1,38 @@
+#
+# Converts YouTube to GIF.
+#
+# Arguments:
+#   YouTube URL
+# Returns:
+#   created gif location
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+local tmp='.ytgif'
+local flv="${tmp}/yt.flv"
+local rnd="${tmp}/${RANDOM}"
+
+youtube-dl -o "${flv}" "$1"
+
+local ytsize="$(wc -c < "${flv}")"
+
+mplayer "${flv}" \
+  -endpos "$[ytsize * .75]b" \
+  -sstep 30 \
+  -vo "jpeg:outdir=${rnd}" ':smooth=30:progressive' \
+  -vf 'scale=320:240' \
+  -nosound
+
+convert \
+  -delay 30 \
+  -loop 0 \
+  "${rnd}/*.jpg" \
+  'yt.gif'
+
+rm -rf "${rnd}"
+rm -ri '.ytgif'
+
+echo 'yt.gif has been created'
+

@@ -2,6 +2,7 @@
 # Defines general aliases and functions.
 #
 # Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
 #   Robby Russell <robby@planetargon.com>
 #   Suraj N. Kurapati <sunaku@gmail.com>
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
@@ -58,6 +59,7 @@ alias po='popd'
 alias pu='pushd'
 alias rm="${aliases[rm]:-rm} -i"
 alias type='type -a'
+alias t='type'
 
 # ls
 if is-callable 'dircolors'; then
@@ -101,6 +103,20 @@ alias lt='ll -tr'        # Lists sorted by date, most recent last.
 alias lc='lt -c'         # Lists sorted by date, most recent last, shows change time.
 alias lu='lt -u'         # Lists sorted by date, most recent last, shows access time.
 alias sl='ls'            # I often screw this up.
+alias cl='c; l'          # Clears the screen before listing in one column.
+# Lists hidden files.
+function lsd() {
+  ls -Ad "${@:-$PWD}/".*
+}
+# Lists symbolic links.
+function lss() {
+  ls -la "${@:-$PWD}" | grep .-\>
+}
+# Lists numerical permissions.
+function lsmod() {
+  ls -l "${@:-$PWD}" | awk '{k=0;for(i=0;i<=8;i++) \
+    k+=((substr($1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf("%0o ",k);print}'
+}
 
 # Grep
 if zstyle -t ':prezto:module:utility:grep' color; then
@@ -131,6 +147,9 @@ fi
 
 alias pbc='pbcopy'
 alias pbp='pbpaste'
+alias -g vv='"$(pbp)"'
+alias cpy='tr -d "\n" | pbcopy'
+alias pubkey='more ~"/.ssh/id_rsa.pub" | cpy | echo "Key copied to clipboard."'
 
 # File Download
 if (( $+commands[curl] )); then
@@ -159,6 +178,15 @@ fi
 
 # Serves a directory via HTTP.
 alias http-serve='python -m SimpleHTTPServer'
+
+# Reloads the default shell.
+alias reload='exec "${SHELL}" -l'
+
+# Prints the SHA1 hash of a passed file.
+alias sha1='openssl sha1'
+
+# Lists open files.
+alias pp='sudo lsof -i'
 
 #
 # Functions
@@ -198,3 +226,16 @@ function find-exec {
 function psu {
   ps -U "${1:-$LOGNAME}" -o 'pid,%cpu,%mem,command' "${(@)argv[2,-1]}"
 }
+
+# Search all files in the current directory for a string.
+function fs() {
+  find "$1" -print0 | xargs -0 grep "${@:2}"
+}
+
+# Pipe tree output into the less pager.
+function treep() {
+  if command -v tree>'/dev/null' 2>&1; then
+    tree -CN "$@" | less -r
+  fi
+}
+

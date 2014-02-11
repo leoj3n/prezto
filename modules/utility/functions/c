@@ -1,0 +1,18 @@
+#
+# Clear the screen with scissors symbols.
+#
+# Arguments:
+#   none
+# Returns:
+#   symbols equal to terminal columns
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+local s="$(printf "%-$(($(tput cols) / 2))s")"
+
+echo "${fg[ magenta ]}${s// / ✂}${reset_color}"
+
+clear
+

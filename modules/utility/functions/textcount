@@ -1,0 +1,22 @@
+#
+# Count number of characters and words in string.
+#
+# Arguments:
+#   text
+# Returns:
+#   number of characters and words
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+if [[ "$#" != 0 ]]; then
+  local chars="$(printf "$@" | wc -m | tr -d ' ')"
+  local words="$(printf "$@" | wc -w | tr -d ' ')"
+
+  printf "Number of characters: \e[1m${chars}\e[0m\n"
+  printf "Number of words: \e[1m${words}\e[0m\n"
+else
+  printf "No text supplied.\n"
+fi
+
