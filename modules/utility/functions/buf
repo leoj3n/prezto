@@ -1,0 +1,25 @@
+#
+# Back up a file using the date.
+#
+# Arguments:
+#   file
+# Returns:
+#   backed up file location
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+local oldname="$1"
+
+if [[ -n "${oldname}" ]]; then
+  local datepart="$(date +%Y-%m-%d)"
+  local firstpart="$(echo "${oldname}" | cut -d '.' -f 1)"
+  local newname="$(echo "${oldname}" \
+    | sed s/"${firstpart}"/"${firstpart}.${datepart}"/)"
+
+  cp -R "${oldname}" "${newname}"
+
+  echo "${newname} has been created."
+fi
+

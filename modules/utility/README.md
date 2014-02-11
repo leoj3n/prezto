@@ -75,7 +75,7 @@ Aliases
   - `pu` changes the directory and pushes the old directory onto the stack
     (`pushd`).
   - `rm` removes files and directories interactively.
-  - `type` displays all the attribute values of a shell parameter.
+  - `type` or `t` displays all the attribute values of a shell parameter.
 
 ### Files and Directories
 
@@ -91,6 +91,10 @@ Aliases
   - `lc` lists sorted by date, most recent last, shows change time.
   - `lu` lists sorted by date, most recent last, shows access time.
   - `sl` lists directory contents (`ls`).
+  - `cl` clears the screen before listing in one column.
+  - `lsd` lists hidden files only.
+  - `lss` lists symbolic links only.
+  - `lsmod` lists numerical permissions.
 
 ### Mac OS X Everywhere
 
@@ -100,6 +104,9 @@ Aliases
   - `pbpaste` pastes from the pasteboard (`pbcopy`, `xclip` or `xsel`).
   - `pbc` copies to the pasteboard (`pbcopy`).
   - `pbp` pastes from the pasteboard (`pbpaste`).
+  - `vv` pastes from the pasteboard anywhere in a command (`$(pbp)`).
+  - `cpy` copies to the pasteboard without line endings (`pbcopy`).
+  - `pubkey` copies the current user's public key to the pasteboard.
 
 ### Resource Usage
 
@@ -114,6 +121,9 @@ Aliases
 ### Miscellaneous
 
   - `http-serve` serves a directory via HTTP.
+  - `sha1` prints the SHA1 hash of a passed file.
+  - `reload` reloads the default shell.
+  - `pp` lists open files.
 
 Functions
 ---------
@@ -121,15 +131,20 @@ Functions
 ### General
 
   - `slit` prints columns *1, 2, 3 ... n*.
+  - `c` clear the screen with scissors symbols (✂).
+  - `ytgif` converts YouTube to GIF.
 
 ### Files and Directories
 
   - `cdls` changes to a directory and lists its contents.
   - `dut` displays the grand total disk usage using human readable units.
   - `find-exec` finds files and executes a command on them.
+  - `fs` search files in directory for a string.
   - `mkdcd` makes a directory and changes to it.
   - `popdls` pops an entry off the directory stack and lists its contents.
   - `pushdls` pushes an entry onto the directory stack and lists its contents.
+  - `treep` pipe tree output into the less pager.
+  - `buf` back up a file using the date.
 
 ### Developer
 
@@ -154,5 +169,6 @@ Authors
   - [Robby Russell](https://github.com/robbyrussell)
   - [Suraj N. Kurapati](https://github.com/sunaku)
   - [Sorin Ionescu](https://github.com/sorin-ionescu)
+  - [Joel Kuzmarski](https://github.com/leoj3n)
 
 [1]: https://github.com/sorin-ionescu/prezto/issues
