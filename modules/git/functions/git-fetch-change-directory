@@ -1,25 +1,24 @@
 #
 # Clone a git repository then change into the directory.
 #
-# Arguments:
-#   repository
-#   [path]
-# Returns:
-#   cloned repository location
-#
 # Authors:
 #   Joel Kuzmarski <leoj3n@gmail.com>
 #
+
+if [[ -z "$1" ]]; then
+  print "usage: $0 url [directory]" >&2
+  return 1
+fi
 
 #
 # Cut path from repository name or use second argument if passed
 #
 
-local pth="${2:-${${1##*/}%.*}}"
+local dir="${2:-${${1##*/}%.*}}"
 
 #
 # Clone the repository using GitHub CLI program
 #
 
-"${HUB}" clone "$1" && cd "${pth}"
+"${HUB}" clone "$1" "${dir}" && cd "${dir}"
 
