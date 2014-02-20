@@ -143,3 +143,41 @@ if [[ ! -d "$TMPDIR" ]]; then
 fi
 
 TMPPREFIX="${TMPDIR%/}/zsh"
+
+###############################################################################
+# Custom scripting variables
+###############################################################################
+
+readonly CASKROOM='/opt/homebrew-cask/Caskroom'
+readonly TAPS="$(brew --repository)/Library/Taps"
+readonly VLC="${CASKROOM}/vlc/2.1.1/VLC.app/Contents/MacOS/VLC"
+readonly HUB="$( (( $+commands[gh] )) && echo 'gh' || echo 'hub' )"
+
+###############################################################################
+# Sources
+###############################################################################
+
+#
+# WP-CLI Completion
+#
+
+# source "${HOME}/.composer/vendor/wp-cli/wp-cli/utils/wp-completion.bash"
+
+#
+# Homeshick
+#
+
+source "${HOME}/.homesick/repos/homeshick/homeshick.sh"
+
+#
+# z
+#
+
+source "$(brew --prefix)/etc/profile.d/z.sh"
+
+#
+# Perlbrew
+#
+
+source "${HOME}/perl5/perlbrew/etc/bashrc"
+
