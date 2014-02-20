@@ -28,6 +28,8 @@ alias -g nots='~/.homesick/repos/notfiles'
 # Program aliases
 ###############################################################################
 
+eval "$("${HUB}" alias -s)"
+
 alias v='vim'
 alias bc='bc -l'
 alias chat='finch'
