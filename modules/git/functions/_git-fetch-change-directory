@@ -1,0 +1,20 @@
+#compdef git-fetch-change-directory
+#autoload
+
+#
+# Completes git-fetch-change-directory.
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+_arguments \
+  '1:url:' \
+  '2::args:->directory' && return 0
+
+case "$state" in
+  (directory)
+    _wanted directories expl 'directory' _path_files -/ || _message 'directory'
+  ;;
+esac
+
