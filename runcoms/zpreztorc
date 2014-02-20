@@ -58,12 +58,12 @@ zstyle ':prezto:load' pmodule \
   'node' \
   'openshift' \
   'osx' \
-  'ruby' \
   'sublime' \
   'taskwarrior' \
   'url' \
   'vagrant' \
   'wordpress' \
+  'ruby' \
   'syntax-highlighting' \
   'history-substring-search' \
   'prompt'
