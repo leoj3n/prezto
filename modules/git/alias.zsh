@@ -57,7 +57,7 @@ alias gcr='git revert'
 alias gcR='git reset "HEAD^"'
 alias gcs='git show'
 alias gcl='git-commit-lost'
-alias gcam='gca -m'
+alias gcam='git commit --verbose --all -m'
 
 # Conflict (C)
 alias gCl='git status | sed -n "s/^.*both [a-z]*ed: *//p"'
@@ -76,14 +76,14 @@ alias gdm='git ls-files --modified'
 alias gdu='git ls-files --other --exclude-standard'
 alias gdk='git ls-files --killed'
 alias gdi='git status --porcelain --short --ignored | sed -n "s/^!! //p"'
-alias gdh='g ls-files -v | grep "^h " | cut -d" " -f2-'
+alias gdh='git ls-files -v | grep "^h " | cut -d" " -f2-'
 
 # Fetch (f)
 alias gf='git fetch'
 alias gfc='git clone'
 alias gfm='git pull'
 alias gfr='git pull --rebase'
-alias gfa='gf --all'
+alias gfa='git fetch --all'
 alias gfcd='git-fetch-change-directory'
 
 # Grep (g)
@@ -108,8 +108,8 @@ alias gih='git update-index --assume-unchanged'
 alias gis='git update-index --no-assume-unchanged'
 alias giaa='gia --all'
 alias giap='git-add-pattern'
-alias gih='g update-index --assume-unchanged'
-alias gis='g update-index --no-assume-unchanged'
+alias gih='git update-index --assume-unchanged'
+alias gis='git update-index --no-assume-unchanged'
 
 # Log (l)
 alias gl='git log --topo-order --pretty=format:"${_git_log_medium_format}"'
@@ -135,9 +135,9 @@ alias gpA='git push --all && git push --tags'
 alias gpt='git push --tags'
 alias gpc='git push --set-upstream origin "$(git-branch-current 2> /dev/null)"'
 alias gpp='git pull origin "$(git-branch-current 2> /dev/null)" && git push origin "$(git-branch-current 2> /dev/null)"'
-alias gpuo='gp -u origin'
-alias gpul='gp -u leoj3n'
-alias gpuom='gpuo master'
+alias gpuo='git push -u origin'
+alias gpul='git push -u leoj3n'
+alias gpuom='git push -u origin master'
 
 # Rebase (r)
 alias gr='git rebase'
@@ -198,5 +198,5 @@ alias gwX='git rm -rf'
 # Utility (u)
 alias guf='git-fix'
 alias guc='git-uppercase'
-alias gur='g pull-request'
+alias gur="git pull-request"
 
