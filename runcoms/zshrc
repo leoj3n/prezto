@@ -31,7 +31,7 @@ alias -g nots='~/.homesick/repos/notfiles'
 eval "$("${HUB}" alias -s)"
 
 alias v='vim'
-alias bc='bc -l'
+alias bc='bc -q -l'
 alias chat='finch'
 alias irc='weechat'
 alias hs='homeshick'
@@ -41,5 +41,9 @@ alias pandora='pianobar'
 alias sb='screenbrightness'
 alias soundcloud='cloudruby'
 alias youtube='gtk-youtube-viewer'
+#- background, resolution
+alias feh='feh -B white -g 1360x768'
 alias nw='~/Applications/node-webkit.app/Contents/MacOS/node-webkit'
+#- color, fullscreen, 480p, number of results
+alias youtube-viewer='youtube-viewer -C -f -4 --results=10'
 
