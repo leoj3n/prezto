@@ -60,6 +60,9 @@ alias pu='pushd'
 alias rm="${aliases[rm]:-rm} -i"
 alias type='type -a'
 alias t='type'
+function w3md() {
+  multimarkdown "$1" | w3m -T 'text/html'
+}
 
 # ls
 if is-callable 'dircolors'; then
@@ -104,6 +107,11 @@ alias lc='lt -c'         # Lists sorted by date, most recent last, shows change 
 alias lu='lt -u'         # Lists sorted by date, most recent last, shows access time.
 alias sl='ls'            # I often screw this up.
 alias cl='c; l'          # Clears the screen before listing in one column.
+# List and grep.
+function lsg() {
+  local keyword="$(echo "$@" |  sed 's/ /.*/g')"
+  ls -GgthrA | grep -iE "${keyword}"
+}
 # Lists hidden files.
 function lsd() {
   ls -Ad "${@:-$PWD}/".*
@@ -160,7 +168,7 @@ fi
 
 # Resource Usage
 alias df='df -kh'
-alias du='du -kh'
+alias du='du -d1 -kh'
 
 if (( $+commands[htop] )); then
   alias top=htop

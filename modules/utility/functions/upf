@@ -1,0 +1,19 @@
+#
+# Find a file, looking up through parent directories.
+#
+# Usage:
+#   $ cat `up README.md`
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+local dir="${PWD}"
+local target="$1"
+
+while [ ! -e "${dir}/${target}" -a "${dir}" != "/" ]; do
+    dir="$(dirname "${dir}")"
+done
+
+test "${dir}" != "/" && echo "${dir}/${target}"
+

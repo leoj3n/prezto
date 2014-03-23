@@ -76,6 +76,7 @@ Aliases
     (`pushd`).
   - `rm` removes files and directories interactively.
   - `type` or `t` displays all the attribute values of a shell parameter.
+  - `w3md` opens markdown as HTML in w3m.
 
 ### Files and Directories
 
