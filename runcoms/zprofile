@@ -10,7 +10,18 @@
 # Setopts
 ###############################################################################
 
-# setopt SH_WORD_SPLIT # bash-style handling of spaces and parens.
+#
+# bash-style handling of spaces and parens.
+#
+
+# setopt SH_WORD_SPLIT
+
+#
+# By default, Zsh considers many characters part of a word (e.g., _ and -).
+# Narrow that down to allow easier skipping through words via M-f and M-b.
+#
+
+export WORDCHARS='*?[]~&;!$%^<>'
 
 ###############################################################################
 # Autoloads
