@@ -2,7 +2,7 @@
 background() { "$1" "$2" > /dev/null 2>&1 &! ;}
 
 # find alternative apps installed on your system
-find_alt () {
+find_alt() {
   for i; do
     which "${i}" > /dev/null && { echo "${i}"; return 0; }
   done
@@ -39,14 +39,14 @@ alias bc='bc -q -l'                     # no opening msg, use math library
 alias cal='cal -3'                      # show 3 months
 alias cp='cp -i'                        # cp interactive
 alias df='df -hT'                       # human readable, print filetype
-alias du='du -d1 -h'                    # max depth, human readable
+# alias du='du -d1 -h'                    # max depth, human readable
 alias mv='mv -i'                        # mv interactive
 alias rm='rm -i'                        # rm interactive
 alias pdfgrep='pdfgrep -in'             # ignorecase, page number
 alias wget='wget -c'                    # continues/resumes
-alias feh='feh -B white -g 1360x768'    # background, resolution
+# alias feh='feh -B white -g 1360x768'    # background, resolution
 # color, fullscreen, 480p, number of results
-alias youtube-viewer='youtube-viewer -C -f -4 --results=10'
+# alias youtube-viewer='youtube-viewer -C -f -4 --results=10'
 
 # Directory Shortcuts
 #------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ alias ......="cd ../../../../.."
 
 # quickly cd out of directories using numbers
 # usage: up 2 -- same as cd ../../
-up() { local x='';for i in $(seq ${1:-1});do x="$x../"; done;cd $x; }
+# up() { local x='';for i in $(seq ${1:-1});do x="$x../"; done;cd $x; }
 
 # Listing Files
 #------------------------------------------------------------------------------
@@ -66,11 +66,11 @@ alias dir='ls -1d */' # ls folders only
 alias lst='ls -Ggthrc'  # list by time and change, newest at bottom
 alias lsa='ls -GghA'
 
-# list and grep
-lsg() {
-  keyword=$(echo "$@" |  sed 's/ /.*/g')
-  ls -GgthrA | grep -iE $keyword
-}
+# # list and grep
+# lsg() {
+#   local keyword="$(echo "$@" |  sed 's/ /.*/g')"
+#   ls -GgthrA | grep -iE "${keyword}"
+# }
 
 # Binary / Shell Scripts
 #------------------------------------------------------------------------------
