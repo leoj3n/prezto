@@ -37,6 +37,7 @@ Aliases
 
   - `gb` lists, creates, renames, and deletes branches.
   - `gbc` creates a new branch.
+  - `mm` checks out master branch.
   - `gbl` lists branches and their commits.
   - `gbL` lists local and remote branches and their commits.
   - `gbs` lists branches and their commits with ancestry graphs.
