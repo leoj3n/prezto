@@ -114,6 +114,7 @@ path=(
   "${GOPATH}/bin"
   '/Applications/Sublime Text.app/Contents/SharedSupport/bin'
   "${HOME}/bin"
+  "${HOME}/bin/git-plugins"
   ${path}
 )
 
