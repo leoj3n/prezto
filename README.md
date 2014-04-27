@@ -24,6 +24,8 @@ The [home][] directory has been added because this repository is meant to be use
   12. [url][] - added new url module.
   13. [vagrant][] - added new vagrant module.
   14. [wordpress][] - added new wordpress module.
+  15. [macvim][] - added new macvim module.
+  15. [pwsafe][] - added new pwsafe module.
 
 ### Themes
 
@@ -77,6 +79,8 @@ SOFTWARE.
 [url]: modules/url
 [vagrant]: modules/vagrant
 [wordpress]: modules/wordpress
+[macvim]: modules/macvim
+[pwsafe]: modules/pwsafe
 [3n theme]: modules/prompt/functions/prompt_3n_setup
 [home]: home
 [homeshick]: https://github.com/andsens/homeshick

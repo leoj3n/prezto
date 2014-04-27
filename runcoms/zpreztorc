@@ -54,10 +54,13 @@ zstyle ':prezto:load' pmodule \
   'git' \
   'homebrew' \
   'internet' \
+  'macvim' \
   'meteor' \
   'node' \
   'openshift' \
   'osx' \
+  'perl' \
+  'pwsafe' \
   'sublime' \
   'taskwarrior' \
   'url' \
