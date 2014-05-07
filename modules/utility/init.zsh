@@ -155,7 +155,7 @@ fi
 
 alias pbc='pbcopy'
 alias pbp='pbpaste'
-alias -g vv='"$(pbp)"'
+alias -g vv="$(pbp)"
 alias cpy='tr -d "\n" | pbcopy'
 alias pubkey='more ~"/.ssh/id_rsa.pub" | cpy | echo "Key copied to clipboard."'
 

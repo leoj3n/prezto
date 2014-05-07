@@ -36,7 +36,7 @@ alias whois='whois -h "whois-servers.net"'
 # Dnsmasq
 #
 
-alias -g masq='"$(brew --prefix)/etc/dnsmasq.conf"'
+alias -g masq="$(brew --prefix)/etc/dnsmasq.conf"
 function remasq() {
   sudo launchctl stop 'homebrew.mxcl.dnsmasq' \
   && sudo launchctl start 'homebrew.mxcl.dnsmasq'
