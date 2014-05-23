@@ -2,7 +2,7 @@
 # List casks added since a human-readable time
 #
 # Arguments:
-#   [since]
+#   [since] (default is 5 days)
 # Returns:
 #   list of casks
 #

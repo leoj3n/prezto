@@ -14,7 +14,19 @@ fi
 # Post-init hooks
 ###############################################################################
 
+#
+# Show dotfiles in tab completion
+#
+
+_comp_options+=(globdots)
+
+#
+# For the `cdr` command
+#
+
 add-zsh-hook chpwd chpwd_recent_dirs
+
+source /usr/local/share/compleat-1.0/compleat_setup
 
 ###############################################################################
 # Dotfile aliases
@@ -37,6 +49,7 @@ alias irc='weechat'
 alias hs='homeshick'
 alias pod='podbeuter'
 alias rss='newsbeuter'
+alias twitter='ttytter'
 alias pandora='pianobar'
 alias sb='screenbrightness'
 alias soundcloud='cloudruby'
@@ -45,5 +58,5 @@ alias youtube='gtk-youtube-viewer'
 alias feh='feh -B white -g 1360x768'
 alias nw='~/Applications/node-webkit.app/Contents/MacOS/node-webkit'
 #- color, fullscreen, 480p, number of results
-alias youtube-viewer='youtube-viewer -C -f -4 --results=10'
+alias youtube-viewer-interactive='youtube-viewer -C -f -4 --results=10'
 
