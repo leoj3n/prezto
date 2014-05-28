@@ -224,6 +224,7 @@ Aliases
 - `guf` fixes files in the index (default removes unstaged deleted files).
 - `guc` uppercases files in the index.
 - `gur` creates a pull request.
+- `guj` undo git commands.
 
 ### Shadows
 
