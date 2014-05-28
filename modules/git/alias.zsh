@@ -199,5 +199,6 @@ alias gwX='git rm -rf'
 # Utility (u)
 alias guf='git-fix'
 alias guc='git-uppercase'
-alias gur="git pull-request"
+alias gur='git pull-request'
+alias guj='history 10 | tail -r | gitjk_cmd'
 
