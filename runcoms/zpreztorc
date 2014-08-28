@@ -50,6 +50,7 @@ zstyle ':prezto:load' pmodule \
   'completion' \
   'archive' \
   'bower' \
+  'fasd' \
   'filetype' \
   'fzf' \
   'git' \
