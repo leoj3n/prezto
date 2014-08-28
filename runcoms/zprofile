@@ -79,6 +79,12 @@ export GOPATH="${HOME}/.go"
 #export PYTHONPATH="/usr/local/lib/python2.7/site-packages:${PYTHONPATH}"
 #?# export PYTHONPATH="/usr/local/lib/python3.4/site-packages:${PYTHONPATH}"
 
+#
+# nvm
+#
+
+export NVM_DIR="${HOME}/.nvm"
+
 ###############################################################################
 # Paths
 ###############################################################################
