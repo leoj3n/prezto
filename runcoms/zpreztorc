@@ -51,6 +51,7 @@ zstyle ':prezto:load' pmodule \
   'archive' \
   'bower' \
   'filetype' \
+  'fzf' \
   'git' \
   'homebrew' \
   'internet' \
