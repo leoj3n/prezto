@@ -25,7 +25,8 @@ The [home][] directory has been added because this repository is meant to be use
   13. [vagrant][] - added new vagrant module.
   14. [wordpress][] - added new wordpress module.
   15. [macvim][] - added new macvim module.
-  15. [pwsafe][] - added new pwsafe module.
+  16. [pwsafe][] - added new pwsafe module.
+  17. [fzf][] - added new fzf module.
 
 ### Themes
 
