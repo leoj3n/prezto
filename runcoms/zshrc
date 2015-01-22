@@ -26,8 +26,6 @@ _comp_options+=(globdots)
 
 add-zsh-hook chpwd chpwd_recent_dirs
 
-source '/usr/local/share/compleat-1.0/compleat_setup'
-
 ###############################################################################
 # Dotfile aliases
 ###############################################################################

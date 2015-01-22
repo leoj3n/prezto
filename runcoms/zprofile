@@ -185,6 +185,18 @@ readonly HUB="$( (( $+commands[gh] )) && echo 'gh' || echo 'hub' )"
 # source "${HOME}/.composer/vendor/wp-cli/wp-cli/utils/wp-completion.bash"
 
 #
+# AWS Completion
+#
+
+source '/usr/local/share/zsh/site-functions/_aws'
+
+#
+# Compleat
+#
+
+source '/usr/local/share/compleat-1.0/compleat_setup'
+
+#
 # Homeshick
 #
 
