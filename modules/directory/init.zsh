@@ -30,7 +30,6 @@ unsetopt CLOBBER            # Do not overwrite existing files with > and >>.
 alias d='dirs -v'
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
 
-alias -- -='cd -' # FIXME: Not working in zsh prezto
 alias cdd='cd -'
 alias ...='cd ../..'
 
