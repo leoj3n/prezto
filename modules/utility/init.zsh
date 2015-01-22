@@ -201,7 +201,7 @@ alias pp='sudo lsof -i'
 #
 
 # Makes a directory and changes to it.
-function mkdcd {
+function mkcd {
   [[ -n "$1" ]] && mkdir -p "$1" && builtin cd "$1"
 }
 

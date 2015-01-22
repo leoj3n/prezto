@@ -141,7 +141,7 @@ Functions
   - `dut` displays the grand total disk usage using human readable units.
   - `find-exec` finds files and executes a command on them.
   - `fs` search files in directory for a string.
-  - `mkdcd` makes a directory and changes to it.
+  - `mkcd` makes a directory and changes to it.
   - `popdls` pops an entry off the directory stack and lists its contents.
   - `pushdls` pushes an entry onto the directory stack and lists its contents.
   - `treep` pipe tree output into the less pager.
