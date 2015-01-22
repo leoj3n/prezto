@@ -191,7 +191,7 @@ alias http-serve='python -m SimpleHTTPServer'
 alias reload='NOFORTUNE=1 exec "${SHELL}" -l'
 
 # Prints the SHA1 hash of a passed file.
-alias sha1='openssl sha1'
+alias sha='openssl sha1'
 
 # Lists open files.
 alias pp='sudo lsof -i'
