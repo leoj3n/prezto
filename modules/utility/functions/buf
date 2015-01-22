@@ -10,16 +10,25 @@
 #   Joel Kuzmarski <leoj3n@gmail.com>
 #
 
-local oldname="$1"
+local old="$1"
 
-if [[ -n "${oldname}" ]]; then
-  local datepart="$(date +%Y-%m-%d)"
-  local firstpart="$(echo "${oldname}" | cut -d '.' -f 1)"
-  local newname="$(echo "${oldname}" \
-    | sed s/"${firstpart}"/"${firstpart}.${datepart}"/)"
+if [[ -n "${old}" ]]; then
+  local dir="$(dirname "${old}")"
+  local name="$(basename "${old}")"
+  local date="-$(date +%Y-%m-%d)"
 
-  cp -R "${oldname}" "${newname}"
+  if [[ "${name}" == .* ]]; then
+    # dotfile
+  elif [[ "${name}" == *.* ]]; then
+    # extension
+    local ext=".${name##*.}"
+    name="${name%.*}"
+  fi
 
-  echo "${newname} has been created."
+  local new="${dir}/${name}${date}${ext}"
+
+  cp -R "${old}" "${new}"
+
+  echo "${new} has been created."
 fi
 
