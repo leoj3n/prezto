@@ -63,6 +63,10 @@ alias t='type'
 function w3md() {
   multimarkdown "$1" | w3m -T 'text/html'
 }
+grab() {     
+  grab="$(eval "$@")"
+  echo ${grab}
+}
 
 # ls
 if is-callable 'dircolors'; then
@@ -155,7 +159,8 @@ fi
 
 alias pbc='pbcopy'
 alias pbp='pbpaste'
-alias -g vv="$(pbp)"
+alias -g vv='$(pbp)'
+alias -g rr='${grab}'
 alias cpy='tr -d "\n" | pbcopy'
 alias pubkey='more ~"/.ssh/id_rsa.pub" | cpy | echo "Key copied to clipboard."'
 
