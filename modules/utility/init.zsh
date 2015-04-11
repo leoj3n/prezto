@@ -67,6 +67,17 @@ grab() {
   grab="$(eval "$@")"
   echo ${grab}
 }
+function fancy-ctrl-z() {
+    if [[ $#BUFFER -eq 0 ]]
+    then
+        bg
+        zle redisplay
+    else
+        zle push-line-or-edit
+    fi
+}
+zle -N fancy-ctrl-z
+bindkey '^Z' fancy-ctrl-z
 
 # ls
 if is-callable 'dircolors'; then
