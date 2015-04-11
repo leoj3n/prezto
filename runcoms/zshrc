@@ -36,6 +36,7 @@ ulimit -n 2560
 # Dotfile aliases
 ###############################################################################
 
+alias -g src='~/src'
 alias -g zpr='~/.zprezto'
 alias -g dots='~/.homesick/repos/dotfiles'
 alias -g nots='~/.homesick/repos/notfiles'
