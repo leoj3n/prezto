@@ -45,8 +45,12 @@ alias -g nots='~/.homesick/repos/notfiles'
 # Program aliases
 ###############################################################################
 
-eval "$(direnv hook $0)"
-eval "$(hub alias -s)"
+if (( $+commands[direnv] )); then
+  eval "$(direnv hook $0)"
+fi
+if (( $+commands[hub] )); then
+  eval "$(hub alias -s)"
+fi
 
 alias v='vim'
 alias bc='bc -q -l'
