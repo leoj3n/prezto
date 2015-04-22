@@ -113,9 +113,15 @@ path=(
   ${path}
 )
 
+if [[ ! -z "$(brew ls --versions php54)" ]]; then
+  path=(
+    "$(brew --prefix josegonzalez/php/php54)/bin"
+    ${path}
+  )
+fi
+
 path=(
   '/usr/local/mysql/bin'
-  "$(brew --prefix josegonzalez/php/php54)/bin"
   "${HOME}/.composer/bin"
   "${GOPATH}/bin"
   '/Applications/Sublime Text.app/Contents/SharedSupport/bin'
@@ -187,35 +193,47 @@ readonly VLC="${CASKROOM}/vlc/2.1.1/VLC.app/Contents/MacOS/VLC"
 # AWS Completion
 #
 
-source '/usr/local/share/zsh/site-functions/_aws'
+if [[ -f '/usr/local/share/zsh/site-functions/_aws' ]]; then
+  source '/usr/local/share/zsh/site-functions/_aws'
+fi
 
 #
 # Compleat
 #
 
-source '/usr/local/share/compleat-1.0/compleat_setup'
+if [[ -f '/usr/local/share/compleat-1.0/compleat_setup' ]]; then
+  source '/usr/local/share/compleat-1.0/compleat_setup'
+fi
 
 #
 # Homeshick
 #
 
-source "${HOME}/.homesick/repos/homeshick/homeshick.sh"
+if [[ -f "${HOME}/.homesick/repos/homeshick/homeshick.sh" ]]; then
+  source "${HOME}/.homesick/repos/homeshick/homeshick.sh"
+fi
 
 #
 # z
 #
 
-source "$(brew --prefix)/etc/profile.d/z.sh"
+if [[ -f "$(brew --prefix)/etc/profile.d/z.sh" ]]; then
+  source "$(brew --prefix)/etc/profile.d/z.sh"
+fi
 
 #
 # Perlbrew
 #
 
-source "${HOME}/perl5/perlbrew/etc/bashrc"
+if [[ -f "${HOME}/perl5/perlbrew/etc/bashrc" ]]; then
+  source "${HOME}/perl5/perlbrew/etc/bashrc"
+fi
 
 #
 # nvm
 #
 
-source "$(brew --prefix nvm)/nvm.sh"
+if [[ -f "$(brew --prefix nvm)/nvm.sh" ]]; then
+  source "$(brew --prefix nvm)/nvm.sh"
+fi
 
