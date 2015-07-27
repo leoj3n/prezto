@@ -46,8 +46,8 @@ zstyle ':prezto:load' pmodule \
   'history' \
   'directory' \
   'spectrum' \
-  'utility' \
   'completion' \
+  'utility' \
   'archive' \
   'bower' \
   'fasd' \
