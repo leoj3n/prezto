@@ -51,6 +51,9 @@ fi
 if (( $+commands[hub] )); then
   eval "$(hub alias -s)"
 fi
+if (( $+commands[thefuck-alias] )); then
+  eval "$(thefuck-alias)"
+fi
 
 alias v='vim'
 alias bc='bc -q -l'
@@ -64,7 +67,7 @@ alias pandora='pianobar'
 alias sb='screenbrightness'
 alias soundcloud='cloudruby'
 alias youtube='gtk-youtube-viewer'
-alias fuck!='$(thefuck $(fc -ln -1))'
+alias FUCK='\fuck'
 #- background, resolution
 alias feh='feh -B white -g 1360x768'
 alias nw='~/Applications/node-webkit.app/Contents/MacOS/node-webkit'
