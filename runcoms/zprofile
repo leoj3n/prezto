@@ -85,6 +85,12 @@ export GOPATH="${HOME}/.go"
 
 export NVM_DIR="${HOME}/.nvm"
 
+#
+# Homebrew Cask
+#
+
+export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+
 ###############################################################################
 # Paths
 ###############################################################################
