@@ -123,7 +123,7 @@ Aliases
 
   - `http-serve` serves a directory via HTTP.
   - `sha1` prints the SHA1 hash of a passed file.
-  - `reload` reloads the default shell.
+  - `rel` reloads the default shell.
   - `pp` lists open files.
 
 Functions
