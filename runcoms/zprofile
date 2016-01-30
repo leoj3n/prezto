@@ -89,7 +89,7 @@ export NVM_DIR="${HOME}/.nvm"
 # Homebrew Cask
 #
 
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+export HOMEBREW_CASK_OPTS='--appdir=/Applications'
 
 ###############################################################################
 # Paths
@@ -130,7 +130,6 @@ path=(
   '/usr/local/mysql/bin'
   "${HOME}/.composer/bin"
   "${GOPATH}/bin"
-  '/Applications/Sublime Text.app/Contents/SharedSupport/bin'
   "${HOME}/bin"
   "${HOME}/bin/git-plugins"
   ${path}
