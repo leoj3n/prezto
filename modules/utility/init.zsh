@@ -210,7 +210,7 @@ fi
 alias http-serve='python -m SimpleHTTPServer'
 
 # Reloads the default shell.
-alias reload='NOFORTUNE=1 exec "${SHELL}" -l'
+alias rel='NOFORTUNE=1 exec "${SHELL}" -l'
 
 # Prints the SHA1 hash of a passed file.
 alias sha='openssl sha1'
