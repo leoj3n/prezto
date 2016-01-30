@@ -51,6 +51,9 @@ fi
 if (( $+commands[hub] )); then
   eval "$(hub alias -s)"
 fi
+if (( $+commands[jenv] )); then
+  eval "$(jenv init -)"
+fi
 if (( $+commands[thefuck-alias] )); then
   eval "$(thefuck-alias)"
 fi
