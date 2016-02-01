@@ -91,6 +91,12 @@ export NVM_DIR="${HOME}/.nvm"
 
 export HOMEBREW_CASK_OPTS='--appdir=/Applications'
 
+#
+# Text-Aid-Too
+#
+
+export TEXT_AID_TOO_EDITOR='gvim -f'
+
 ###############################################################################
 # Paths
 ###############################################################################
