@@ -189,7 +189,6 @@ TMPPREFIX="${TMPDIR%/}/zsh"
 
 readonly CASKROOM='/opt/homebrew-cask/Caskroom'
 readonly TAPS="$(brew --repository)/Library/Taps"
-readonly VLC="${CASKROOM}/vlc/2.1.1/VLC.app/Contents/MacOS/VLC"
 
 ###############################################################################
 # Sources
