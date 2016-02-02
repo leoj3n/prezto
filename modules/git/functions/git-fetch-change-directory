@@ -20,5 +20,5 @@ local dir="${2:-${${1##*/}%.*}}"
 # Clone the repository using GitHub CLI program
 #
 
-"${HUB}" clone "$1" "${dir}" && cd "${dir}"
+hub clone "$1" "${dir}" && cd "${dir}"
 
