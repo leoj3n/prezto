@@ -54,8 +54,8 @@ fi
 if (( $+commands[jenv] )); then
   eval "$(jenv init -)"
 fi
-if (( $+commands[thefuck-alias] )); then
-  eval "$(thefuck-alias)"
+if (( $+commands[thefuck] )); then
+  eval "$(thefuck --alias)"
 fi
 
 alias v='vim'
