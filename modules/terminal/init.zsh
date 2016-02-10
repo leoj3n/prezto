@@ -2,6 +2,7 @@
 # Sets terminal window and tab titles.
 #
 # Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
@@ -9,6 +10,12 @@
 if [[ "$TERM" == (dumb|linux|*bsd*|eterm*) ]]; then
   return 1
 fi
+
+#
+# Sources
+#
+
+source "${0:h}/external/safe-paste/safe-paste.plugin.zsh"
 
 # Sets the terminal or terminal multiplexer window title.
 function set-window-title {
