@@ -82,7 +82,7 @@ zstyle ':prezto:load' pmodule \
 # Set the query found color.
 #
 
-# zstyle ':prezto:module:autosuggestions:color' found ''
+zstyle ':prezto:module:autosuggestions:color' found 'bg=magenta,fg=white,bold'
 
 ###############################################################################
 # Editor
