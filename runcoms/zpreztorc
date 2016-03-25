@@ -71,7 +71,6 @@ zstyle ':prezto:load' pmodule \
   'ruby' \
   'syntax-highlighting' \
   'history-substring-search' \
-  'autosuggestions' \
   'prompt'
 
 ###############################################################################
@@ -82,7 +81,7 @@ zstyle ':prezto:load' pmodule \
 # Set the query found color.
 #
 
-zstyle ':prezto:module:autosuggestions:color' found 'bg=magenta,fg=white,bold'
+# zstyle ':prezto:module:autosuggestions:color' found 'bg=magenta,fg=white,bold'
 
 ###############################################################################
 # Editor
