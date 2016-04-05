@@ -248,3 +248,11 @@ if [[ -f "$(brew --prefix nvm)/nvm.sh" ]]; then
   source "$(brew --prefix nvm)/nvm.sh"
 fi
 
+#
+# iTerm
+#
+
+if [[ -f "${HOME}/.iterm2_shell_integration.zsh" ]]; then
+  source "${HOME}/.iterm2_shell_integration.zsh"
+fi
+
