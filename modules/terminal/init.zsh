@@ -15,8 +15,6 @@ fi
 # Sources
 #
 
-source "${0:h}/external/safe-paste/safe-paste.plugin.zsh"
-
 # Sets the terminal or terminal multiplexer window title.
 function set-window-title {
   local title_format{,ted}

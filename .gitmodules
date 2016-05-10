@@ -22,6 +22,3 @@
 [submodule "modules/utility/external/hyperjump"]
 	path = modules/utility/external/hyperjump
 	url = https://github.com/x0054/hyperjump.git
-[submodule "modules/terminal/external/safe-paste"]
-	path = modules/terminal/external/safe-paste
-	url = https://github.com/oz/safe-paste.git
