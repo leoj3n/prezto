@@ -55,14 +55,17 @@ alias -g 3nnots='~/.homesick/repos/notfiles'
 # Program aliases
 ###############################################################################
 
+if (( $+commands[pyenv] )); then
+  eval "$(pyenv init -)"
+fi
+if (( $+commands[jenv] )); then
+  eval "$(jenv init -)"
+fi
 if (( $+commands[direnv] )); then
   eval "$(direnv hook $0)"
 fi
 if (( $+commands[hub] )); then
   eval "$(hub alias -s)"
-fi
-if (( $+commands[jenv] )); then
-  eval "$(jenv init -)"
 fi
 if (( $+commands[thefuck] )); then
   eval "$(thefuck --alias)"
