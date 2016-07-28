@@ -27,8 +27,14 @@ export WORDCHARS='*?[]~&;!$%^<>'
 # Autoloads
 ###############################################################################
 
-autoload -U colors && colors
-autoload bashcompinit && bashcompinit
+autoload -Uz colors && colors
+autoload -Uz compinit bashcompinit && compinit && bashcompinit
+
+###############################################################################
+# Custom scripting variables
+###############################################################################
+
+readonly CASKROOM='/opt/homebrew-cask/Caskroom'
 
 ###############################################################################
 # Variables
