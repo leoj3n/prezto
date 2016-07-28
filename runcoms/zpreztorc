@@ -69,6 +69,7 @@ zstyle ':prezto:load' pmodule \
   'vagrant' \
   'wordpress' \
   'ruby' \
+  'python' \
   'syntax-highlighting' \
   'history-substring-search' \
   'prompt'

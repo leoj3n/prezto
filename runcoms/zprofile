@@ -183,75 +183,27 @@ fi
 TMPPREFIX="${TMPDIR%/}/zsh"
 
 ###############################################################################
-# Custom scripting variables
-###############################################################################
-
-readonly CASKROOM='/opt/homebrew-cask/Caskroom'
-readonly TAPS="$(brew --repository)/Library/Taps"
-
-###############################################################################
 # Sources
 ###############################################################################
 
-#
-# WP-CLI Completion
-#
+sourceif() {
+  if [[ -f "$1" ]]; then
+    source "$1"
+  fi
+}
 
-# source "${HOME}/.composer/vendor/wp-cli/wp-cli/utils/wp-completion.bash"
-
-#
-# AWS Completion
-#
-
-if [[ -f '/usr/local/share/zsh/site-functions/_aws' ]]; then
-  source '/usr/local/share/zsh/site-functions/_aws'
-fi
-
-#
-# Compleat
-#
-
-if [[ -f '/usr/local/share/compleat-1.0/compleat_setup' ]]; then
-  source '/usr/local/share/compleat-1.0/compleat_setup'
-fi
-
-#
-# Homeshick
-#
-
-if [[ -f "${HOME}/.homesick/repos/homeshick/homeshick.sh" ]]; then
-  source "${HOME}/.homesick/repos/homeshick/homeshick.sh"
-fi
-
-#
-# z
-#
-
-if [[ -f "$(brew --prefix)/etc/profile.d/z.sh" ]]; then
-  source "$(brew --prefix)/etc/profile.d/z.sh"
-fi
+source "${HOME}/.homesick/repos/prezto/runcoms/submodules/sandboxd/sandboxd"
 
 #
 # Perlbrew
 #
 
-if [[ -f "${HOME}/perl5/perlbrew/etc/bashrc" ]]; then
-  source "${HOME}/perl5/perlbrew/etc/bashrc"
-fi
-
-#
-# nvm
-#
-
-if [[ -f "$(brew --prefix nvm)/nvm.sh" ]]; then
-  source "$(brew --prefix nvm)/nvm.sh"
-fi
+sourceif "${HOME}/perl5/perlbrew/etc/bashrc" 
+sourceif "${HOME}/perl5/perlbrew/etc/perlbrew-completion.bash" 
 
 #
 # iTerm
 #
 
-if [[ -f "${HOME}/.iterm2_shell_integration.zsh" ]]; then
-  source "${HOME}/.iterm2_shell_integration.zsh"
-fi
+sourceif "${HOME}/.iterm2_shell_integration.zsh"
 
