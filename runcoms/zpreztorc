@@ -57,22 +57,23 @@ zstyle ':prezto:load' pmodule \
   'homebrew' \
   'internet' \
   'macvim' \
-  'meteor' \
   'node' \
-  'openshift' \
   'osx' \
   'perl' \
-  'pwsafe' \
-  'sublime' \
-  'taskwarrior' \
   'url' \
-  'vagrant' \
-  'wordpress' \
   'ruby' \
   'python' \
   'syntax-highlighting' \
   'history-substring-search' \
   'prompt'
+
+#  'meteor' \
+#  'openshift' \
+#  'pwsafe' \
+#  'sublime' \
+#  'taskwarrior' \
+#  'vagrant' \
+#  'wordpress' \
 
 ###############################################################################
 # Autosuggestions
