@@ -22,3 +22,9 @@
 [submodule "modules/utility/external/hyperjump"]
 	path = modules/utility/external/hyperjump
 	url = https://github.com/x0054/hyperjump.git
+[submodule "runcoms/submodules/sandboxd"]
+	path = runcoms/submodules/sandboxd
+	url = https://github.com/benvan/sandboxd.git
+[submodule "modules/prompt/external/garrett"]
+	path = modules/prompt/external/garrett
+	url = https://github.com/leoj3n/zsh-prompt-garrett.git
