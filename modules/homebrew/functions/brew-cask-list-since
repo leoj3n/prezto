@@ -13,7 +13,7 @@
 local since="${*:-'5 days'}"
 
 (
-  cd "${TAPS}/caskroom/homebrew-cask" && \
+  cd "$(brew --repository)/Library/Taps/caskroom/homebrew-cask" && \
   git log \
     --since="${since}" \
     --name-status \
