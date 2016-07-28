@@ -151,6 +151,7 @@ Functions
 
   - `diff` highlights diff output (requires `colordiff` or `Git`).
   - `make` highlights make output (requires `colormake`).
+  - `sprunge` sends shell output to <http://sprunge.us> and generates a link.
   - `wdiff` highlights wdiff output (requires `wdiff `or `Git`).
 
 ### Resource usage

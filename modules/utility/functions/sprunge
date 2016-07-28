@@ -1,0 +1,14 @@
+#
+# Sends shell output to http://sprunge.us and generates a link.
+#
+# Arguments:
+#   STDIN
+# Returns:
+#   link
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+curl -F 'sprunge=<-' http://sprunge.us
+

@@ -80,6 +80,7 @@ alias youtube='gtk-youtube-viewer'
 #- background, resolution
 alias feh='feh -B white -g 1360x768'
 alias nw='~/Applications/node-webkit.app/Contents/MacOS/node-webkit'
+alias screencast='ffscreencast --sargs="-capture_cursor 1 -capture_mouse_clicks 1"'
 #- color, fullscreen, 480p, number of results
 alias youtube-viewer-interactive='youtube-viewer -C -f -4 --results=10'
 
