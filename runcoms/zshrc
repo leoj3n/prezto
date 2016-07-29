@@ -75,6 +75,7 @@ alias rss='newsbeuter'
 alias twitter='ttytter'
 alias pandora='pianobar'
 alias sb='screenbrightness'
+alias psi='prompt-show-info'
 alias soundcloud='cloudruby'
 alias youtube='gtk-youtube-viewer'
 #- background, resolution
