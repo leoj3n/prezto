@@ -1,0 +1,44 @@
+#
+# WP-CLI Completion
+#
+
+sandbox_init_wp() {
+  sourceif "${HOME}/.composer/vendor/wp-cli/wp-cli/utils/wp-completion.bash"
+}
+
+#
+# AWS Completion
+#
+
+sandbox_init_aws() {
+  sourceif '/usr/local/share/zsh/site-functions/_aws'
+}
+
+#
+# Compleat
+#
+
+sandbox_init_compleat() {
+  sourceif '/usr/local/share/compleat-1.0/compleat_setup'
+}
+
+#
+# Homeshick
+#
+
+sandbox_init_homeshick() {
+  sourceif "${HOME}/.homesick/repos/homeshick/homeshick.sh"
+}
+
+#
+# autojump
+#
+
+sandbox_init_autojump() {
+  sourceif "$(brew --prefix)/etc/profile.d/autojump.sh"
+}
+sandbox_hook autojump j
+sandbox_hook autojump jc
+sandbox_hook autojump jo
+sandbox_hook autojump jco
+

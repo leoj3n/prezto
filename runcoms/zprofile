@@ -198,7 +198,7 @@ sourceif() {
   fi
 }
 
-source "${HOME}/.homesick/repos/prezto/runcoms/submodules/sandboxd/sandboxd"
+sourceif "${ZDOTDIR:-$HOME}/.zprezto/runcoms/submodules/sandboxd/sandboxd"
 
 #
 # Perlbrew
