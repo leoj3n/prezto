@@ -1,0 +1,27 @@
+#
+# Exposes information about the Ruby environment via the $ruby_info associative
+# array.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+
+local version
+local version_format
+local version_formatted
+
+# Clean up previous $java_info.
+unset java_info
+typeset -gA java_info
+
+if (( $+commands[jenv] )); then
+  version="${${"$(jenv version)"##*-}%% *}"
+fi
+
+# Format version.
+if [[ -n "$version" ]]; then
+  zstyle -s ':prezto:module:java:info:version' format 'version_format'
+  zformat -f version_formatted "$version_format" "v:$version"
+  java_info[version]="${version_formatted}"
+fi
+
