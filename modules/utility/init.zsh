@@ -15,12 +15,6 @@ pmodload 'helper' 'spectrum'
 setopt CORRECT
 
 #
-# Sources
-#
-
-source "${0:h}/external/hyperjump/hyperjump"
-
-#
 # Aliases
 #
 

@@ -19,9 +19,6 @@
 [submodule "modules/autosuggestions/external"]
 	path = modules/autosuggestions/external
 	url = https://github.com/tarruda/zsh-autosuggestions
-[submodule "modules/utility/external/hyperjump"]
-	path = modules/utility/external/hyperjump
-	url = https://github.com/x0054/hyperjump.git
 [submodule "runcoms/submodules/sandboxd"]
 	path = runcoms/submodules/sandboxd
 	url = https://github.com/benvan/sandboxd.git
