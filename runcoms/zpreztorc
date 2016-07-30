@@ -56,13 +56,14 @@ zstyle ':prezto:load' pmodule \
   'git' \
   'homebrew' \
   'internet' \
-  'macvim' \
-  'node' \
   'osx' \
-  'perl' \
   'url' \
-  'ruby' \
+  'macvim' \
+  'java' \
+  'node' \
+  'perl' \
   'python' \
+  'ruby' \
   'syntax-highlighting' \
   'history-substring-search' \
   'prompt'

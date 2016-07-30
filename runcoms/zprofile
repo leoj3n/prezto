@@ -139,7 +139,6 @@ fi
 
 path=(
   '/usr/local/mysql/bin'
-  "${HOME}/.jenv/bin"
   "${HOME}/.composer/bin"
   "${GOPATH}/bin"
   "${HOME}/bin"
