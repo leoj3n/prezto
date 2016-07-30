@@ -42,3 +42,7 @@ sandbox_hook autojump jc
 sandbox_hook autojump jo
 sandbox_hook autojump jco
 
+sandbox_init_gh() {
+  sourceif "${ZDOTDIR:-$HOME}/.zprezto/runcoms/gh_complete.sh"
+}
+
