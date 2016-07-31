@@ -25,3 +25,6 @@
 [submodule "modules/prompt/external/garrett"]
 	path = modules/prompt/external/garrett
 	url = https://github.com/leoj3n/zsh-prompt-garrett.git
+[submodule "modules/prompt/external/powerlevel9k"]
+	path = modules/prompt/external/powerlevel9k
+	url = https://github.com/bhilburn/powerlevel9k.git

@@ -161,7 +161,7 @@ zstyle ':prezto:module:editor' key-bindings 'vi'
 # Auto set to 'off' on dumb terminals.
 #
 
-zstyle ':prezto:module:prompt' theme 'garrett'
+zstyle ':prezto:module:prompt' theme 'powerlevel9k'
 
 ###############################################################################
 # Ruby
