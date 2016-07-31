@@ -1,0 +1,76 @@
+#
+# Sets prompt environment info.
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n+prezto@gmail.com>
+#
+
+function do-env-info() {
+  local do="$@"
+  local envs='python perl java node ruby'
+
+  if [[ -z "$do" ]] then;
+    echo 'Please pass an option:'
+    echo "  all, none, update, auto or a subset of '${envs}'"
+    return 1
+  fi
+
+  case "$do" in 
+
+    all)
+      PROMPT_ENV_INFO="$envs"
+      update-env-info
+      ;;
+
+    none)
+      prompt-clear-info
+      ;;
+
+    update)
+      update-env-info
+      ;;
+
+    auto)
+      if [[ "$PROMPT_ENV_INFO_AUTO" == true ]] then;
+        echo 'Disabling env-info auto update; your shell should speed up (run again to enable)'
+        add-zsh-hook -d precmd env_info_precmd
+        PROMPT_ENV_INFO_AUTO=false
+      else
+        echo 'Enabling env-info auto update; this may slow down your shell (run again to disable)'
+        add-zsh-hook precmd env_info_precmd
+        PROMPT_ENV_INFO_AUTO=true
+        update-env-info
+      fi
+      ;;
+
+    *)
+      PROMPT_ENV_INFO="$do"
+      unset-env-info
+      update-env-info
+      ;;
+
+  esac
+}
+
+function unset-env-info() {
+  unset python_info
+  unset perl_info
+  unset java_info
+  unset node_info
+  unset ruby_info
+}
+
+function update-env-info() {
+  [[ "$PROMPT_ENV_INFO" =~ 'python' ]] && (( $+functions[python-info] )) && python-info
+  [[ "$PROMPT_ENV_INFO" =~ 'perl' ]]   && (( $+functions[perl-info] ))   && perl-info
+  [[ "$PROMPT_ENV_INFO" =~ 'java' ]]   && (( $+functions[java-info] ))   && java-info
+  [[ "$PROMPT_ENV_INFO" =~ 'node' ]]   && (( $+functions[node-info] ))   && node-info
+  [[ "$PROMPT_ENV_INFO" =~ 'ruby' ]]   && (( $+functions[ruby-info] ))   && ruby-info
+}
+
+function env_info_precmd() {
+  update-env-info
+}
+
+do-env-info "$@"
+

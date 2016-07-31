@@ -24,8 +24,6 @@ if (( $+commands[fortune] )); then
   fi
 fi
 
-# Always show node version in prompt.
-if [[ "$prompt_theme" == 'garrett' ]]; then
-  prompt-show-info 'node'
-fi
+# Enable environment info.
+env-info node
 

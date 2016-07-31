@@ -59,10 +59,10 @@ zstyle ':prezto:load' pmodule \
   'osx' \
   'url' \
   'macvim' \
+  'python' \
+  'perl' \
   'java' \
   'node' \
-  'perl' \
-  'python' \
   'ruby' \
   'syntax-highlighting' \
   'history-substring-search' \
