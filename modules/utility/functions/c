@@ -10,9 +10,9 @@
 #   Joel Kuzmarski <leoj3n@gmail.com>
 #
 
+clear
+
 local s="$(printf "%-$(($(tput cols) / 2))s")"
 
-echo "${fg[ magenta ]}${s// / ✂}${reset_color}"
-
-clear
+echo "${fg[yellow]}${s// / ✂}${reset_color}"
 
