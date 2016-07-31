@@ -25,5 +25,5 @@ if (( $+commands[fortune] )); then
 fi
 
 # Enable environment info.
-env-info node
+#env-info node
 
