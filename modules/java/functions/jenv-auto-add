@@ -1,5 +1,5 @@
 #
-# Finds Java Virtual Machines to add on OS X
+# Finds Java Virtual Machines to add on OS X.
 #
 # Authors:
 #   Joel Kuzmarski <leoj3n+prezto@gmail.com>
@@ -10,3 +10,4 @@ for machine in /Library/Java/JavaVirtualMachines/*/Contents/Home; do
 done
 
 return 1
+

@@ -1,9 +1,8 @@
 #
-# Exposes information about the Ruby environment via the $ruby_info associative
-# array.
+# Exposes information about the Java environment.
 #
 # Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#   Joel Kuzmarski <leoj3n+prezto@gmail.com>
 #
 
 local version
