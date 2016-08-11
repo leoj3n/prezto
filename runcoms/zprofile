@@ -197,14 +197,8 @@ sourceif() {
   fi
 }
 
+#SANDBOXRC=""
 sourceif "${ZDOTDIR:-$HOME}/.zprezto/runcoms/submodules/sandboxd/sandboxd"
-
-#
-# Perlbrew
-#
-
-sourceif "${HOME}/perl5/perlbrew/etc/bashrc" 
-sourceif "${HOME}/perl5/perlbrew/etc/perlbrew-completion.bash" 
 
 #
 # iTerm
