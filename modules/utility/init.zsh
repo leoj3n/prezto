@@ -263,3 +263,23 @@ function treep() {
   fi
 }
 
+# Tell me what it is.
+function wat() {
+  echo
+  echo 'type:'
+  echo '-----'
+  echo
+  type "$1"
+  echo
+  echo 'which:'
+  echo '------'
+  echo
+  which -a "$1"
+  echo
+  echo 'command -v:'
+  echo '-----------'
+  echo
+  command -v "$1"
+  echo
+}
+
