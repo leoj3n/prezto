@@ -15,14 +15,6 @@ sandbox_init_aws() {
 }
 
 #
-# Compleat
-#
-
-sandbox_init_compleat() {
-  sourceif '/usr/local/share/compleat-1.0/compleat_setup'
-}
-
-#
 # Homeshick
 #
 
