@@ -10,6 +10,16 @@ if (( ! $+commands[perl] )); then
   return 1
 fi
 
+# Load Perlbrew into the shell session.
+if [[ -s "${HOME}/perl5/perlbrew/etc/bashrc" ]]; then
+  source "${HOME}/perl5/perlbrew/etc/bashrc"
+
+  # Load Perlbrew completion.
+  if [[ -s "${HOME}/perl5/perlbrew/etc/perlbrew-completion.bash" ]]; then
+    source "${HOME}/perl5/perlbrew/etc/perlbrew-completion.bash"
+  fi
+fi
+
 #
 # Local Module Installation
 #
