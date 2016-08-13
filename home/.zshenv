@@ -1,7 +1,15 @@
-mypath=$(readlink -f "${ZDOTDIR:-$HOME}/.zshenv")
-ZDOTDIR=${mypath:h:h}
+#
+# Defines environment variables.
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
 
-if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
-  echo "${ZDOTDIR:-$HOME}/.zprofile"
-  source "${ZDOTDIR:-$HOME}/.zprofile"
+# If not symlinking to this file, set this path to the static location
+# of the warpdrive repo.
+export ZDOTDIR="${0:a:h}"
+
+if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR}/.zprofile" ]]; then
+  source "${ZDOTDIR}/.zprofile"
 fi

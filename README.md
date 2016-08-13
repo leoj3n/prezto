@@ -1,36 +1,46 @@
-# @leoj3n's Prezto
+# WarpDrive
 
-Prezto is the configuration framework for [Zsh][1]; this is leoj3n's version.
+WarpDrive is the futuristic configuration framework for [Zsh][1].
 
-## Customizations
+## Home
 
-### Home
+The [home][] directory has been added because this repository is meant to be used as a [homeshick][] castle.
 
-The [home][] directory has been added because this repository is meant to be used as a [homeshick][] castle. Adding a symlink to the `zshenv` runcom has been skipped. This is because I manage that file in another, private castle and use it to set my sensitive environment variables.
+If you don't wish to use Homeshick, you may simply create a symlink yourself like:
 
-### Modules
+```
+ln -s ~/path/to/warpdrive/home/.zshenv ~/.zshenv
+```
 
-  1. [git][] - added aliases and functions.
-  2. [directory][] - added aliases and functions.
-  3. [homebrew][] - added aliases and functions.
-  4. [osx][] - added aliases and functions and removed bwana.
-  5. [utility][] - added aliases and functions.
-  6. [bower][] - added new bower module.
-  7. [filetype][] - added new filetype module.
-  8. [internet][] - added new internet module.
-  9. [meteor][] - added new meteor module.
-  10. [sublime][] - added new sublime module.
-  11. [taskwarrior][] - added new taskwarrior module.
-  12. [url][] - added new url module.
-  13. [vagrant][] - added new vagrant module.
-  14. [wordpress][] - added new wordpress module.
-  15. [macvim][] - added new macvim module.
-  16. [pwsafe][] - added new pwsafe module.
-  17. [fzf][] - added new fzf module.
+This is the only symlink that needs to be in your home directory, because WarpDrive figures out its own location and sets `$ZDOTDIR`.
+
+You could also link to `/etc/zshenv` to enable WarpDrive globally.
+
+## Engines
+
+  1. [git][]
+  2. [directory][]
+  3. [homebrew][]
+  4. [osx][]
+  5. [utility][]
+  6. [bower][]
+  7. [filetype][]
+  8. [internet][]
+  9. [meteor][]
+  10. [sublime][]
+  11. [taskwarrior][]
+  12. [url][]
+  13. [vagrant][]
+  14. [wordpress][]
+  15. [macvim][]
+  16. [pwsafe][]
+  17. [fzf][]
+
+WarpDrive engages only the engines that have been enabled in [`sequence.zsh`][].
 
 ### Themes
 
-  1. [3n theme][] (sorin's theme with magenta coloring)
+  1. [powerlevel9k][]
 
 License
 -------
@@ -41,7 +51,7 @@ Copyright (c) 2009-2011 Robby Russell and contributors.
 
 Copyright (c) 2011-2015 Sorin Ionescu and contributors.
 
-Copyright (c) 2015 Joel Kuzmarski.
+Copyright (c) 2015-2016 Joel Kuzmarski.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -66,23 +76,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 [1]: http://www.zsh.org
-[git]: modules/git
-[directory]: modules/directory
-[homebrew]: modules/homebrew
-[osx]: modules/osx
-[utility]: modules/utility
-[bower]: modules/bower
-[filetype]: modules/filetype
-[internet]: modules/internet
-[meteor]: modules/meteor
-[sublime]: modules/sublime
-[taskwarrior]: modules/taskwarrior
-[url]: modules/url
-[vagrant]: modules/vagrant
-[wordpress]: modules/wordpress
-[macvim]: modules/macvim
-[pwsafe]: modules/pwsafe
-[3n theme]: modules/prompt/functions/prompt_3n_setup
+[git]: engines/git
+[directory]: engines/directory
+[homebrew]: engines/homebrew
+[osx]: engines/osx
+[utility]: engines/utility
+[bower]: engines/bower
+[filetype]: engines/filetype
+[internet]: engines/internet
+[meteor]: engines/meteor
+[sublime]: engines/sublime
+[taskwarrior]: engines/taskwarrior
+[url]: engines/url
+[vagrant]: engines/vagrant
+[wordpress]: engines/wordpress
+[macvim]: engines/macvim
+[pwsafe]: engines/pwsafe
+[3n theme]: engines/prompt/functions/prompt_3n_setup
 [home]: home
 [homeshick]: https://github.com/andsens/homeshick
-
+[`sequence.zsh`]: sequence.zsh 
