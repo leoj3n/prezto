@@ -169,7 +169,7 @@ zstyle ':warpdrive:engine:editor' key-bindings 'vi'
 # Auto set to 'off' on dumb terminals.
 #
 
-zstyle ':warpdrive:engine:prompt' theme 'pure' #'powerlevel9k'
+zstyle ':warpdrive:engine:prompt' theme 'pure'
 
 ###############################################################################
 # Screen

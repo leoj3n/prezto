@@ -205,6 +205,7 @@ sourceif "${HOME}/.iterm2_shell_integration.zsh"
 # POWERLEVEL9K
 #
 
+POWERLEVEL9K_INSTALLATION_PATH="${ZDOTDIR}/engines/prompt/external/powerlevel9k"
 POWERLEVEL9K_MODE='awesome-fontconfig'
 POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
