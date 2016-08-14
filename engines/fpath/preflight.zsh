@@ -10,16 +10,17 @@ fpath=("${TMPPREFIX}/fpath")
 #
 
 [[ -s "${ZCOMPDUMP}" && -d "${TMPPREFIX}/fpath" ]] || {
-  (( $+FPATH_BLACKLIST )) || { 
-    FPATH_BLACKLIST=^(_SUSEconfig|_a2ps|_a2utils|_aap|_acpi*|_acroread|_analyseplugin|_antiword|prompt_*|*calendar*|*mail*)
-  }
+  zstyle -a ':warpdrive:engine:fpath' blacklist 'blacklist'
+  blacklist="^(${(j:|:)blacklist})"
 
   rm -rf "${TMPPREFIX}/fpath"
   mkdir -p "${TMPPREFIX}/fpath"
 
   setopt LOCAL_OPTIONS EXTENDED_GLOB
-  for fp ("$fpath_orig[@]") cp -n "${fp}/"$~FPATH_BLACKLIST "${TMPPREFIX}/fpath"
+  for fp ("$fpath_orig[@]") cp -n "${fp}/"$~blacklist "${TMPPREFIX}/fpath"
 
   autoload -Uz compinit && compinit -i -d "${ZCOMPDUMP}"
+  zcompile "${ZCOMPDUMP}"
+
   exec "$SHELL" -l
 }

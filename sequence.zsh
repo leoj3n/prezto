@@ -34,7 +34,27 @@ zstyle ':warpdrive:*:*' color 'yes'
 
 #zstyle ':warpdrive:load' zfunction 'chpwd_recent_dirs' 'cdr' 'add-zsh-hook'
 
-export FPATH_BLACKLIST=^(_SUSEconfig|_a2ps|_a2utils|_aap|_acpi*|_acroread|_analyseplugin|_antiword|prompt_*|*calendar*|*mail*|zcalc|zcalc-auto-insert|zed-set-file-name|zed|ztodo)
+#
+# Set the fpath files to blacklist.
+#
+
+zstyle ':warpdrive:engine:fpath' blacklist \
+  '_SUSEconfig' \
+  '_a2ps' \
+  '_a2utils' \
+  '_aap' \
+  '_acpi*' \
+  '_acroread' \
+  '_analyseplugin' \
+  '_antiword' \
+  'prompt_*' \
+  '*calendar*' \
+  '*mail*' \
+  'zcalc' \
+  'zcalc-auto-insert' \
+  'zed-set-file-name' \
+  'zed' \
+  'ztodo'
 
 #
 # Set the WarpDrive engines to load (browse engines).

@@ -5,7 +5,7 @@
 #   Joel Kuzmarski <leoj3n@gmail.com>
 #
 
-# Engage WarpDrive.
+# Engage Ze Engines!
 if [[ -s "${ZDOTDIR}/engage.zsh" ]]; then
   source "${ZDOTDIR}/engage.zsh"
 fi

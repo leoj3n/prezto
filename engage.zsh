@@ -1,7 +1,8 @@
 #
-# Initializes Prezto.
+# Engages WarpDrive Engines and Zsh modules.
 #
 # Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
@@ -29,6 +30,9 @@ function engage {
 
   # $argv is overridden in the anonymous function.
   engines=("$argv[@]")
+
+  local leftPad=1
+  local rightPad=$((${#engines}+1))
 
   # Engine Preflight Checklist.
   for engine in "$engines[@]"; do
@@ -66,6 +70,8 @@ function engage {
       print "$0: no such engine: $engine" >&2
       continue
     else
+      engage_status "${engine}" $(( leftPad++ )) $rightPad 
+
       if [[ -s "${ZDOTDIR}/engines/$engine/ignite.zsh" ]]; then
         source "${ZDOTDIR}/engines/$engine/ignite.zsh"
       fi
@@ -73,8 +79,7 @@ function engage {
       if (( $? == 0 )); then
         zstyle ":warpdrive:engine:$engine" loaded 'yes'
       else
-        # ENGINE HAS MISFIRED!
-        print "$0: engine has misfired: $engine" >&2
+        engage_status 'Engine misfired!'
 
         # Remove the $fpath entry.
         fpath[(r)${ZDOTDIR}/engines/${engine}/capabilities]=()
@@ -82,11 +87,10 @@ function engage {
         function {
           local capability
 
-          # Extended globbing is needed for listing autoloadable function
-          # directories.
+          # Extended globbing is needed for listing directories.
           setopt LOCAL_OPTIONS EXTENDED_GLOB
 
-          # Unload engine functions.
+          # Unload engine capabilities.
           for capability in ${ZDOTDIR}/engines/$engine/capabilities/$~capability_glob; do
             unfunction "$capability"
           done
@@ -94,8 +98,31 @@ function engage {
 
         zstyle ":warpdrive:engine:$engine" loaded 'no'
       fi
+
+      engage_status
     fi
   done
+
+  (( $#ENGAGE_STACK )) || unset ENGAGE_CLEAR ENGAGE_STACK
+}
+
+# Prints the Engage status on a single line.
+function engage_status {
+  (( $+3 )) && ENGAGE_STACK+=("$1")
+  local engine="${(j:/:)ENGAGE_STACK}"
+  local len=1
+  (( $+3 )) && len=$(( $3+${#engine}+4 ))
+  (( len > ENGAGE_CLEAR )) && ENGAGE_CLEAR=$len
+
+  printf "%${ENGAGE_CLEAR}s\r"
+
+  if (( $+3 )); then
+    printf "%-$2s %s %$(($3-$2))s %-$4s\r" '[' '~' ']' "${engine}"
+  elif (( $+1 )); then
+    printf "%s: %s\n" "${engine}" "$1" >&2
+  else
+    ENGAGE_STACK[-1]=()
+  fi
 }
 
 #
