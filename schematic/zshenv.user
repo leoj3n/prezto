@@ -1,0 +1,19 @@
+#
+# Sets $ZDOTDIR to the WarpDrive location.
+#
+# This file is created as ~/.zshenv by the WarpDrive installer, and
+# should not be edited. Instead, edit .zshenv inside the WarpDrive:
+#
+# __ZDOTDIR__/.zshenv
+#
+# Zsh's default behavior for user-level .zshenv does not source a
+# secondary .zshenv inside the $ZDOTDIR, so the .zshenv inside the
+# WarpDrive has to be sourced manually.
+# 
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+export ZDOTDIR="__ZDOTDIR__"
+
+source "${ZDOTDIR}/.zshenv"

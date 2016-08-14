@@ -1,0 +1,78 @@
+#!/usr/bin/env zsh
+
+(( EUID == 0 )) && print "ALL YOUR BASE ARE BELONG TO US! Refusing to run as sudo." >&2 && exit 1
+
+local usage="$(
+cat <<EOF
+usage: $0 [-option ...] [--] command
+
+options:
+  -e, --environment    Specify 'system' for system-wide installation to /etc/zshenv (default is 'user' which installs to ~/.zshenv).
+EOF
+)"
+
+#
+# Defaults.
+#
+
+local zshenv_schematic='user'
+local zshenv_location="${HOME}/.zshenv"
+
+#
+# Get options.
+#
+
+while getopts ':e:(environment)' opt; do
+  case "${opt}" in
+    (e)
+      if [[ "${OPTARG}" == 'system' ]]; then
+        zshenv_schematic='system'
+        zshenv_location="/etc/zshenv"
+      elif [[ "${OPTARG}" != 'user' ]]; then
+        print "$0: option argument must be one of 'system' or 'user': ${OPTARG}" >&2
+        print "${usage}" >&2
+        exit 1
+      fi
+    ;;
+    (:)
+      print "$0: option requires an argument: ${OPTARG}" >&2
+      print "${usage}" >&2
+      exit 1
+    ;;
+    ([?])
+      print "$0: unknown option: ${OPTARG}" >&2
+      print "${usage}" >&2
+      exit 1
+    ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+if (( $# < 1 )); then
+  print "${usage}" >&2
+  exit 1
+fi
+
+#
+# Create environment.
+#
+
+{
+  [[ -s "${zshenv_location}" ]] && {
+    #TODO: check if file matches template; if it does, do not abort.
+    print "Alien file encountered! Refusing to overwrite ${zshenv_location}. Please move it away and try again."
+    exit 1
+  } || {
+    #TODO: sudo for system
+    print "${"$(<schematic/zshenv.$zshenv_schematic)"//__ZDOTDIR__/"${0:a:h}"}" > "${zshenv_location}"
+  }
+}
+
+#
+# Trigger regeneration of completion dump.
+#
+
+echo "ZCOMPD: ${ZCOMPDUMP}"
+#rm -f "${ZCOMPDUMP}"
+exec "$SHELL" -l
+

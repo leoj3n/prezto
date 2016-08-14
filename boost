@@ -1,5 +1,0 @@
-# source this file to update everything
-
-rm -rf "${ZCOMPDUMP}"
-exec "$SHELL" -l
-
