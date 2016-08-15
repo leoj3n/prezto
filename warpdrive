@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-(( EUID == 0 )) && print "ALL YOUR BASE ARE BELONG TO US! Refusing to run as sudo." >&2 && exit 1
+(( EUID == 0 )) && print "$0: ALL YOUR BASE ARE BELONG TO US! Refusing to run as sudo." >&2 && exit 1
 
 local usage="$(
 cat <<EOF
@@ -8,6 +8,16 @@ usage: $0 [-option ...] [--] command
 
 options:
   -e, --environment    Specify 'system' for system-wide installation to /etc/zshenv (default is 'user' which installs to ~/.zshenv).
+
+commands:
+  launch
+  poweron
+  install
+  activate
+  deactive
+  engage
+  reengage
+  disengage
 EOF
 )"
 
@@ -15,8 +25,8 @@ EOF
 # Defaults.
 #
 
-local zshenv_schematic='user'
-local zshenv_location="${HOME}/.zshenv"
+local zshenv_env='user'
+local zshenv_loc="${HOME}/.zshenv"
 
 #
 # Get options.
@@ -26,8 +36,8 @@ while getopts ':e:(environment)' opt; do
   case "${opt}" in
     (e)
       if [[ "${OPTARG}" == 'system' ]]; then
-        zshenv_schematic='system'
-        zshenv_location="/etc/zshenv"
+        zshenv_env='system'
+        zshenv_loc="/etc/zshenv"
       elif [[ "${OPTARG}" != 'user' ]]; then
         print "$0: option argument must be one of 'system' or 'user': ${OPTARG}" >&2
         print "${usage}" >&2
@@ -58,21 +68,21 @@ fi
 #
 
 {
-  [[ -s "${zshenv_location}" ]] && {
+  [[ -s "${zshenv_loc}" ]] && {
     #TODO: check if file matches template; if it does, do not abort.
-    print "Alien file encountered! Refusing to overwrite ${zshenv_location}. Please move it away and try again."
+    print "$0: Encountered a UFO (Unidentified File Object)! Move ${zshenv_loc} away and try again." >&2
     exit 1
-  } || {
-    #TODO: sudo for system
-    print "${"$(<schematic/zshenv.$zshenv_schematic)"//__ZDOTDIR__/"${0:a:h}"}" > "${zshenv_location}"
   }
+
+  local zshenv_schema="${"$(<schematic/zshenv.$zshenv_env)"//__ZDOTDIR__/"${0:a:h}"}"
+  print "${zshenv_schema}" | $([[ "$zshenv_env" == 'system' ]] && print 'sudo') tee "${zshenv_loc}" >/dev/null
 }
 
 #
-# Trigger regeneration of completion dump.
+# Use the new shell.
+#
+# This will also trigger regeneration of completion dump if fpath
+# module is in use.
 #
 
-echo "ZCOMPD: ${ZCOMPDUMP}"
-#rm -f "${ZCOMPDUMP}"
-exec "$SHELL" -l
-
+WARPSPEED=1 exec "$SHELL" -l

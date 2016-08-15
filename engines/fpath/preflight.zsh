@@ -1,26 +1,38 @@
 #
-# Rests fpath to a flattened location.
+# Sets fpath to a flattened location.
 #
 
-local fpath_orig=(${fpath})
-fpath=("${TMPPREFIX}/fpath")
+if (( $+WARPSPEED )); then
+  [[ -s "${ZCOMPDUMP}" ]] && rm -r "${ZCOMPDUMP}"
+  [[ -d "${TMPPREFIX}/fpath" ]] && rm -rf "${TMPPREFIX}/fpath"
+fi
 
 #
 # Flatten fpath and regenerate .zcompdump if missing.
 #
 
-[[ -s "${ZCOMPDUMP}" && -d "${TMPPREFIX}/fpath" ]] || {
-  zstyle -a ':warpdrive:engine:fpath' blacklist 'blacklist'
-  blacklist="^(${(j:|:)blacklist})"
+{
+  if [[ ! -d "${TMPPREFIX}/fpath" ]]; then
+    zstyle -a ':warpdrive:engine:fpath' blacklist 'blacklist'
+    blacklist="^(${(j:|:)blacklist})"
+    mkdir -p "${TMPPREFIX}/fpath"
+    setopt LOCAL_OPTIONS EXTENDED_GLOB
+    for fp ("$fpath[@]") cp -n "${fp}/"$~blacklist "${TMPPREFIX}/fpath"
+  fi
 
-  rm -rf "${TMPPREFIX}/fpath"
-  mkdir -p "${TMPPREFIX}/fpath"
-
-  setopt LOCAL_OPTIONS EXTENDED_GLOB
-  for fp ("$fpath_orig[@]") cp -n "${fp}/"$~blacklist "${TMPPREFIX}/fpath"
-
-  autoload -Uz compinit && compinit -i -d "${ZCOMPDUMP}"
-  zcompile "${ZCOMPDUMP}"
-
-  exec "$SHELL" -l
+  if [[ ! -s "${ZCOMPDUMP}" ]]; then
+    autoload -Uz compinit && compinit -i -d "${ZCOMPDUMP}"
+    zcompile "${ZCOMPDUMP}"
+  fi
 }
+
+#
+# Set fpath to flattened location.
+#
+
+if (( $? == 0 )); then
+  fpath=("${TMPPREFIX}/fpath")
+else
+  print "WarpDrive[fpath]: Error generating files (fpath is unchanged)." >&2
+  return 1
+fi

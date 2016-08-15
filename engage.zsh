@@ -22,6 +22,23 @@ unset min_zsh_version
 # Engine Loader
 #
 
+# Engine Preflight Checklist.
+function check {
+  for engine in "$engines[@]"; do
+    if zstyle -t ":warpdrive:engine:$engine" loaded 'yes' 'no'; then
+      continue
+    elif [[ -s "${ZDOTDIR}/engines/$engine/preflight.zsh" ]]; then
+      source "${ZDOTDIR}/engines/$engine/preflight.zsh"
+    fi
+  done
+
+  # Exit WARPSPEED -- Your destination is on the left.
+  if (( $+WARPSPEED )); then
+    unset WARPSPEED
+    exec "$SHELL" -l
+  fi
+}
+
 # Engages WarpDrive Engines.
 function engage {
   local -a engines
@@ -33,19 +50,6 @@ function engage {
 
   local leftPad=1
   local rightPad=$((${#engines}+1))
-
-  # Engine Preflight Checklist.
-  for engine in "$engines[@]"; do
-    if zstyle -t ":warpdrive:engine:$engine" loaded 'yes' 'no'; then
-      continue
-    elif [[ ! -d "${ZDOTDIR}/engines/$engine" ]]; then
-      continue
-    else
-      if [[ -s "${ZDOTDIR}/engines/$engine/preflight.zsh" ]]; then
-        source "${ZDOTDIR}/engines/$engine/preflight.zsh"
-      fi
-    fi
-  done
 
   # Add Engine capabilities to $fpath.
   fpath=(${engines:+${ZDOTDIR}/engines/${^engines}/capabilities(/FN)} $fpath)
@@ -119,7 +123,7 @@ function engage_status {
   if (( $+3 )); then
     printf "%-$2s %s %$(($3-$2))s %-$4s\r" '[' '~' ']' "${engine}"
   elif (( $+1 )); then
-    printf "%s: %s\n" "${engine}" "$1" >&2
+    printf "WarpDrive[%s]: %s\n" "${engine}" "$1" >&2
   else
     ENGAGE_STACK[-1]=()
   fi
