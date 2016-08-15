@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+mpv --pause=no --idle=no --keep-open=no --no-terminal ~/Downloads/zsh/exit/Death_Streak.ogg 2>&1 &
+
