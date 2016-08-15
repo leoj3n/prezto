@@ -1,22 +1,8 @@
-# WarpDrive
+# DeLorean
 
-WarpDrive is the futuristic configuration framework for [Zsh][1].
+Bringing your [Zsh][] back to the future!
 
-## Home
-
-The [home][] directory has been added because this repository is meant to be used as a [homeshick][] castle.
-
-If you don't wish to use Homeshick, you may simply create a symlink yourself like:
-
-```
-ln -s ~/path/to/warpdrive/home/.zshenv ~/.zshenv
-```
-
-This is the only symlink that needs to be in your home directory, because WarpDrive figures out its own location and sets `$ZDOTDIR`.
-
-You could also link to `/etc/zshenv` to enable WarpDrive globally.
-
-## Engines
+## Circuits
 
   1. [git][]
   2. [directory][]
@@ -36,11 +22,13 @@ You could also link to `/etc/zshenv` to enable WarpDrive globally.
   16. [pwsafe][]
   17. [fzf][]
 
-WarpDrive engages only the engines that have been enabled in [`sequence.zsh`][].
+DeLorean loads only the circuits that have been enabled in [`flux-capacitor.zsh`][].
 
 ### Themes
 
-  1. [powerlevel9k][]
+  1. [pure][]
+  2. [sorin][]
+  3. [powerlevel9k][]
 
 License
 -------
@@ -75,24 +63,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-[1]: http://www.zsh.org
-[git]: engines/git
-[directory]: engines/directory
-[homebrew]: engines/homebrew
-[osx]: engines/osx
-[utility]: engines/utility
-[bower]: engines/bower
-[filetype]: engines/filetype
-[internet]: engines/internet
-[meteor]: engines/meteor
-[sublime]: engines/sublime
-[taskwarrior]: engines/taskwarrior
-[url]: engines/url
-[vagrant]: engines/vagrant
-[wordpress]: engines/wordpress
-[macvim]: engines/macvim
-[pwsafe]: engines/pwsafe
-[3n theme]: engines/prompt/functions/prompt_3n_setup
+[Zsh]: http://www.zsh.org
+[git]: ZDOTDIR/circuits/git
+[directory]: ZDOTDIR/circuits/directory
+[homebrew]: ZDOTDIR/circuits/homebrew
+[osx]: ZDOTDIR/circuits/osx
+[utility]: ZDOTDIR/circuits/utility
+[bower]: ZDOTDIR/circuits/bower
+[filetype]: ZDOTDIR/circuits/filetype
+[internet]: ZDOTDIR/circuits/internet
+[meteor]: ZDOTDIR/circuits/meteor
+[sublime]: ZDOTDIR/circuits/sublime
+[taskwarrior]: ZDOTDIR/circuits/taskwarrior
+[url]: ZDOTDIR/circuits/url
+[vagrant]: ZDOTDIR/circuits/vagrant
+[wordpress]: ZDOTDIR/circuits/wordpress
+[macvim]: ZDOTDIR/circuits/macvim
+[pwsafe]: ZDOTDIR/circuits/pwsafe
+[3n theme]: ZDOTDIR/circuits/prompt/functions/prompt_3n_setup
 [home]: home
 [homeshick]: https://github.com/andsens/homeshick
-[`sequence.zsh`]: sequence.zsh 
+[`flux-capacitor.zsh`]: ZDOTDIR/flux-capacitor.zsh 
+[pure]: ZDOTDIR/circuits/prompt
+[sorin]: ZDOTDIR/circuits/prompt
+[powerlevel9k]: ZDOTDIR/circuits/prompt

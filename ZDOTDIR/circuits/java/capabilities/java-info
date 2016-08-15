@@ -1,0 +1,26 @@
+#
+# Exposes information about the Java environment.
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n+prezto@gmail.com>
+#
+
+local version
+local version_format
+local version_formatted
+
+# Clean up previous $java_info.
+unset java_info
+typeset -gA java_info
+
+if (( $+commands[jenv] )); then
+  version="${${"$(jenv version)"##*-}%% *}"
+fi
+
+# Format version.
+if [[ -n "$version" ]]; then
+  zstyle -s ':delorean:circuit:java:info:version' format 'version_format'
+  zformat -f version_formatted "$version_format" "v:$version"
+  java_info[version]="${version_formatted}"
+fi
+
