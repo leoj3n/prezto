@@ -1,6 +1,6 @@
 # DeLorean
 
-Send your [Zsh][] configuration back to the future!
+Sends your [Zsh][] back to the future!
 
 Run `./88` to get up to speed.
 
