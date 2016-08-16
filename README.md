@@ -1,9 +1,11 @@
-DeLorean
+# DeLorean
+
+Sending your [Zsh][] configuration back to the future!
+
+Run `./88` to get up to speed.
+
+Circuits
 --------
-
-Bringing your [Zsh][] config back to the future!
-
-## Circuits
 
 <img width="666px" align="right" src=".github/DeLorean.jpg"/>
 
@@ -27,7 +29,8 @@ Bringing your [Zsh][] config back to the future!
 
 DeLorean loads only the circuits that have been enabled in [`flux-capacitor.zsh`][].
 
-### Themes
+Themes
+------
 
   1. [pure][]
   2. [sorin][]

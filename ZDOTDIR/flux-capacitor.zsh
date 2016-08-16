@@ -1,5 +1,5 @@
 #
-# This device is the core component, what makes time travel possible.
+# This device is what makes time travel possible.
 # 
 # Authors:
 #   Joel Kuzmarski <leoj3n@gmail.com>
