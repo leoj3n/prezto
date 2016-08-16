@@ -1,6 +1,6 @@
 # DeLorean
 
-Bringing your [Zsh][] back to the future!
+Bringing your [Zsh][] config back to the future!
 
 ## Circuits
 
@@ -62,6 +62,34 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+```brainfuck
+   __---~~~~--__                      __--~~~~---__
+  `\---~~~~~~~~\\                    //~~~~~~~~---/'
+    \/~~~~~~~~~\||                  ||/~~~~~~~~~\/
+                `\\                //'
+                  `\\            //'
+                    ||          ||      Hey Doc!
+          ______--~~~~~~~~~~~~~~~~~~--______
+     ___ // _-~                        ~-_ \\ ___
+    `\__)\/~                              ~\/(__/'
+     _--`-___                            ___-'--_
+   /~     `\ ~~~~~~~~------------~~~~~~~~ /'     ~\
+  /|        `\                          /'        |\
+ | `\   ______`\_         DMC        _/'______   /' |
+ |   `\_~-_____\ ~-________________-~ /_____-~_/'   |
+ `.     ~-__________________________________-~     .'
+  `.      [_______/------|~~|------\_______]      .'
+   `\--___((____)(________\/________)(____))___--/'
+    |>>>>>>||                            ||<<<<<<|
+    `\<<<<</'                            `\>>>>>/'
+
+    Now, if my calculations are correct,
+    when this baby hits 88 miles an hour,
+    you're going to see some serious shit!
+```
+
+Thanks to @spcmd for the DeLorean ascii art.
 
 [Zsh]: http://www.zsh.org
 [git]: ZDOTDIR/circuits/git

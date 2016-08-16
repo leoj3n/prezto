@@ -1,14 +1,14 @@
 #
-# Sets $ZDOTDIR to the WarpDrive location.
+# Sets $ZDOTDIR to the DeLorean location. 
 #
-# This file is created as ~/.zshenv by the WarpDrive installer, and
-# should not be edited. Instead, edit .zshenv inside the WarpDrive:
+# This file is created as ~/.zshenv when the DeLorean hits 88 MPH, and
+# should not be edited. Instead, edit .zshenv inside the DeLorean:
 #
 # __ZDOTDIR__/.zshenv
 #
 # Zsh's default behavior for user-level .zshenv does not source a
 # secondary .zshenv inside the $ZDOTDIR, so the .zshenv inside the
-# WarpDrive has to be sourced manually.
+# DeLorean has to be sourced manually (as is done below).
 # 
 # Authors:
 #   Joel Kuzmarski <leoj3n@gmail.com>

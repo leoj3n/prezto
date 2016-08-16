@@ -108,4 +108,4 @@ Authors
 
 [1]: http://zsh.sourceforge.net/Doc/Release/User-Contributions.html#Prompt-Themes
 [2]: http://zsh.sourceforge.net/Doc/Release/Functions.html#Hook-Functions
-[3]: https://github.com/leoj3n/warpdrive/issues
+[3]: https://github.com/leoj3n/DeLorean/issues

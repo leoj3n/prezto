@@ -1,54 +1,50 @@
 #!/usr/bin/env zsh
 
-(( EUID == 0 )) && print "$0: ALL YOUR BASE ARE BELONG TO US! Refusing to run as sudo." >&2 && exit 1
+#
+# Disallow sudo.
+#
+
+(( EUID == 0 )) && print "${0:t}: ALL YOUR BASE ARE BELONG TO US! Refusing to run as sudo." >&2 && exit 1
+
+#
+# Usage.
+#
 
 local usage="
-usage: $0 [-option ...] [--] command
+usage: ${0:t} [-option ...] [--] command
 
 options:
-  -e, --environment    Specify 'system' for system-wide installation to /etc/zshenv (default is 'user' which installs to ~/.zshenv).
+  -s         System-wide installation (/etc/zshenv instead of ~/.zshenv).
 
 commands:
-  launch
-  poweron
-  install
-  activate
-  deactive
-  engage
-  reengage
-  disengage
+  forward    Drives the latest version into place.
+  reverse    Backs out the changes made by DeLorean.
 "
 
 #
 # Defaults.
 #
 
-local zshenv_env='user'
+local zshenv_ext='user'
 local zshenv_loc="${HOME}/.zshenv"
 
 #
 # Get options.
 #
 
-while getopts ':e:(environment)' opt; do
+while getopts ':s' opt; do
   case "${opt}" in
-    (e)
-      if [[ "${OPTARG}" == 'system' ]]; then
-        zshenv_env='system'
-        zshenv_loc="/etc/zshenv"
-      elif [[ "${OPTARG}" != 'user' ]]; then
-        print "$0: option argument must be one of 'system' or 'user': ${OPTARG}" >&2
-        print "${usage}" >&2
-        exit 1
-      fi
-    ;;
+    (s)
+      zshenv_ext='system'
+      zshenv_loc="/etc/zshenv"
+      ;;
     (:)
-      print "$0: option requires an argument: ${OPTARG}" >&2
+      print "${0:t}: option requires an argument: ${OPTARG}" >&2
       print "${usage}" >&2
       exit 1
-    ;;
+      ;;
     ([?])
-      print "$0: unknown option: ${OPTARG}" >&2
+      print "${0:t}: unknown option: ${OPTARG}" >&2
       print "${usage}" >&2
       exit 1
     ;;
@@ -62,35 +58,27 @@ if (( $# < 1 )); then
 fi
 
 #
-# Create environment.
+# Move zshenv into place.
 #
 
-{
-  [[ -s "${zshenv_loc}" ]] && {
-    #TODO: check if file matches template; if it does, do not abort.
-    print "$0: Refusing to overwrite. Move ${zshenv_loc} away and try again." >&2
-    exit 1
-  }
+if [[ -s "${zshenv_loc}" && ! "$(<"${zshenv_loc}")" =~ 'DeLorean' ]] && ! read -q "?Overwrite ${zshenv_loc} [y/N]? "; then
+  print "\n${0:t}: Aborting temporal displacement!"
+  exit 1
+fi
 
-  local zshenv_schema="${"$(<schematic/zshenv.$zshenv_env)"//__ZDOTDIR__/"${0:a:h}/ZDOTDIR"}"
-  print "${zshenv_schema}" | $([[ "$zshenv_env" == 'system' ]] && print 'sudo') tee "${zshenv_loc}" >/dev/null
-}
+local zshenv_schema="${"$(<"${0:a:h}/schematic/zshenv.${zshenv_ext}")"//__ZDOTDIR__/"${0:a:h}/ZDOTDIR"}"
+print "${zshenv_schema}" | $([[ "$zshenv_ext" == 'system' ]] && print 'sudo') tee "${zshenv_loc}" >/dev/null
 
 #
 # Use the new shell.
 #
-print '
-8""""8      8                                   
-8    8 eeee 8     eeeee eeeee  eeee eeeee eeeee 
-8e   8 8    8e    8  88 8   8  8    8   8 8   8 
-88   8 8eee 88    8   8 8eee8e 8eee 8eee8 8e  8 
-88   8 88   88    8   8 88   8 88   88  8 88  8 
-88eee8 88ee 88eee 8eee8 88   8 88ee 88  8 88  8'
 
-print "
-> Now, if my calculations are correct,
-> when this baby hits 88 miles an hour,
-> you're going to see some serious shit!
-"
+[[ "$(<"${0:a:h}/README.md")" =~ '```brainfuck(.*)```' ]] && printf "${match[1]}"
+
+if (( $+commands[afplay] )); then
+  afplay "${0:a:h}/.github/bttf.wav" 2>&1 >/dev/null &
+elif (( $+commands[aplay] )); then
+  aplay -t wav "${0:a:h}/.github/bttf.wav" 2>&1 >/dev/null &
+fi
 
 NOFORTUNE=1 JIGOWATTS=1.21 exec "$SHELL" -l

@@ -85,7 +85,7 @@ function load {
       if (( $? == 0 )); then
         zstyle ":delorean:circuit:$circuit" loaded 'yes'
       else
-        load_status 'Great Scott! The circuit blew a fuse!'
+        load_status 'Great Scott! Circuit blew a fuse.'
 
         # Remove the $fpath entry.
         fpath[(r)${ZDOTDIR}/circuits/${circuit}/capabilities]=()
@@ -117,13 +117,15 @@ function load_status {
   (( $+3 )) && CONTINUUM+=("$1")
   local circuit="${(j:/:)CONTINUUM}"
   local len=1
-  (( $+3 )) && len=$(( $3+${#circuit}+4 ))
+  (( $+3 )) && len=$(( $3+${#circuit}+2 ))
   (( len > CLEAR )) && CLEAR=$len
 
   printf "%${CLEAR}s\r"
 
   if (( $+3 )); then
-    printf "%-$2s %s %$(($3-$2))s %-$4s\r" '[' '~' ']' "${circuit}"
+    local sp='▚▞'; sp="${sp:$2%2:1}"
+    local bar="$(printf "%-$2s▓%$(($3-$2))s" "${sp}" "${sp}")"
+    printf "%s %s\r" "${bar// /░}" "${circuit}"
   elif (( $+1 )); then
     printf "DeLorean[%s]: %s\n" "${circuit}" "$1" >&2
   else
