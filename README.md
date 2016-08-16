@@ -1,11 +1,11 @@
-<img width="666px" align="right" src=".github/DeLorean.jpg"/>
-
 DeLorean
 --------
 
 Bringing your [Zsh][] config back to the future!
 
 ## Circuits
+
+<img width="666px" align="right" src=".github/DeLorean.jpg"/>
 
   1. [git][]
   2. [directory][]
