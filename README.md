@@ -27,7 +27,7 @@ Circuits
   16. [pwsafe][]
   17. [fzf][]
 
-DeLorean uses only the circuits that have been set in the [`flux-capacitor.zsh`][].
+DeLorean uses only the circuits that have been set in [`flux-capacitor.zsh`][].
 
 Themes
 ------
@@ -41,11 +41,13 @@ License
 
 [![MIT License](https://img.shields.io/:license-MIT-blue.svg?)](https://tldrlegal.com/l/mit)
 
-Copyright (c) 2015-2016 Joel Kuzmarski.
+Copyright &copy; 2015-2016 Joel Kuzmarski.
 
-Copyright (c) 2011-2015 Sorin Ionescu and contributors.
+Copyright &copy; 2011-2015 Sorin Ionescu and contributors.
 
-Copyright (c) 2009-2011 Robby Russell and contributors.
+Copyright &copy; 2009-2011 Robby Russell and contributors.
+
+Thanks to [@spcmd][] for the DeLorean ascii art.
 
 ```DeLorean
    __---~~~~--__                      __--~~~~---__
@@ -72,8 +74,6 @@ Copyright (c) 2009-2011 Robby Russell and contributors.
     when this baby hits 88 miles an hour,
     you're going to see some serious shit!
 ```
-
-Thanks to [@spcmd][] for the DeLorean ascii art.
 
 [Zsh]: http://www.zsh.org
 [git]: ZDOTDIR/circuits/git
