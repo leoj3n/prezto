@@ -1,14 +1,29 @@
 #
 # Sets fpath to a flattened location.
 #
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#
+
+################################################################################
+# Setup
+################################################################################
+
+#
+# Obliterate compiled files if we are time traveling.
+#
 
 if (( $+JIGOWATTS )); then
   [[ -s "${ZCOMPDUMP}" ]] && rm -r "${ZCOMPDUMP}"
   [[ -d "${TMPPREFIX}/fpath" ]] && rm -rf "${TMPPREFIX}/fpath"
 fi
 
+################################################################################
+# Run
+################################################################################
+
 #
-# Flatten fpath and regenerate .zcompdump if missing.
+# Flatten fpath and/or regenerate .zcompdump if missing.
 #
 
 {
@@ -27,7 +42,7 @@ fi
 }
 
 #
-# Set fpath to flattened location.
+# Set fpath to the flattened location.
 #
 
 if (( $? == 0 )); then

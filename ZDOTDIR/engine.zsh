@@ -6,31 +6,41 @@
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
+################################################################################
+# Setup
+################################################################################
+
 #
-# Version Check
+# Version check.
 #
 
-# Check for the minimum supported version.
+# Make sure we're not too far in the past, and that plutonium is available.
 min_zsh_version='5.1'
 if ! autoload -Uz is-at-least || ! is-at-least "$min_zsh_version"; then
-  print "prezto: old shell detected, minimum required: $min_zsh_version" >&2
+  print "
+DeLorean: Too far in the past!
+Plutonium isn't available until Zsh version: $min_zsh_version
+" >&2
   return 1
 fi
 unset min_zsh_version
 
+################################################################################
+# Functions
+################################################################################
+
 #
-# Circuit Loader
+# Boots the circuits.
 #
 
-# Prepare the circuits for loading.
-function preload {
+function boot {
   local circuit
 
   for circuit in "$argv[@]"; do
     if zstyle -t ":delorean:circuit:$circuit" loaded 'yes' 'no'; then
       continue
-    elif [[ -s "${ZDOTDIR}/circuits/$circuit/preload.zsh" ]]; then
-      source "${ZDOTDIR}/circuits/$circuit/preload.zsh"
+    elif [[ -s "${ZDOTDIR}/circuits/$circuit/boot.zsh" ]]; then
+      source "${ZDOTDIR}/circuits/$circuit/boot.zsh"
     fi
   done
 
@@ -41,7 +51,10 @@ function preload {
   fi
 }
 
-# Load the circuits.
+#
+# Loads the circuits.
+#
+
 function load {
   local -a circuits
   local circuit
@@ -56,7 +69,7 @@ function load {
   function {
     local capability
 
-    # Extended globbing is needed for listing directories.
+    # Extend globbing for listing directories.
     setopt LOCAL_OPTIONS EXTENDED_GLOB
 
     # Load circuit capabilities.
@@ -68,7 +81,7 @@ function load {
   local past=1
   local future=$((${#circuits}+1))
 
-  # Attempt Circuit Activation.
+  # Attempt circuit load.
   for circuit in "$circuits[@]"; do
     if zstyle -t ":delorean:circuit:$circuit" loaded 'yes' 'no'; then
       continue
@@ -93,7 +106,7 @@ function load {
         function {
           local capability
 
-          # Extended globbing is needed for listing directories.
+          # Extend globbing for listing directories.
           setopt LOCAL_OPTIONS EXTENDED_GLOB
 
           # Unload circuit capabilities.
@@ -112,7 +125,10 @@ function load {
   (( $#CONTINUUM )) || unset CLEAR CONTINUUM
 }
 
-# Prints the load status on a single line.
+#
+# Prints the chronal location on a single line.
+#
+
 function load_status {
   (( $+3 )) && CONTINUUM+=("$1")
   local circuit="${(j:/:)CONTINUUM}"
@@ -133,33 +149,50 @@ function load_status {
   fi
 }
 
+################################################################################
+# Run
+################################################################################
+
 #
-# Roads? Where we're going, we don't need roads.
+# Enable flux capacitor.
 #
 
-# Source the flux capacitor.
 if [[ -s "${ZDOTDIR}/flux-capacitor.zsh" ]]; then
   source "${ZDOTDIR}/flux-capacitor.zsh"
 fi
 
+#
 # Disable color and theme in dumb terminals.
+#
+
 if [[ "$TERM" == 'dumb' ]]; then
   zstyle ':delorean:*:*' color 'no'
   zstyle ':delorean:circuit:prompt' theme 'off'
 fi
 
+#
 # Load Zsh modules.
+#
+
 zstyle -a ':delorean:load' zmodule 'zmodules'
 for zmodule ("$zmodules[@]") zmodload "zsh/${(z)zmodule}"
 unset zmodule{s,}
 
+#
 # Autoload Zsh functions.
+#
+
 zstyle -a ':delorean:load' zfunction 'zfunctions'
 for zfunction ("$zfunctions[@]") autoload -Uz "$zfunction"
 unset zfunction{s,}
 
-# Activate the circuits.
+#
+# Use circuits set by the flux capacitor.
+#
+
 zstyle -a ':delorean:load' circuit 'circuits'
-preload "$circuits[@]"
+boot "$circuits[@]"
 load "$circuits[@]"
 unset circuits
+
+# Roads? Where we're going, we don't need roads.

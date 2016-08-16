@@ -1,13 +1,24 @@
 #!/usr/bin/env zsh
 
-#
-# Disallow sudo.
-#
-
-(( EUID == 0 )) && print "${0:t}: ALL YOUR BASE ARE BELONG TO US! Refusing to run as sudo." >&2 && exit 1
+################################################################################
+# Help
+################################################################################
 
 #
-# Usage.
+# Disallow sudo to keep the space-time continuum intact.
+#
+
+(( EUID == 0 )) && print "
+${0:t}: An encounter with sudo could create a time paradox.
+
+The results of which could cause a chain reaction that would unravel the
+very fabric of the space-time continuum and destroy the entire universe!
+... Granted, that's the worst-case scenario. The destruction however
+might be limited merely to our own galaxy.
+" >&2 && exit 1
+
+#
+# Usage, or, What does this button do!?
 #
 
 local usage="
@@ -20,6 +31,10 @@ commands:
   forward    Drives the latest version into place.
   reverse    Backs out the changes made by DeLorean.
 "
+
+################################################################################
+# Setup
+################################################################################
 
 #
 # Defaults.
@@ -57,23 +72,31 @@ if (( $# < 1 )); then
   exit 1
 fi
 
+################################################################################
+# Run
+################################################################################
+
 #
-# Move zshenv into place.
+# Attempt temporal displacement of zshenv.
 #
 
-if [[ -s "${zshenv_loc}" && ! "$(<"${zshenv_loc}")" =~ 'DeLorean' ]] && ! read -q "?Overwrite ${zshenv_loc} [y/N]? "; then
-  print "\n${0:t}: Aborting temporal displacement!"
-  exit 1
+if [[ -s "${zshenv_loc}" && ! "$(<"${zshenv_loc}")" =~ 'DeLorean' ]]; then
+  if read -q "?Overwrite ${zshenv_loc} [y/N]? "; then
+    print #spacing
+  else
+    print "\n${0:t}: Aborting temporal displacement!\n"
+    exit 1
+  fi
 fi
 
 local zshenv_schema="${"$(<"${0:a:h}/schematic/zshenv.${zshenv_ext}")"//__ZDOTDIR__/"${0:a:h}/ZDOTDIR"}"
 print "${zshenv_schema}" | $([[ "$zshenv_ext" == 'system' ]] && print 'sudo') tee "${zshenv_loc}" >/dev/null
 
 #
-# Use the new shell.
+# Critical velocity has been reached (88 MPH)!
 #
 
-[[ "$(<"${0:a:h}/README.md")" =~ '```DeLorean(.*)```' ]] && printf "${match[1]}"
+[[ "$(<"${0:a:h}/README.md")" =~ '```DeLorean(.*)```' ]] && print -f "%s\n" "${match[1]}"
 
 if (( $+commands[afplay] )); then
   afplay "${0:a:h}/.github/bttf.wav" 2>&1 >/dev/null &

@@ -6,12 +6,14 @@
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
-#
+################################################################################
 # Settings
+################################################################################
+
 #
+# Log
 #
 
-# Log
 zstyle -s ':delorean:circuit:git:log:medium' format '_git_log_medium_format' \
   || _git_log_medium_format='%C(bold)Commit:%C(reset) %C(green)%H%C(red)%d%n%C(bold)Author:%C(reset) %C(cyan)%an <%ae>%n%C(bold)Date:%C(reset)   %C(blue)%ai (%ar)%C(reset)%n%+B'
 zstyle -s ':delorean:circuit:git:log:oneline' format '_git_log_oneline_format' \
@@ -19,18 +21,27 @@ zstyle -s ':delorean:circuit:git:log:oneline' format '_git_log_oneline_format' \
 zstyle -s ':delorean:circuit:git:log:brief' format '_git_log_brief_format' \
   || _git_log_brief_format='%C(green)%h%C(reset) %s%n%C(blue)(%ar by %an)%C(red)%d%C(reset)%n'
 
+#
 # Status
+#
+
 zstyle -s ':delorean:circuit:git:status:ignore' submodules '_git_status_ignore_submodules' \
   || _git_status_ignore_submodules='none'
 
-#
+################################################################################
 # Aliases
+################################################################################
+
+#
+# Git
 #
 
-# Git
 alias g='git'
 
+#
 # Branch (b)
+#
+
 alias gb='git branch'
 alias gbc='git checkout -b'
 alias mm='git checkout master'
@@ -44,7 +55,10 @@ alias gbs='git show-branch'
 alias gbS='git show-branch -a'
 alias gbr='git-branch-from-pull-request'
 
+#
 # Commit (c)
+#
+
 alias gc='git commit --verbose'
 alias gca='git commit --verbose --all'
 alias gcm='git commit --message'
@@ -60,7 +74,10 @@ alias gcs='git show'
 alias gcl='git-commit-lost'
 alias gcam='git commit --verbose --all -m'
 
+#
 # Conflict (C)
+#
+
 alias gCl='git status | sed -n "s/^.*both [a-z]*ed: *//p"'
 alias gCa='git add $(gCl)'
 alias gCe='git mergetool $(gCl)'
@@ -69,7 +86,10 @@ alias gCO='gCo $(gCl)'
 alias gCt='git checkout --theirs --'
 alias gCT='gCt $(gCl)'
 
+#
 # Data (d)
+#
+
 alias gd='git ls-files'
 alias gdc='git ls-files --cached'
 alias gdx='git ls-files --deleted'
@@ -79,7 +99,10 @@ alias gdk='git ls-files --killed'
 alias gdi='git status --porcelain --short --ignored | sed -n "s/^!! //p"'
 alias gdh='git ls-files -v | grep "^h " | cut -d" " -f2-'
 
+#
 # Fetch (f)
+#
+
 alias gf='git fetch'
 alias gfc='git clone'
 alias gfm='git pull'
@@ -87,7 +110,10 @@ alias gfr='git pull --rebase'
 alias gfa='git fetch --all'
 alias gfcd='git-fetch-change-directory'
 
+#
 # Grep (g)
+#
+
 alias gg='git grep'
 alias ggi='git grep --ignore-case'
 alias ggl='git grep --files-with-matches'
@@ -95,7 +121,10 @@ alias ggL='git grep --files-without-matches'
 alias ggv='git grep --invert-match'
 alias ggw='git grep --word-regexp'
 
+#
 # Index (i)
+#
+
 alias gia='git add'
 alias giA='git add --patch'
 alias giu='git add --update'
@@ -112,7 +141,10 @@ alias giap='git-add-pattern'
 alias gih='git update-index --assume-unchanged'
 alias gis='git update-index --no-assume-unchanged'
 
+#
 # Log (l)
+#
+
 alias gl='git log --topo-order --pretty=format:"${_git_log_medium_format}"'
 alias gls='git log --topo-order --stat --pretty=format:"${_git_log_medium_format}"'
 alias gld='git log --topo-order --stat --patch --full-diff --pretty=format:"${_git_log_medium_format}"'
@@ -121,14 +153,20 @@ alias glg='git log --topo-order --all --graph --pretty=format:"${_git_log_onelin
 alias glb='git log --topo-order --pretty=format:"${_git_log_brief_format}"'
 alias glc='git shortlog --summary --numbered'
 
+#
 # Merge (m)
+#
+
 alias gm='git merge'
 alias gmC='git merge --no-commit'
 alias gmF='git merge --no-ff'
 alias gma='git merge --abort'
 alias gmt='git mergetool'
 
+#
 # Push (p)
+#
+
 alias gp='git push'
 alias gpf='git push --force'
 alias gpa='git push --all'
@@ -140,14 +178,20 @@ alias gpuo='git push -u origin'
 alias gpul='git push -u leoj3n'
 alias gpuom='git push -u origin master'
 
+#
 # Rebase (r)
+#
+
 alias gr='git rebase'
 alias gra='git rebase --abort'
 alias grc='git rebase --continue'
 alias gri='git rebase --interactive'
 alias grs='git rebase --skip'
 
+#
 # Remote (R)
+#
+
 alias gR='git remote'
 alias gRl='git remote --verbose'
 alias gRa='git remote add'
@@ -158,7 +202,10 @@ alias gRp='git remote prune'
 alias gRs='git remote show'
 alias gRb='git-hub-browse'
 
+#
 # Stash (s)
+#
+
 alias gs='git stash'
 alias gsa='git stash apply'
 alias gsx='git stash drop'
@@ -172,7 +219,10 @@ alias gss='git stash save --include-untracked'
 alias gsS='git stash save --patch --no-keep-index'
 alias gsw='git stash save --include-untracked --keep-index'
 
+#
 # Submodule (S)
+#
+
 alias gS='git submodule'
 alias gSa='git submodule add'
 alias gSf='git submodule foreach'
@@ -184,7 +234,10 @@ alias gSs='git submodule sync'
 alias gSu='git submodule foreach git pull origin master'
 alias gSx='git-submodule-remove'
 
+#
 # Working Copy (w)
+#
+
 alias gws='git status --ignore-submodules=${_git_status_ignore_submodules} --short'
 alias gwS='git status --ignore-submodules=${_git_status_ignore_submodules}'
 alias gwd='git diff --no-ext-diff'
@@ -196,13 +249,12 @@ alias gwC='git clean -f'
 alias gwx='git rm -r'
 alias gwX='git rm -rf'
 
+#
 # Utility (u)
+#
+
 alias guf='git-fix'
-function gur() {
-  cd $(git-root)
-}
 alias guc='git-uppercase'
 alias gup='git pull-request'
+alias gur='cd "$(git-root)"'
 alias guj='history 10 | tail -r | gitjk_cmd'
-
-

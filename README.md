@@ -1,6 +1,6 @@
 # DeLorean
 
-Sending your [Zsh][] configuration back to the future!
+Send your [Zsh][] configuration back to the future!
 
 Run `./88` to get up to speed.
 
@@ -27,7 +27,7 @@ Circuits
   16. [pwsafe][]
   17. [fzf][]
 
-DeLorean loads only the circuits that have been enabled in [`flux-capacitor.zsh`][].
+DeLorean uses only the circuits that have been set in the [`flux-capacitor.zsh`][].
 
 Themes
 ------
