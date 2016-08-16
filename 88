@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
 
+local prog_name="${0:t}"
+local prog_home="${0:A:h}"
+
 ################################################################################
 # Help
 ################################################################################
@@ -9,7 +12,7 @@
 #
 
 (( EUID == 0 )) && print "
-${0:t}: An encounter with sudo could create a time paradox.
+${prog_name}: An encounter with sudo could create a time paradox.
 
 The results of which could cause a chain reaction that would unravel the
 very fabric of the space-time continuum and destroy the entire universe!
@@ -22,7 +25,7 @@ might be limited merely to our own galaxy.
 #
 
 local usage="
-usage: ${0:t} [-option ...] [--] command
+usage: ${prog_name} [-option ...] [--] command
 
 options:
   -s         System-wide installation (/etc/zshenv instead of ~/.zshenv).
@@ -40,6 +43,7 @@ commands:
 # Defaults.
 #
 
+local zshenv_su
 local zshenv_ext='user'
 local zshenv_loc="${HOME}/.zshenv"
 
@@ -50,16 +54,17 @@ local zshenv_loc="${HOME}/.zshenv"
 while getopts ':s' opt; do
   case "${opt}" in
     (s)
+      zshenv_su='sudo'
       zshenv_ext='system'
       zshenv_loc="/etc/zshenv"
       ;;
     (:)
-      print "${0:t}: option requires an argument: ${OPTARG}" >&2
+      print "${prog_name}: option requires an argument: ${OPTARG}" >&2
       print "${usage}" >&2
       exit 1
       ;;
     ([?])
-      print "${0:t}: unknown option: ${OPTARG}" >&2
+      print "${prog_name}: unknown option: ${OPTARG}" >&2
       print "${usage}" >&2
       exit 1
     ;;
@@ -76,32 +81,78 @@ fi
 # Run
 ################################################################################
 
-#
-# Attempt temporal displacement of zshenv.
-#
+case "$@" in
+  
+  #
+  # Attempt temporal displacement of zshenv.
+  #
 
-if [[ -s "${zshenv_loc}" && ! "$(<"${zshenv_loc}")" =~ 'DeLorean' ]]; then
-  if read -q "?Overwrite ${zshenv_loc} [y/N]? "; then
-    print #spacing
-  else
-    print "\n${0:t}: Aborting temporal displacement!\n"
+  (forward)
+    if [[ -s "${zshenv_loc}" && ! "$(<"${zshenv_loc}")" =~ 'DeLorean' ]]; then
+      if read -q "?Backup ${zshenv_loc} and proceed [y/N]? " && print; then
+        {
+          ${zshenv_su} mv -v "${zshenv_loc}"{,.past}
+        } || {
+          print "Backup failed for ${zshenv_loc}. Move it away and try again." >&2
+          exit 1
+        }
+      else
+        print "\n${prog_name}: Aborting temporal displacement!\n"
+        exit 1
+      fi
+    fi
+
+    {
+      local zshenv_schema="${"$(<"$prog_home/schematic/zshenv.${zshenv_ext}")"//__ZDOTDIR__/"$prog_home/ZDOTDIR"}"
+      print "${zshenv_schema}" | ${zshenv_su} tee "${zshenv_loc}" >/dev/null
+    } || {
+      print "Failed temporal displacement of ${zshenv_loc}." >&2
+      exit 1
+    }
+    ;;
+
+  #
+  # Undo the past.
+  #
+
+  (reverse)
+    if [[ -s "${zshenv_loc}" && "$(<"${zshenv_loc}")" =~ 'DeLorean' ]]; then
+      {
+        if [[ -s "${zshenv_loc}.past" ]]; then
+          ${zshenv_su} mv -f -v "${zshenv_loc}"{.past,}
+        else
+          ${zshenv_su} rm "${zshenv_loc}"
+        fi
+      } || {
+        print "Failed to rewind the hands of time for ${zshenv_loc}." >&2
+        exit 1
+      }
+    fi
+
+    print "\n${prog_name}: Reversed "${zshenv_loc}" changes. Welcome to the past!\n"
+    exit 0
+    ;;
+
+  #
+  # Command not yet invented. Maybe wait a couple more years.
+  #
+
+  (*)
+    print "${prog_name}: unknown command: $@" >&2
+    print "${usage}" >&2
     exit 1
-  fi
-fi
-
-local zshenv_schema="${"$(<"${0:a:h}/schematic/zshenv.${zshenv_ext}")"//__ZDOTDIR__/"${0:a:h}/ZDOTDIR"}"
-print "${zshenv_schema}" | $([[ "$zshenv_ext" == 'system' ]] && print 'sudo') tee "${zshenv_loc}" >/dev/null
+esac
 
 #
 # Critical velocity has been reached (88 MPH)!
 #
 
-[[ "$(<"${0:a:h}/README.md")" =~ '```DeLorean(.*)```' ]] && print -f "%s\n" "${match[1]}"
+[[ "$(<"$prog_home/README.md")" =~ '```DeLorean(.*)```' ]] && print -f "%s\n" "${match[1]}"
 
 if (( $+commands[afplay] )); then
-  afplay "${0:a:h}/.github/bttf.wav" 2>&1 >/dev/null &
+  afplay "$prog_home/.github/bttf.wav" 2>&1 >/dev/null &
 elif (( $+commands[aplay] )); then
-  aplay -t wav "${0:a:h}/.github/bttf.wav" 2>&1 >/dev/null &
+  aplay -t wav "$prog_home/.github/bttf.wav" 2>&1 >/dev/null &
 fi
 
 NOFORTUNE=1 JIGOWATTS=1.21 exec "$SHELL" -l
