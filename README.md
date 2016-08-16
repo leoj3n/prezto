@@ -1,4 +1,7 @@
-# DeLorean
+<img width="207px" align="right" src=".github/DeLorean.jpg"/>
+
+DeLorean
+--------
 
 Bringing your [Zsh][] config back to the future!
 
@@ -33,37 +36,15 @@ DeLorean loads only the circuits that have been enabled in [`flux-capacitor.zsh`
 License
 -------
 
-(The MIT License)
-
-Copyright (c) 2009-2011 Robby Russell and contributors.
-
-Copyright (c) 2011-2015 Sorin Ionescu and contributors.
+[![MIT License](https://img.shields.io/:license-MIT-blue.svg?)](https://tldrlegal.com/l/mit)
 
 Copyright (c) 2015-2016 Joel Kuzmarski.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
+Copyright (c) 2011-2015 Sorin Ionescu and contributors.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
+Copyright (c) 2009-2011 Robby Russell and contributors.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-```brainfuck
+```DeLorean
    __---~~~~--__                      __--~~~~---__
   `\---~~~~~~~~\\                    //~~~~~~~~---/'
     \/~~~~~~~~~\||                  ||/~~~~~~~~~\/
@@ -89,7 +70,7 @@ SOFTWARE.
     you're going to see some serious shit!
 ```
 
-Thanks to @spcmd for the DeLorean ascii art.
+Thanks to [@spcmd][] for the DeLorean ascii art.
 
 [Zsh]: http://www.zsh.org
 [git]: ZDOTDIR/circuits/git
@@ -108,10 +89,9 @@ Thanks to @spcmd for the DeLorean ascii art.
 [wordpress]: ZDOTDIR/circuits/wordpress
 [macvim]: ZDOTDIR/circuits/macvim
 [pwsafe]: ZDOTDIR/circuits/pwsafe
-[3n theme]: ZDOTDIR/circuits/prompt/functions/prompt_3n_setup
-[home]: home
-[homeshick]: https://github.com/andsens/homeshick
+[fzf]: ZDOTDIR/circuits/fzf
 [`flux-capacitor.zsh`]: ZDOTDIR/flux-capacitor.zsh 
 [pure]: ZDOTDIR/circuits/prompt
 [sorin]: ZDOTDIR/circuits/prompt
 [powerlevel9k]: ZDOTDIR/circuits/prompt
+[@spcmd]: https://github.com/spcmd

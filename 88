@@ -73,7 +73,7 @@ print "${zshenv_schema}" | $([[ "$zshenv_ext" == 'system' ]] && print 'sudo') te
 # Use the new shell.
 #
 
-[[ "$(<"${0:a:h}/README.md")" =~ '```brainfuck(.*)```' ]] && printf "${match[1]}"
+[[ "$(<"${0:a:h}/README.md")" =~ '```DeLorean(.*)```' ]] && printf "${match[1]}"
 
 if (( $+commands[afplay] )); then
   afplay "${0:a:h}/.github/bttf.wav" 2>&1 >/dev/null &
