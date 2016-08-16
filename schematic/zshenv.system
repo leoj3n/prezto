@@ -1,17 +1,20 @@
 #
 # Sets $ZDOTDIR to the DeLorean location. 
 #
-# This file created as /etc/zshenv when the DeLorean hits 88 MPH, and
-# should not be edited. Instead, edit .zshenv inside the DeLorean:
-#
-# __ZDOTDIR__/.zshenv
-#
-# Zsh's default behavior for system-level zshenv is to source the
-# .zshenv inside the $ZDOTDIR, so the .zshenv inside the DeLorean
-# will be sourced automatically.
-#
 # Authors:
 #   Joel Kuzmarski <leoj3n@gmail.com>
 #
+
+################################################################################
+# NOTE TO SELF FROM THE FUTURE:
+#
+# This file materialized as /etc/zshenv when the DeLorean hit 88 MPH, and should
+# not be edited. Instead, edit .zshenv inside the DeLorean's ZDOTDIR:
+#
+# __ZDOTDIR__/.zshenv
+#
+# Zsh's default behavior for system-wide zshenv is to source the first .zshenv
+# found in $ZDOTDIR or $HOME, so the DeLorean .zshenv is sourced automatically.
+################################################################################
 
 export ZDOTDIR="__ZDOTDIR__"
