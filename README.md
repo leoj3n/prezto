@@ -1,4 +1,4 @@
-<img width="207px" align="right" src=".github/DeLorean.jpg"/>
+<img width="666px" align="right" src=".github/DeLorean.jpg"/>
 
 DeLorean
 --------
