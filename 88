@@ -8,32 +8,59 @@ local prog_home="${0:A:h}"
 ################################################################################
 
 #
-# Disallow sudo to keep the space-time continuum intact.
+# Disallow sudo, in order to keep the space-time continuum intact.
 #
 
-(( EUID == 0 )) && print "
+(( EUID == 0 )) && {
+cat <<EOF >&2
+
 ${prog_name}: An encounter with sudo could create a time paradox.
 
 The results of which could cause a chain reaction that would unravel the
 very fabric of the space-time continuum and destroy the entire universe!
+
 ... Granted, that's the worst-case scenario. The destruction however
 might be limited merely to our own galaxy.
-" >&2 && exit 1
+
+EOF
+} && exit 1
+
+#
+# Are we in the modern era?
+#
+
+local min_zsh_version='5.1'
+if ! autoload -Uz is-at-least || ! is-at-least "$min_zsh_version"; then
+  cat <<EOF >&2
+
+DeLorean: Prehistoric Zsh version detected!
+Plutonium not invented until Zsh version: ${min_zsh_version}
+Please install at least version ${min_zsh_version} of Zsh.
+
+EOF
+  return 1
+fi
 
 #
 # Usage, or, What does this button do!?
 #
 
-local usage="
+function usage {
+  cat <<EOF >&2
+
 usage: ${prog_name} [-option ...] [--] command
 
 options:
   -s         System-wide installation (/etc/zshenv instead of ~/.zshenv).
+  -q         Quiet -- don't play the awesome theme music on success.
 
 commands:
   forward    Drives the latest version into place.
   reverse    Backs out the changes made by DeLorean.
-"
+
+EOF
+  exit 1
+}
 
 ################################################################################
 # Setup
@@ -46,36 +73,58 @@ commands:
 local zshenv_su
 local zshenv_ext='user'
 local zshenv_loc="${HOME}/.zshenv"
+local quiet=false
 
 #
 # Get options.
 #
 
-while getopts ':s' opt; do
+while getopts ':sq' opt; do
   case "${opt}" in
     (s)
-      zshenv_su='sudo'
+      zshenv_su=true
       zshenv_ext='system'
       zshenv_loc="/etc/zshenv"
-      ;;
+    ;;
+    (q)
+      quiet=true
+    ;;
     (:)
       print "${prog_name}: option requires an argument: ${OPTARG}" >&2
-      print "${usage}" >&2
-      exit 1
-      ;;
+      usage
+    ;;
     ([?])
       print "${prog_name}: unknown option: ${OPTARG}" >&2
-      print "${usage}" >&2
-      exit 1
+      usage
     ;;
   esac
 done
 shift $((OPTIND - 1))
 
-if (( $# < 1 )); then
-  print "${usage}" >&2
-  exit 1
-fi
+(( $# < 1 )) && usage
+
+#
+# Helpers.
+#
+
+builtin alias try='tryblock ()'
+builtin alias catch='tryblock ||'
+
+function schematic {
+  local in="$1"; local out="$2"; local su="$3"
+  local schema="${"$(<"$prog_home/schematic/${in}")"//__ZDOTDIR__/"$prog_home/ZDOTDIR"}"
+  print "${schema}" | ${su:+sudo} tee "${out}" >/dev/null
+  zsetattr "${out}" 'epoch' "$(stat -f "%m" "${out}" 2>/dev/null)" &>/dev/null
+}
+
+#
+# When did we last touch zshenv?
+#
+
+zmodload zsh/attr
+local zshenv_epoch
+zgetattr "${zshenv_loc}" 'epoch' zshenv_epoch &>/dev/null
+local zshenv_stat="$(stat -f "%m" "${zshenv_loc}" 2>/dev/null)"
 
 ################################################################################
 # Run
@@ -88,59 +137,113 @@ case "$@" in
   #
 
   (forward)
-    if [[ -s "${zshenv_loc}" && ! "$(<"${zshenv_loc}")" =~ 'DeLorean' ]]; then
-      if read -q "?Backup ${zshenv_loc} and proceed [y/N]? " && print; then
-        {
-          ${zshenv_su} mv -v "${zshenv_loc}"{,.past}
-        } || {
-          print "Backup failed for ${zshenv_loc}. Move it away and try again." >&2
+    # if zshenv already exists
+    if (( zshenv_stat )); then
+      # and was created by us
+      if (( zshenv_epoch )); then
+        # but has been tampered with
+        if (( zshenv_epoch != zshenv_stat )); then
+          cat <<EOF >&2
+
+${zshenv_loc} has been modified since the last temporal displacement!
+
+Copy changes you intend to keep from:
+
+${zshenv_loc} -> ${prog_home}/ZDOTDIR/.zshenv
+
+Then remove ${zshenv_loc} and try again.
+
+EOF
+          exit 1
+        fi
+      # or, it was not created by us
+      elif read -q "?Backup ${zshenv_loc} and proceed [y/N]? " && print; then
+        [[ ! -s "${zshenv_loc}.past" ]] && ${zshenv_su:+sudo} mv -v "${zshenv_loc}"{,.past} || {
+          cat <<EOF >&2
+
+Backup failed for ${zshenv_loc}. Move it away and try again.
+
+EOF
           exit 1
         }
+      # or, the user chose to abort
       else
-        print "\n${prog_name}: Aborting temporal displacement!\n"
+        cat <<EOF >&2
+
+
+${prog_name}: Aborting temporal displacement of ${zshenv_loc}
+
+EOF
         exit 1
       fi
     fi
 
-    {
-      local zshenv_schema="${"$(<"$prog_home/schematic/zshenv.${zshenv_ext}")"//__ZDOTDIR__/"$prog_home/ZDOTDIR"}"
-      print "${zshenv_schema}" | ${zshenv_su} tee "${zshenv_loc}" >/dev/null
-    } || {
-      print "Failed temporal displacement of ${zshenv_loc}." >&2
+    # perform displacement
+    if ! schematic "zshenv.${zshenv_ext}" "${zshenv_loc}" $zshenv_su; then
+      cat <<EOF >&2
+
+Temporal displacement of ${zshenv_loc} has failed.
+
+EOF
       exit 1
-    }
-    ;;
+    fi
+  ;;
 
   #
   # Undo the past.
   #
 
   (reverse)
-    if [[ -s "${zshenv_loc}" && "$(<"${zshenv_loc}")" =~ 'DeLorean' ]]; then
-      {
-        if [[ -s "${zshenv_loc}.past" ]]; then
-          ${zshenv_su} mv -f -v "${zshenv_loc}"{.past,}
-        else
-          ${zshenv_su} rm "${zshenv_loc}"
+    if (( zshenv_stat )); then
+      if (( zshenv_epoch )); then
+        if (( zshenv_epoch != zshenv_stat )); then
+
+          if ! read -q "?Remove ${zshenv_loc} even though it has unsaved changes [y/N]? " && print; then
+            cat <<EOF >&2
+
+${prog_name}: Aborting removal of ${zshenv_loc}
+
+EOF
+            exit 1
+          fi
+          print
+
         fi
-      } || {
-        print "Failed to rewind the hands of time for ${zshenv_loc}." >&2
-        exit 1
-      }
+
+        if [[ -s "${zshenv_loc}.past" ]]; then
+          ${zshenv_su:+sudo} mv -f -v "${zshenv_loc}"{.past,}
+        else
+          ${zshenv_su:+sudo} rm "${zshenv_loc}"
+        fi
+
+        if (( $? != 0 )); then
+          cat <<EOF >&2
+
+Failed to rewind the hands of time for ${zshenv_loc}
+
+EOF
+          exit 1
+        fi
+
+      fi
     fi
 
-    print "\n${prog_name}: Reversed "${zshenv_loc}" changes. Welcome to the past!\n"
+    cat <<EOF >&2
+
+${prog_name}: Successfully reversed ${zshenv_loc} to its original state. Welcome to the past!
+
+EOF
     exit 0
-    ;;
+  ;;
 
   #
-  # Command not yet invented. Maybe wait a couple more years.
+  # Command not yet invented. Maybe wait until 2025?
   #
 
   (*)
     print "${prog_name}: unknown command: $@" >&2
-    print "${usage}" >&2
-    exit 1
+    usage
+  ;;
 esac
 
 #
@@ -149,10 +252,25 @@ esac
 
 [[ "$(<"$prog_home/README.md")" =~ '```DeLorean(.*)```' ]] && print -f "%s\n" "${match[1]}"
 
-if (( $+commands[afplay] )); then
-  afplay "$prog_home/.github/bttf.wav" 2>&1 >/dev/null &
-elif (( $+commands[aplay] )); then
-  aplay -t wav "$prog_home/.github/bttf.wav" 2>&1 >/dev/null &
+if ! $quiet; then
+  if (( $+commands[afplay] )); then
+    afplay "$prog_home/.github/bttf.wav" &>/dev/null &
+  elif (( $+commands[aplay] )); then
+    aplay -t wav "$prog_home/.github/bttf.wav" &>/dev/null &
+  fi
 fi
 
-NOFORTUNE=1 JIGOWATTS=1.21 exec "$SHELL" -l
+#
+# Prompt user to start using futuristic Zsh technology if not already.
+#
+
+if [ "$(expr "$SHELL" : '.*/\(.*\)')" != "zsh" ]; then
+  if (( $+commands[chsh] )); then
+    print "Time to change the default shell to zsh!"
+    chsh -s $(grep /zsh$ /etc/shells | tail -1)
+  else
+    printf "Please manually change your default shell to zsh!\n"
+  fi
+fi
+
+NOFORTUNE=1 JIGOWATTS=1.21 env zsh -l

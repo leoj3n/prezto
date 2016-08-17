@@ -35,7 +35,7 @@ zstyle ':delorean:*:*' color 'yes'
 #zstyle ':delorean:load' zfunction 'chpwd_recent_dirs' 'cdr' 'add-zsh-hook'
 
 #
-# Set the fpath files to blacklist.
+# Set which fpath files to blacklist.
 #
 
 zstyle ':delorean:circuit:fpath' blacklist \

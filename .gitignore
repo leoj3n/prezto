@@ -1,4 +1,4 @@
 *.zwc
 *.zwc.old
 .zhistory
-engines/*/cache.zsh
+ZDOTDIR/circuits/*/cache.zsh

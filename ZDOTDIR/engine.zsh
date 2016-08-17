@@ -1,5 +1,7 @@
 #
-# Activates circuits and loads Zsh modules.
+# Triggers the flux capacitor to use circuits and load Zsh modules.
+#
+# Roads? Where we're going, we don't need roads.
 #
 # Authors:
 #   Joel Kuzmarski <leoj3n@gmail.com>
@@ -11,16 +13,17 @@
 ################################################################################
 
 #
-# Version check.
+# Are we in the modern era?
 #
 
-# Make sure we're not too far in the past, and that plutonium is available.
 min_zsh_version='5.1'
 if ! autoload -Uz is-at-least || ! is-at-least "$min_zsh_version"; then
-  print "
-DeLorean: Too far in the past!
-Plutonium isn't available until Zsh version: $min_zsh_version
-" >&2
+  cat <<EOF >&2
+
+DeLorean: Prehistoric Zsh version detected!
+Plutonium not invented until Zsh version: ${min_zsh_version}
+
+EOF
   return 1
 fi
 unset min_zsh_version
@@ -126,7 +129,7 @@ function load {
 }
 
 #
-# Prints the chronal location on a single line.
+# Prints the chronal location on a single timeline.
 #
 
 function load_status {
@@ -154,7 +157,7 @@ function load_status {
 ################################################################################
 
 #
-# Enable flux capacitor.
+# Trigger flux capacitor.
 #
 
 if [[ -s "${ZDOTDIR}/flux-capacitor.zsh" ]]; then
@@ -187,12 +190,10 @@ for zfunction ("$zfunctions[@]") autoload -Uz "$zfunction"
 unset zfunction{s,}
 
 #
-# Use circuits set by the flux capacitor.
+# Circuits used by the flux capacitor.
 #
 
 zstyle -a ':delorean:load' circuit 'circuits'
 boot "$circuits[@]"
 load "$circuits[@]"
 unset circuits
-
-# Roads? Where we're going, we don't need roads.
