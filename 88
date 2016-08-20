@@ -1,12 +1,23 @@
 #!/usr/bin/env zsh
 
-local prog_name="${0:t}"
-local prog_home="${0:A:h}"
+if [ -z "${ZSH_VERSION}" ]; then
+  cat <<EOF >&2
 
-if ! [[ $ZSH_EVAL_CONTEXT == 'toplevel' ]]; then
+You may only source this script from within a Zsh session.
+
+Try running it instead: ./88 -c future
+
+EOF
+  return 1
+fi
+
+if ! [[ "${ZSH_EVAL_CONTEXT}" == 'toplevel' ]]; then
   set -- "-q" "future"
   alias exit='return'
 fi
+
+prog_name="${0:t}"
+prog_home="${0:A:h}"
 
 ################################################################################
 # Help
@@ -34,11 +45,11 @@ EOF
 # Are we in the modern era?
 #
 
-local min_zsh_version='5.0'
-if ! autoload -Uz is-at-least || ! is-at-least "$min_zsh_version"; then
+min_zsh_version='5.0'
+if ! autoload -Uz is-at-least || ! is-at-least "${min_zsh_version}"; then
   cat <<EOF >&2
 
-DeLorean: Prehistoric Zsh version detected!
+${prog_name}: Prehistoric Zsh version detected!
 Plutonium not invented until Zsh version: ${min_zsh_version}
 Please install at least version ${min_zsh_version} of Zsh.
 
