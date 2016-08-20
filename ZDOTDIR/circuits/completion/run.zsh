@@ -14,8 +14,17 @@ fi
 # Add zsh-completions to $fpath.
 fpath=("${0:h}/external/src" $fpath)
 
+#
 # Load the completion system ignoring insecure directories.
-autoload -Uz compinit && compinit -i -C -d "${ZCOMPDUMP}"
+#
+
+autoload -Uz compinit
+
+if [[ -z "${ZCOMPDUMP}" ]]; then
+  compinit -i
+else
+  compinit -i -C -d "${ZCOMPDUMP}"
+fi
 
 #
 # Options

@@ -1,9 +1,9 @@
 Modules
 =======
 
-Load modules in *zpreztorc*. The order matters.
+Load modules in *ZDOTDIR/flux-capacitor.zsh*. The order matters.
 
-    zstyle ':delorean:load' pmodule 'environment' 'terminal'
+    zstyle ':delorean:run' circuit 'environment' 'terminal'
 
 Archive
 -------

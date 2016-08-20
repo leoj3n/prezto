@@ -9,7 +9,7 @@
 #
 
 # Load dependencies.
-load 'helper' 'spectrum'
+run 'helper' 'spectrum'
 
 # Correct commands.
 setopt CORRECT
@@ -63,7 +63,7 @@ alias t='type'
 function w3md() {
   multimarkdown "$1" | w3m -T 'text/html'
 }
-grab() {     
+grab() {
   grab="$(eval "$@")"
   echo ${grab}
 }
@@ -271,8 +271,8 @@ function wat() {
   echo
   type "$1"
   echo
-  echo 'which:'
-  echo '------'
+  echo 'which -a:'
+  echo '---------'
   echo
   which -a "$1"
   echo
@@ -282,4 +282,3 @@ function wat() {
   command -v "$1"
   echo
 }
-

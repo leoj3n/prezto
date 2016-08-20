@@ -30,7 +30,7 @@
 #
 
 # Load dependencies.
-load 'helper'
+run 'helper'
 
 function prompt_sorin_pwd {
   local pwd="${PWD/#$HOME/~}"

@@ -9,13 +9,16 @@
 # Setup
 ################################################################################
 
+ZCOMPDUMP="${TMPPREFIX}-zcompdump_${ZSH_VERSION}"
+FLATFPATH="${TMPPREFIX}-fpath_${ZSH_VERSION}"
+
 #
 # Obliterate compiled files if we are time traveling.
 #
 
 if (( $+JIGOWATTS )); then
   [[ -s "${ZCOMPDUMP}" ]] && rm "${ZCOMPDUMP}"
-  [[ -d "${TMPPREFIX}/fpath" ]] && rm -r "${TMPPREFIX}/fpath"
+  [[ -d "${FLATFPATH}" ]] && rm -r "${FLATFPATH}"
 fi
 
 ################################################################################
@@ -27,18 +30,16 @@ fi
 #
 
 function fpath-flatten {
-  if [[ ! -d "${TMPPREFIX}/fpath" ]]; then
+  if [[ ! -d "${FLATFPATH}" ]]; then
     zstyle -a ':delorean:circuit:fpath' blacklist 'blacklist'
     blacklist="^(${(j:|:)blacklist})"
-    mkdir -p "${TMPPREFIX}/fpath" || return 1
+
+    mkdir -p "${FLATFPATH}" || return 1
+
     setopt LOCAL_OPTIONS EXTENDED_GLOB
-    (
-      local fp
-      for fp ("$fpath[@]") cp -n "${fp}/"$~blacklist "${TMPPREFIX}/fpath"
-    )
-    echo status is $?
+    local fp; for fp ("$fpath[@]") cp -n "${fp}/"$~blacklist "${FLATFPATH}"
+    [[ -s "${FLATFPATH}/compinit" ]] || return 1
   fi
-  return 0
 }
 
 #
@@ -47,11 +48,8 @@ function fpath-flatten {
 
 function fpath-regen {
   if [[ ! -s "${ZCOMPDUMP}" ]]; then
-    autoload -Uz compinit && compinit -i -d "${ZCOMPDUMP}"
-    zcompile "${ZCOMPDUMP}"
-    echo status is $?
+    autoload -Uz compinit && compinit -i -d "${ZCOMPDUMP}" && zcompile "${ZCOMPDUMP}"
   fi
-  return 0
 }
 
 #
@@ -59,7 +57,7 @@ function fpath-regen {
 #
 
 if fpath-flatten && fpath-regen; then
-  fpath=("${TMPPREFIX}/fpath")
+  fpath=("${FLATFPATH}")
 else
   print "DeLorean[fpath]: Could not materialize files (fpath is unchanged)." >&2
   return 1
