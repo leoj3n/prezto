@@ -61,7 +61,7 @@ zstyle ':delorean:circuit:fpath' blacklist \
 # The sequence matters.
 #
 
-zstyle ':delorean:load' circuit \
+zstyle ':delorean:run' circuit \
   'fpath' \
   'environment' \
   'utility' \

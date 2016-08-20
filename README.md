@@ -27,7 +27,7 @@ Circuits
   16. [pwsafe][]
   17. [fzf][]
 
-DeLorean uses only the circuits that have been set in [`flux-capacitor.zsh`][].
+DeLorean only runs the circuits that have been defined in [`flux-capacitor.zsh`][].
 
 Themes
 ------

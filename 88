@@ -29,7 +29,7 @@ EOF
 # Are we in the modern era?
 #
 
-local min_zsh_version='5.1'
+local min_zsh_version='5.0'
 if ! autoload -Uz is-at-least || ! is-at-least "$min_zsh_version"; then
   cat <<EOF >&2
 
@@ -51,12 +51,13 @@ function usage {
 usage: ${prog_name} [-option ...] [--] command
 
 options:
-  -s         System-wide installation (/etc/zshenv instead of ~/.zshenv).
-  -q         Quiet -- don't play the awesome theme music on success.
+  -s         System-wide (/etc/zshenv instead of ~/.zshenv).
+  -q         Quietly suppress theme music and ascii art.
+  -c         Change the default login shell to Zsh.
 
 commands:
-  forward    Drives the latest version into place.
-  reverse    Backs out the changes made by DeLorean.
+  future     Send your Zsh into the future!
+  past       Travel back to how things were, before DeLorean.
 
 EOF
   exit 1
@@ -70,24 +71,25 @@ EOF
 # Defaults.
 #
 
-local zshenv_su
 local zshenv_ext='user'
 local zshenv_loc="${HOME}/.zshenv"
-local quiet=false
 
 #
 # Get options.
 #
 
-while getopts ':sq' opt; do
+while getopts ':sqc' opt; do
   case "${opt}" in
     (s)
-      zshenv_su=true
+      local zshenv_su='yes'
       zshenv_ext='system'
       zshenv_loc="/etc/zshenv"
     ;;
     (q)
-      quiet=true
+      local quiet='yes'
+    ;;
+    (c)
+      local change='yes'
     ;;
     (:)
       print "${prog_name}: option requires an argument: ${OPTARG}" >&2
@@ -104,17 +106,28 @@ shift $((OPTIND - 1))
 (( $# < 1 )) && usage
 
 #
-# Helpers.
+# Helper functions.
 #
 
-builtin alias try='tryblock ()'
-builtin alias catch='tryblock ||'
-
 function schematic {
-  local in="$1"; local out="$2"; local su="$3"
-  local schema="${"$(<"$prog_home/schematic/${in}")"//__ZDOTDIR__/"$prog_home/ZDOTDIR"}"
+  local in="${prog_home}/schematic/$1" out="$2" su="$3"
+  if ! [[ -f "${in}" ]]; then
+    cat <<EOF >&2
+
+Schematic file${in:+ "$1"} seems to have been lost in space and time!
+EOF
+    return 1
+  fi
+  if [[ -s "${out}" ]]; then
+    cat <<EOF >&2
+
+Schematic destination ${out} conflicts with an existing file!
+EOF
+    return 1
+  fi
+  local schema="${"$(<"${in}")"//__ZDOTDIR__/"${prog_home}/ZDOTDIR"}"
   print "${schema}" | ${su:+sudo} tee "${out}" >/dev/null
-  zsetattr "${out}" 'epoch' "$(stat -f "%m" "${out}" 2>/dev/null)" &>/dev/null
+  ${su:+sudo} zsh -c "zmodload zsh/attr; zsetattr ${out} 'epoch' $(stat -f '%m' ${out})" &>/dev/null
 }
 
 #
@@ -136,7 +149,7 @@ case "$@" in
   # Attempt temporal displacement of zshenv.
   #
 
-  (forward)
+  (future)
     # if zshenv already exists
     if (( zshenv_stat )); then
       # and was created by us
@@ -179,6 +192,7 @@ EOF
     fi
 
     # perform displacement
+    [[ -f "${zshenv_loc}" ]] && ${zshenv_su:+sudo} rm "${zshenv_loc}"
     if ! schematic "zshenv.${zshenv_ext}" "${zshenv_loc}" $zshenv_su; then
       cat <<EOF >&2
 
@@ -187,13 +201,17 @@ Temporal displacement of ${zshenv_loc} has failed.
 EOF
       exit 1
     fi
+
+    # perform optional displacement of user files
+    local rcs=('.zshenv' '.zprofile' '.zshrc' '.zlogin' '.zlogout')
+    for rc ("$rcs[@]") schematic "${rc}" "${prog_home}/ZDOTDIR/${rc}" 2>/dev/null
   ;;
 
   #
-  # Undo the past.
+  # Travel back to the past.
   #
 
-  (reverse)
+  (past)
     if (( zshenv_stat )); then
       if (( zshenv_epoch )); then
         if (( zshenv_epoch != zshenv_stat )); then
@@ -211,6 +229,11 @@ EOF
         fi
 
         if [[ -s "${zshenv_loc}.past" ]]; then
+    cat <<EOF >&2
+
+${prog_name}: Reverting ${zshenv_loc} to its original state.
+
+EOF
           ${zshenv_su:+sudo} mv -f -v "${zshenv_loc}"{.past,}
         else
           ${zshenv_su:+sudo} rm "${zshenv_loc}"
@@ -230,7 +253,7 @@ EOF
 
     cat <<EOF >&2
 
-${prog_name}: Successfully reversed ${zshenv_loc} to its original state. Welcome to the past!
+${prog_name}: Welcome to the past!
 
 EOF
     exit 0
@@ -250,9 +273,8 @@ esac
 # Critical velocity has been reached (88 MPH)!
 #
 
-[[ "$(<"$prog_home/README.md")" =~ '```DeLorean(.*)```' ]] && print -f "%s\n" "${match[1]}"
-
-if ! $quiet; then
+if (( ! $+quiet )); then
+  [[ "$(<"$prog_home/README.md")" =~ '```DeLorean(.*)```' ]] && print -f "%s\n" "${match[1]}"
   if (( $+commands[afplay] )); then
     afplay "$prog_home/.github/bttf.wav" &>/dev/null &
   elif (( $+commands[aplay] )); then
@@ -261,16 +283,97 @@ if ! $quiet; then
 fi
 
 #
-# Prompt user to start using futuristic Zsh technology if not already.
+# Prompt user to use Zsh as default login shell?
 #
 
-if [ "$(expr "$SHELL" : '.*/\(.*\)')" != "zsh" ]; then
-  if (( $+commands[chsh] )); then
-    print "Time to change the default shell to zsh!"
-    chsh -s $(grep /zsh$ /etc/shells | tail -1)
+if (( $+change )); then
+  if ! [[ "${SHELL}" =~ "zsh" ]]; then
+    if (( $+commands[chsh] )); then
+      cat <<EOF >&2
+
+Time to change the default shell to Zsh!
+
+EOF
+      GREP_ZSH="$(grep /zsh$ /etc/shells | tail -1)"
+      # Will it blend?
+      if "$GREP_ZSH" -c 'exit 0' >/dev/null 2>&1; then
+        # Yep, let's use that zsh entry.
+        CHSH_ZSH="$GREP_ZSH"
+        while true; do
+          trap 'CHSH_ZSH_ERRNO=$?' INT
+          CHSH_ZSH_STDERR="$(chsh -s "${CHSH_ZSH}" 2>&1)"
+          CHSH_ZSH_ERRNO=${CHSH_ZSH_ERRNO-$?}
+          case $CHSH_ZSH_ERRNO in
+            0)
+              # Great. It worked.
+              # Update the $SHELL export for this session.
+              SHELL="${CHSH_ZSH}"
+              cat <<EOF >&2
+
+Default login shell is now ${SHELL}
+
+EOF
+              break
+            ;;
+            130)
+              cat <<EOF >&2
+
+Change of default login shell has been cancelled!
+To try again, run the following command at any time:
+    chsh -s "${CHSH_ZSH}"
+
+EOF
+              break
+            ;;
+            *)
+              case "${CHSH_ZSH_STDERR}" in
+                *Credentials*)
+                  cat <<EOF >&2
+
+Wrong password. Press CTRL-C to cancel.
+
+EOF
+                ;;
+                *)
+                  cat <<EOF >&2
+
+There was a problem changing the default login shell:
+
+${CHSH_ZSH_STDERR}
+
+EOF
+                  break
+                ;;
+              esac
+            ;;
+          esac
+          trap - INT
+        done
+      else
+        # Nope, it's a bogus path.
+        cat <<EOF >&2
+
+I can't change your shell automatically because there is a bad zsh entry in /etc/shells.
+
+EOF
+      fi
+    # Else, suggest the user change the login shell manually.
+    else
+      cat <<EOF >&2
+
+I can't change your shell automatically because this system does not have chsh.
+Please manually change your default login shell to ${CHSH_ZSH}!
+
+EOF
+    fi
   else
-    printf "Please manually change your default shell to zsh!\n"
+    cat <<EOF >&2
+
+Default login shell is already ${SHELL}
+
+EOF
   fi
 fi
 
-NOFORTUNE=1 JIGOWATTS=1.21 env zsh -l
+export JIGOWATTS=1.21 
+exec zsh -l

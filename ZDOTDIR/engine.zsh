@@ -1,5 +1,5 @@
 #
-# Triggers the flux capacitor to use circuits and load Zsh modules.
+# Triggers the flux capacitor to run DeLorean circuits and load Zsh modules.
 #
 # Roads? Where we're going, we don't need roads.
 #
@@ -16,7 +16,7 @@
 # Are we in the modern era?
 #
 
-min_zsh_version='5.1'
+min_zsh_version='5.0'
 if ! autoload -Uz is-at-least || ! is-at-least "$min_zsh_version"; then
   cat <<EOF >&2
 
@@ -40,7 +40,7 @@ function boot {
   local circuit
 
   for circuit in "$argv[@]"; do
-    if zstyle -t ":delorean:circuit:$circuit" loaded 'yes' 'no'; then
+    if zstyle -t ":delorean:circuit:$circuit" running 'yes' 'no'; then
       continue
     elif [[ -s "${ZDOTDIR}/circuits/$circuit/boot.zsh" ]]; then
       source "${ZDOTDIR}/circuits/$circuit/boot.zsh"
@@ -50,15 +50,15 @@ function boot {
   # Welcome to 1985.
   if (( JIGOWATTS == 1.21 )); then
     unset JIGOWATTS
-    exec "$SHELL" -l
+    exec zsh
   fi
 }
 
 #
-# Loads the circuits.
+# Runs the circuits.
 #
 
-function load {
+function run {
   local -a circuits
   local circuit
   local capability_glob='^([_.]*|prompt_*_setup|README*)(-.N:t)'
@@ -82,26 +82,26 @@ function load {
   }
 
   local past=1
-  local future=$((${#circuits}+1))
+  local future=$(( ${#circuits} + 1 ))
 
-  # Attempt circuit load.
+  # Attempt to run each circuit.
   for circuit in "$circuits[@]"; do
-    if zstyle -t ":delorean:circuit:$circuit" loaded 'yes' 'no'; then
+    if zstyle -t ":delorean:circuit:$circuit" ran 'yes' 'no'; then
       continue
     elif [[ ! -d "${ZDOTDIR}/circuits/$circuit" ]]; then
       print "$0: no such circuit: $circuit" >&2
       continue
     else
-      load_status "${circuit}" $(( past++ )) $future 
+      run_status "${circuit}" $(( past++ )) $future 
 
-      if [[ -s "${ZDOTDIR}/circuits/$circuit/load.zsh" ]]; then
-        source "${ZDOTDIR}/circuits/$circuit/load.zsh"
+      if [[ -s "${ZDOTDIR}/circuits/$circuit/run.zsh" ]]; then
+        source "${ZDOTDIR}/circuits/$circuit/run.zsh"
       fi
 
       if (( $? == 0 )); then
-        zstyle ":delorean:circuit:$circuit" loaded 'yes'
+        zstyle ":delorean:circuit:$circuit" running 'yes'
       else
-        load_status 'Great Scott! Circuit blew a fuse.'
+        run_status "Great Scott! The ${circuit} circuit blew a fuse."
 
         # Remove the $fpath entry.
         fpath[(r)${ZDOTDIR}/circuits/${circuit}/capabilities]=()
@@ -112,16 +112,16 @@ function load {
           # Extend globbing for listing directories.
           setopt LOCAL_OPTIONS EXTENDED_GLOB
 
-          # Unload circuit capabilities.
+          # Remove circuit capabilities.
           for capability in ${ZDOTDIR}/circuits/$circuit/capabilities/$~capability_glob; do
             unfunction "$capability"
           done
         }
 
-        zstyle ":delorean:circuit:$circuit" loaded 'no'
+        zstyle ":delorean:circuit:$circuit" running 'no'
       fi
 
-      load_status
+      run_status
     fi
   done
 
@@ -132,7 +132,7 @@ function load {
 # Prints the chronal location on a single timeline.
 #
 
-function load_status {
+function run_status {
   (( $+3 )) && CONTINUUM+=("$1")
   local circuit="${(j:/:)CONTINUUM}"
   local len=1
@@ -190,10 +190,10 @@ for zfunction ("$zfunctions[@]") autoload -Uz "$zfunction"
 unset zfunction{s,}
 
 #
-# Circuits used by the flux capacitor.
+# Run the circuits defined by the flux capacitor.
 #
 
-zstyle -a ':delorean:load' circuit 'circuits'
+zstyle -a ':delorean:run' circuit 'circuits'
 boot "$circuits[@]"
-load "$circuits[@]"
+run "$circuits[@]"
 unset circuits

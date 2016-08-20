@@ -178,9 +178,7 @@ if [[ ! -d "$TMPDIR" ]]; then
   mkdir -p -m 700 "$TMPDIR"
 fi
 
-TMPPREFIX="${TMPDIR%/}/zsh"
-
-ZCOMPDUMP="${TMPPREFIX}/.zcompdump_${ZSH_VERSION}_${USER}"
+export TMPPREFIX="${TMPDIR%/}/zsh"
 
 ###############################################################################
 # Sources

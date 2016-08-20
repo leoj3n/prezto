@@ -3,10 +3,9 @@
 #
 # Authors:
 #   Joel Kuzmarski <leoj3n@gmail.com>
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
-# Ensure that a non-login, non-interactive shell has a defined environment.
-if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR}/.zprofile" ]]; then
-  source "${ZDOTDIR}/.zprofile"
+# Ensure that a non-script, non-interactive, non-login shell has a defined environment.
+if [[ $ZSH_EVAL_CONTEXT =~ :file$ && ! -o INTERACTIVE && ! -o LOGIN ]]; then
+  [[ -s "${ZDOTDIR}/.zprofile" ]] && source "${ZDOTDIR}/.zprofile"
 fi

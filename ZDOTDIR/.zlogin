@@ -3,14 +3,11 @@
 #
 # Authors:
 #   Joel Kuzmarski <leoj3n@gmail.com>
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
-# Print a random, hopefully interesting, adage.
-if (( $+commands[fortune] )); then
-  if [[ -z "${NOFORTUNE}" && (-t 0 || -t 1) ]]; then
-      fortune -as
-      print
-  fi
+# Print a random greeting (if STDIN and STDOUT are TTY).
+if (( ! $+JIGOWATTS && $+commands[fortune] )) && [[ -t 0 && -t 1 ]]; then
+  fortune -as
+  print
 fi
 

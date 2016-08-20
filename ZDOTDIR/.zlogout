@@ -2,12 +2,13 @@
 # Executes commands at logout.
 #
 # Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#   Joel Kuczmarski <leoj3n@gmail.com>
 #
 
-# Print the message.
-cat <<-EOF
+# Say farewell (if STDIN and STDOUT are TTY).
+if [[ -t 0 && -t 1 ]]; then
+  cat <<-EOF
+SEE YOU IN THE FUTURE!
 
-Thank you. Come again!
-  -- Dr. Apu Nahasapeemapetilon
 EOF
+fi
