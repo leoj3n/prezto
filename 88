@@ -3,6 +3,11 @@
 local prog_name="${0:t}"
 local prog_home="${0:A:h}"
 
+if ! [[ $ZSH_EVAL_CONTEXT == 'toplevel' ]]; then
+  set -- "-q" "future"
+  alias exit='return'
+fi
+
 ################################################################################
 # Help
 ################################################################################
@@ -38,7 +43,7 @@ Plutonium not invented until Zsh version: ${min_zsh_version}
 Please install at least version ${min_zsh_version} of Zsh.
 
 EOF
-  return 1
+  exit 1
 fi
 
 #
