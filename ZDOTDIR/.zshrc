@@ -5,7 +5,7 @@
 #   Joel Kuzmarski <leoj3n@gmail.com>
 #
 
-# Starts the DeLorean engine.
+# Start the DeLorean engine.
 if [[ -s "${ZDOTDIR}/engine.zsh" ]]; then
   source "${ZDOTDIR}/engine.zsh"
 fi
@@ -54,13 +54,6 @@ alias -g 3nnots='~/.homesick/repos/notfiles'
 # Program aliases
 ###############################################################################
 
-if (( $+commands[direnv] )); then
-  eval "$(direnv hook $0)"
-fi
-if (( $+commands[hub] )); then
-  eval "$(hub alias -s)"
-fi
-
 alias v='vim'
 alias bc='bc -q -l'
 alias chat='finch'
@@ -81,3 +74,28 @@ alias screencast='ffscreencast --sargs="-capture_cursor 1 -capture_mouse_clicks 
 #- color, fullscreen, 480p, number of results
 alias youtube-viewer-interactive='youtube-viewer -C -f -4 --results=10'
 
+###############################################################################
+# Sources
+###############################################################################
+
+if (( $+commands[direnv] )); then
+  eval "$(direnv hook $0)"
+fi
+if (( $+commands[hub] )); then
+  eval "$(hub alias -s)"
+fi
+
+sourceif() {
+  if [[ -s "$1" ]]; then
+    source "$1"
+  fi
+}
+
+#SANDBOXRC=""
+#sourceif "${ZDOTDIR:-$HOME}/.zprezto/runcoms/submodules/sandboxd/sandboxd"
+
+#
+# iTerm
+#
+
+#sourceif "${HOME}/.iterm2_shell_integration.zsh"

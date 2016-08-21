@@ -74,21 +74,22 @@ options:
 commands:
   future     Send your Zsh into the future!
   past       Travel back to how things were, before DeLorean.
+  circuit    Generates a minimal circuit module with passed name.
 
 EOF
   exit 1
 }
 
 ################################################################################
-# Setup
+# Options
 ################################################################################
 
 #
 # Defaults.
 #
 
-local zshenv_ext='user'
-local zshenv_loc="${HOME}/.zshenv"
+zshenv_ext='user'
+zshenv_loc="${HOME}/.zshenv"
 
 #
 # Get options.
@@ -97,15 +98,15 @@ local zshenv_loc="${HOME}/.zshenv"
 while getopts ':sqc' opt; do
   case "${opt}" in
     (s)
-      local zshenv_su='yes'
+      zshenv_su='yes'
       zshenv_ext='system'
       zshenv_loc="/etc/zshenv"
     ;;
     (q)
-      local quiet='yes'
+      quiet='yes'
     ;;
     (c)
-      local change='yes'
+      change='yes'
     ;;
     (:)
       print "${prog_name}: option requires an argument: ${OPTARG}" >&2
@@ -121,8 +122,160 @@ shift $((OPTIND - 1))
 
 (( $# < 1 )) && usage
 
+################################################################################
+# Setup.
+################################################################################
+
 #
-# Helper functions.
+# Zshenv errors.
+#
+
+STDERR_ZSHENV_HAS_BEEN_MODIFIED () {
+cat <<EOF >&2
+
+${zshenv_loc} has been modified since the last temporal displacement!
+
+Copy changes you intend to keep from:
+
+${zshenv_loc} -> ${prog_home}/ZDOTDIR/.zshenv
+
+Then remove ${zshenv_loc} and try again.
+
+EOF
+}
+
+STDERR_ZSHENV_BACKUP_PAST_CONFLICT () {
+cat <<EOF >&2
+
+Backup failed for ${zshenv_loc}. Move it away and try again.
+
+EOF
+}
+
+STDERR_ZSHENV_BACKUP_USER_ABORT () {
+cat <<EOF >&2
+
+
+${prog_name}: Aborting temporal displacement of ${zshenv_loc}
+
+EOF
+}
+
+STDERR_ZSHENV_SCHEMATIC_FAIL () {
+cat <<EOF >&2
+
+Temporal displacement of ${zshenv_loc} has failed.
+
+EOF
+}
+
+STDERR_ZSHENV_REMOVE_USER_ABORT () {
+cat <<EOF >&2
+
+${prog_name}: Aborting removal of ${zshenv_loc}
+
+EOF
+}
+
+STDERR_ZSHENV_REVERT_BEGIN () {
+cat <<EOF >&2
+
+${prog_name}: Reverting ${zshenv_loc} to its original state.
+
+EOF
+}
+
+STDERR_ZSHENV_REVERT_FAIL () {
+cat <<EOF >&2
+
+Failed to rewind the hands of time for ${zshenv_loc}
+
+EOF
+}
+
+STDERR_ZSHENV_REVERT_FINISH () {
+cat <<EOF >&2
+
+${prog_name}: Welcome to the past!
+
+EOF
+}
+
+#
+# Change shell errors.
+#
+
+STDERR_CHANGE_SHELL_BEGIN () {
+cat <<EOF >&2
+
+Time to change the default shell to Zsh!
+
+EOF
+}
+
+STDERR_CHANGE_SHELL_FINISH () {
+cat <<EOF >&2
+
+Default login shell is now ${SHELL}
+
+EOF
+}
+
+STDERR_CHANGE_SHELL_ABORT () {
+cat <<EOF >&2
+
+Change of default login shell has been cancelled!
+To try again, run the following command at any time:
+    chsh -s "${CHSH_ZSH}"
+
+EOF
+}
+
+STDERR_CHANGE_SHELL_PASSWORD () {
+cat <<EOF >&2
+
+Wrong password. Press CTRL-C to cancel.
+
+EOF
+}
+
+STDERR_CHANGE_SHELL_OTHER () {
+cat <<EOF >&2
+
+There was a problem changing the default login shell:
+
+${CHSH_ZSH_STDERR}
+
+EOF
+}
+
+STDERR_CHANGE_SHELL_BOGUS () {
+cat <<EOF >&2
+
+Cannot change default login shell automatically because there is a bad Zsh entry in /etc/shells.
+
+EOF
+}
+
+STDERR_CHANGE_SHELL_MANUAL () {
+cat <<EOF >&2
+
+Cannot change the default login shell because this system does not have chsh.
+Please manually change your default login shell to ${CHSH_ZSH}!
+
+EOF
+}
+
+STDERR_CHANGE_SHELL_UNCHANGED () {
+cat <<EOF >&2
+
+Default login shell is already ${SHELL}
+
+EOF
+}
+
+#
+# Function for writing schematics.
 #
 
 function schematic {
@@ -151,9 +304,8 @@ EOF
 #
 
 zmodload zsh/attr
-local zshenv_epoch
 zgetattr "${zshenv_loc}" 'epoch' zshenv_epoch &>/dev/null
-local zshenv_stat="$(stat -f "%m" "${zshenv_loc}" 2>/dev/null)"
+zshenv_stat="$(stat -f "%m" "${zshenv_loc}" 2>/dev/null)"
 
 ################################################################################
 # Run
@@ -172,37 +324,18 @@ case "$@" in
       if (( zshenv_epoch )); then
         # but has been tampered with
         if (( zshenv_epoch != zshenv_stat )); then
-          cat <<EOF >&2
-
-${zshenv_loc} has been modified since the last temporal displacement!
-
-Copy changes you intend to keep from:
-
-${zshenv_loc} -> ${prog_home}/ZDOTDIR/.zshenv
-
-Then remove ${zshenv_loc} and try again.
-
-EOF
+          STDERR_ZSHENV_HAS_BEEN_MODIFIED
           exit 1
         fi
       # or, it was not created by us
       elif read -q "?Backup ${zshenv_loc} and proceed [y/N]? " && print; then
         [[ ! -s "${zshenv_loc}.past" ]] && ${zshenv_su:+sudo} mv -v "${zshenv_loc}"{,.past} || {
-          cat <<EOF >&2
-
-Backup failed for ${zshenv_loc}. Move it away and try again.
-
-EOF
+          STDERR_ZSHENV_BACKUP_PAST_CONFLICT
           exit 1
         }
       # or, the user chose to abort
       else
-        cat <<EOF >&2
-
-
-${prog_name}: Aborting temporal displacement of ${zshenv_loc}
-
-EOF
+        STDERR_ZSHENV_BACKUP_USER_ABORT
         exit 1
       fi
     fi
@@ -210,16 +343,12 @@ EOF
     # perform displacement
     [[ -f "${zshenv_loc}" ]] && ${zshenv_su:+sudo} rm "${zshenv_loc}"
     if ! schematic "zshenv.${zshenv_ext}" "${zshenv_loc}" $zshenv_su; then
-      cat <<EOF >&2
-
-Temporal displacement of ${zshenv_loc} has failed.
-
-EOF
+      STDERR_ZSHENV_SCHEMATIC_FAIL
       exit 1
     fi
 
     # perform optional displacement of user files
-    local rcs=('.zshenv' '.zprofile' '.zshrc' '.zlogin' '.zlogout')
+    rcs=('.zshenv' '.zprofile' '.zshrc' '.zlogin' '.zlogout')
     for rc ("$rcs[@]") schematic "${rc}" "${prog_home}/ZDOTDIR/${rc}" 2>/dev/null
   ;;
 
@@ -233,11 +362,7 @@ EOF
         if (( zshenv_epoch != zshenv_stat )); then
 
           if ! read -q "?Remove ${zshenv_loc} even though it has unsaved changes [y/N]? " && print; then
-            cat <<EOF >&2
-
-${prog_name}: Aborting removal of ${zshenv_loc}
-
-EOF
+            STDERR_ZSHENV_REMOVE_USER_ABORT
             exit 1
           fi
           print
@@ -245,34 +370,36 @@ EOF
         fi
 
         if [[ -s "${zshenv_loc}.past" ]]; then
-    cat <<EOF >&2
-
-${prog_name}: Reverting ${zshenv_loc} to its original state.
-
-EOF
+          STDERR_ZSHENV_REVERT_BEGIN
           ${zshenv_su:+sudo} mv -f -v "${zshenv_loc}"{.past,}
         else
           ${zshenv_su:+sudo} rm "${zshenv_loc}"
         fi
 
         if (( $? != 0 )); then
-          cat <<EOF >&2
-
-Failed to rewind the hands of time for ${zshenv_loc}
-
-EOF
+          STDERR_ZSHENV_REVERT_FAIL
           exit 1
         fi
 
       fi
     fi
 
+    STDERR_ZSHENV_REVERT_FINISH
+    exit 0
+  ;;
+
+  #
+  # Generate a minimal circuit module with passed name.
+  #
+
+  (circuit*)
+    name="${@//circuit/}"
     cat <<EOF >&2
 
-${prog_name}: Welcome to the past!
+${prog_name}: Generating a new circuit: ${name}
 
 EOF
-    exit 0
+  exit 0
   ;;
 
   #
@@ -305,89 +432,49 @@ fi
 if (( $+change )); then
   if ! [[ "${SHELL}" =~ "zsh" ]]; then
     if (( $+commands[chsh] )); then
-      cat <<EOF >&2
-
-Time to change the default shell to Zsh!
-
-EOF
-      GREP_ZSH="$(grep /zsh$ /etc/shells | tail -1)"
-      # Will it blend?
-      if "$GREP_ZSH" -c 'exit 0' >/dev/null 2>&1; then
-        # Yep, let's use that zsh entry.
-        CHSH_ZSH="$GREP_ZSH"
+      STDERR_CHANGE_SHELL_BEGIN
+      CHSH_ZSH="$(grep /zsh$ /etc/shells | tail -1)"
+      if [ -n "$("$CHSH_ZSH" -c 'print "${ZSH_VERSION}"')" ]; then
+        trap 'true' INT
         while true; do
-          trap 'CHSH_ZSH_ERRNO=$?' INT
           CHSH_ZSH_STDERR="$(chsh -s "${CHSH_ZSH}" 2>&1)"
-          CHSH_ZSH_ERRNO=${CHSH_ZSH_ERRNO-$?}
-          case $CHSH_ZSH_ERRNO in
+          case $? in
             0)
               # Great. It worked.
+              STDERR_CHANGE_SHELL_FINISH
               # Update the $SHELL export for this session.
               SHELL="${CHSH_ZSH}"
-              cat <<EOF >&2
-
-Default login shell is now ${SHELL}
-
-EOF
               break
             ;;
             130)
-              cat <<EOF >&2
-
-Change of default login shell has been cancelled!
-To try again, run the following command at any time:
-    chsh -s "${CHSH_ZSH}"
-
-EOF
+              # chsh returns 130 on CTRL-C
+              STDERR_CHANGE_SHELL_ABORT
               break
             ;;
             *)
               case "${CHSH_ZSH_STDERR}" in
                 *Credentials*)
-                  cat <<EOF >&2
-
-Wrong password. Press CTRL-C to cancel.
-
-EOF
+                  STDERR_CHANGE_SHELL_PASSWORD
                 ;;
                 *)
-                  cat <<EOF >&2
-
-There was a problem changing the default login shell:
-
-${CHSH_ZSH_STDERR}
-
-EOF
+                  STDERR_CHANGE_SHELL_OTHER
                   break
                 ;;
               esac
             ;;
           esac
-          trap - INT
         done
+        trap - INT
       else
         # Nope, it's a bogus path.
-        cat <<EOF >&2
-
-I can't change your shell automatically because there is a bad zsh entry in /etc/shells.
-
-EOF
+        STDERR_CHANGE_SHELL_BOGUS
       fi
     # Else, suggest the user change the login shell manually.
     else
-      cat <<EOF >&2
-
-I can't change your shell automatically because this system does not have chsh.
-Please manually change your default login shell to ${CHSH_ZSH}!
-
-EOF
+      STDERR_CHANGE_SHELL_MANUAL
     fi
   else
-    cat <<EOF >&2
-
-Default login shell is already ${SHELL}
-
-EOF
+    STDERR_CHANGE_SHELL_UNCHANGED
   fi
 fi
 

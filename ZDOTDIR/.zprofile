@@ -181,43 +181,27 @@ fi
 export TMPPREFIX="${TMPDIR%/}/zsh"
 
 ###############################################################################
-# Sources
+# POMPT THEME (TODO: move)
 ###############################################################################
-
-sourceif() {
-  if [[ -s "$1" ]]; then
-    source "$1"
-  fi
-}
-
-#SANDBOXRC=""
-#sourceif "${ZDOTDIR:-$HOME}/.zprezto/runcoms/submodules/sandboxd/sandboxd"
-
-#
-# iTerm
-#
-
-sourceif "${HOME}/.iterm2_shell_integration.zsh"
 
 #
 # POWERLEVEL9K
 #
 
-POWERLEVEL9K_INSTALLATION_PATH="${ZDOTDIR}/engines/prompt/external/powerlevel9k"
-POWERLEVEL9K_MODE='awesome-fontconfig'
-POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
-POWERLEVEL9K_COLOR_SCHEME='light'
-POWERLEVEL9K_STATUS_OK_BACKGROUND='black'
-POWERLEVEL9K_SHORTEN_DELIMITER=''
-POWERLEVEL9K_SHORTEN_DIR_LENGTH=4
-POWERLEVEL9K_SHORTEN_STRATEGY='truncate_with_package_name'
-POWERLEVEL9K_TIME_FORMAT="%D{%H:%M:%S} \uf017" # 
-POWERLEVEL9K_OK_ICON='\uf00c'                  # 
-#POWERLEVEL9K_HOME_SUB_ICON='📂'
-#POWERLEVEL9K_APPLE_ICON='🍎'
-POWERLEVEL9K_RAM_ELEMENTS=(ram_free)
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=('status' 'todo' 'dir' 'vcs')
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=('nvm' 'rvm' 'ram' 'background_jobs' 'time')
+export POWERLEVEL9K_INSTALLATION_PATH="${ZDOTDIR}/engines/prompt/external/powerlevel9k"
+export POWERLEVEL9K_MODE='awesome-fontconfig'
+export POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+export POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
+export POWERLEVEL9K_COLOR_SCHEME='light'
+export POWERLEVEL9K_STATUS_OK_BACKGROUND='black'
+export POWERLEVEL9K_SHORTEN_DELIMITER=''
+export POWERLEVEL9K_SHORTEN_DIR_LENGTH=4
+export POWERLEVEL9K_SHORTEN_STRATEGY='truncate_with_package_name'
+export POWERLEVEL9K_TIME_FORMAT="%D{%H:%M:%S} \uf017" # 
+export POWERLEVEL9K_OK_ICON='\uf00c'                  # 
+#export POWERLEVEL9K_HOME_SUB_ICON='📂'
+#export POWERLEVEL9K_APPLE_ICON='🍎'
+export POWERLEVEL9K_RAM_ELEMENTS=(ram_free)
+export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=('status' 'todo' 'dir' 'vcs')
+export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=('nvm' 'rvm' 'ram' 'background_jobs' 'time')
 alias colorlist='for code ({000..255}) print -P -- "$code: %F{$code}This is how your text would look like%f"'
-

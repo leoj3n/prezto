@@ -169,7 +169,7 @@ zstyle ':delorean:circuit:editor' key-bindings 'vi'
 # Auto set to 'off' on dumb terminals.
 #
 
-zstyle ':delorean:circuit:prompt' theme 'sorin'
+zstyle ':delorean:circuit:prompt' theme 'pure'
 
 ################################################################################
 # Screen
