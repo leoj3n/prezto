@@ -33,27 +33,47 @@ _comp_options+=(globdots)
 ulimit -n 2560
 
 ###############################################################################
-# User functions
+# iTerm2
 ###############################################################################
 
 #
-# iTerm fruit badge!
+# iTerm2 fruit lottery badge!
 #
 # Usage:
 #   iTerm.app > Settings > Profiles > [Default] > Badge: \(user.slotMachine)
 #
 
-local fruit=('🍉' '🍋' '🍓' '🍏' '🍎' '🍐' '🍊' '🍌' '🍇' '🍒' '🍔' '🍕')
+local fruit=(
+  $'\U1f349'
+  $'\U1f34b'
+  $'\U1f353'
+  $'\U1f34f'
+  $'\U1f34e'
+  $'\U1f350'
+  $'\U1f34a'
+  $'\U1F34C'
+  $'\U1F347'
+  $'\U1F352'
+  $'\U1f354'
+  $'\U1f355'
+)
+
 local lottery=$[ $RANDOM % $#fruit + 1 ]
+
 iterm2_print_user_vars() {
   iterm2_set_user_var slotMachine ${fruit[$lottery]}
 }
 
-###############################################################################
-# Directory aliases
-###############################################################################
+#
+# iTerm2 shell integration.
+#   
+# Install:
+#   iTerm2 > Install Shell Integration
+#
 
-alias -g 3nsrc='~/src'
+if [[ -s "${HOME}/.iterm2_shell_integration.zsh" ]]; then
+  source "${HOME}/.iterm2_shell_integration.zsh"
+fi
 
 ###############################################################################
 # Program aliases
@@ -69,9 +89,3 @@ alias screencast='ffscreencast --sargs="-capture_cursor 1 -capture_mouse_clicks 
 if (( $+commands[hub] )); then
   eval "$(hub alias -s)"
 fi
-
-#
-# iTerm
-#
-
-#sourceif "${HOME}/.iterm2_shell_integration.zsh"

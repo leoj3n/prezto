@@ -36,8 +36,23 @@ ulimit -n 2560
 # User functions
 ###############################################################################
 
-local fruit=('🍉' '🍋' '🍓' '🍏' '🍎' '🍐' '🍊' '🍌' '🍇' '🍒' '🍔' '🍕')
+local fruit=(
+  $'\U1f349'
+  $'\U1f34b'
+  $'\U1f353'
+  $'\U1f34f'
+  $'\U1f34e'
+  $'\U1f350'
+  $'\U1f34a'
+  $'\U1F34C'
+  $'\U1F347'
+  $'\U1F352'
+  $'\U1f354'
+  $'\U1f355'
+)
+
 local lottery=$[ $RANDOM % $#fruit + 1 ]
+
 iterm2_print_user_vars() {
   iterm2_set_user_var slotMachine ${fruit[$lottery]}
 }
@@ -98,4 +113,4 @@ sourceif() {
 # iTerm
 #
 
-#sourceif "${HOME}/.iterm2_shell_integration.zsh"
+sourceif "${HOME}/.iterm2_shell_integration.zsh"

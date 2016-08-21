@@ -44,6 +44,7 @@ export EDITOR='vim'
 export VISUAL='vim'
 export GIT_EDITOR='vim'
 export MANPAGER='less -s -M +Gg'
+#export MANWIDTH=80
 
 #
 # Language

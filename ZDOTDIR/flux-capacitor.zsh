@@ -35,33 +35,11 @@ zstyle ':delorean:*:*' color 'yes'
 #zstyle ':delorean:load' zfunction 'chpwd_recent_dirs' 'cdr' 'add-zsh-hook'
 
 #
-# Set which fpath files to blacklist.
+# Set the circuits to use.
+# The order matters.
 #
 
-zstyle ':delorean:circuit:fpath' blacklist \
-  '_SUSEconfig' \
-  '_a2ps' \
-  '_a2utils' \
-  '_aap' \
-  '_acpi*' \
-  '_acroread' \
-  '_analyseplugin' \
-  '_antiword' \
-  'prompt_*' \
-  '*calendar*' \
-  '*mail*' \
-  'zcalc' \
-  'zcalc-auto-insert' \
-  'zed-set-file-name' \
-  'zed' \
-  'ztodo'
-
-#
-# Set which circuits to use.
-# The sequence matters.
-#
-
-zstyle ':delorean:run' circuit \
+zstyle ':delorean:sequence' circuit \
   'fpath' \
   'environment' \
   'utility' \
@@ -85,14 +63,31 @@ zstyle ':delorean:run' circuit \
   'history-substring-search' \
   'prompt'
 
-#  'meteor' \
-#  'pwsafe' \
-#  'macvim' \
-#  'sublime' \
-#  'vagrant' \
-#  'openshift' \
-#  'wordpress' \
-#  'taskwarrior' \
+################################################################################
+# Fpath
+################################################################################
+
+#
+# Set the fpath files to blacklist.
+#
+
+zstyle ':delorean:circuit:fpath' blacklist \
+  '_SUSEconfig' \
+  '_a2ps' \
+  '_a2utils' \
+  '_aap' \
+  '_acpi*' \
+  '_acroread' \
+  '_analyseplugin' \
+  '_antiword' \
+  'prompt_*' \
+  '*calendar*' \
+  '*mail*' \
+  'zcalc' \
+  'zcalc-auto-insert' \
+  'zed-set-file-name' \
+  'zed' \
+  'ztodo'
 
 ################################################################################
 # Autosuggestions
@@ -116,6 +111,8 @@ zstyle ':delorean:circuit:editor' key-bindings 'vi'
 
 # Auto convert .... to ../..
 # zstyle ':delorean:circuit:editor' dot-expansion 'yes'
+
+setopt INTERACTIVE_COMMENTS
 
 ################################################################################
 # Git

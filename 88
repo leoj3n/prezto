@@ -123,7 +123,7 @@ shift $((OPTIND - 1))
 (( $# < 1 )) && usage
 
 ################################################################################
-# Setup.
+# Error strings.
 ################################################################################
 
 #
@@ -196,7 +196,7 @@ EOF
 STDERR_ZSHENV_REVERT_FINISH () {
 cat <<EOF >&2
 
-${prog_name}: Welcome to the past!
+${prog_name}: Welcome to 1985.
 
 EOF
 }
@@ -274,8 +274,12 @@ Default login shell is already ${SHELL}
 EOF
 }
 
+################################################################################
+# Setup.
+################################################################################
+
 #
-# Function for writing schematics.
+# Function for using schematics.
 #
 
 function schematic {
@@ -389,7 +393,7 @@ case "$@" in
   ;;
 
   #
-  # Generate a minimal circuit module with passed name.
+  # Generate a minimal circuit module using the passed name.
   #
 
   (circuit*)

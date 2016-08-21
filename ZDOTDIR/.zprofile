@@ -109,9 +109,10 @@ typeset -gU cdpath fpath mailpath path
 # Set the the list of directories that cd searches.
 #
 
-# cdpath=(
-#   $cdpath
-# )
+#cdpath=(
+#  "${HOME}/src"
+#  $cdpath
+#)
 
 #
 # Set the list of directories that Zsh searches for programs.
@@ -120,7 +121,7 @@ typeset -gU cdpath fpath mailpath path
 path=(
   '/opt/local/bin'
   '/usr/local/'{bin,sbin}
-  ${path}
+  $path
 )
 
 #if [[ ! -z "$(brew ls --versions php54)" ]]; then
@@ -136,7 +137,7 @@ path=(
   "${GOPATH}/bin"
   "${HOME}/bin"
   "${HOME}/bin/git-plugins"
-  ${path}
+  $path
 )
 
 #
@@ -204,4 +205,3 @@ export POWERLEVEL9K_OK_ICON='\uf00c'                  # 
 export POWERLEVEL9K_RAM_ELEMENTS=(ram_free)
 export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=('status' 'todo' 'dir' 'vcs')
 export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=('nvm' 'rvm' 'ram' 'background_jobs' 'time')
-alias colorlist='for code ({000..255}) print -P -- "$code: %F{$code}This is how your text would look like%f"'
