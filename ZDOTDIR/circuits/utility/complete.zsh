@@ -8,8 +8,8 @@
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
-# Load dependencies.
-run 'helper' 'spectrum'
+# Complete dependencies.
+circuit 'helper' 'spectrum'
 
 # Correct commands.
 setopt CORRECT
@@ -78,6 +78,13 @@ function fancy-ctrl-z() {
 }
 zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
+
+# Push the entire current multiline construct onto the buffer stack and return
+# to the top-level (PS1) prompt. If the current parser construct is only a
+# single line, this is exactly like push-line. Next time the editor starts up or
+# is popped with get-line, the construct will be popped off the top of the
+# buffer stack and loaded into the editing buffer.
+#bindkey "^Q" push-input
 
 # ls
 if is-callable 'dircolors'; then

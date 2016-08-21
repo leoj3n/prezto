@@ -29,8 +29,8 @@
 # 15 bright white
 #
 
-# Load dependencies.
-run 'helper'
+# Complete dependencies.
+circuit 'helper'
 
 function prompt_sorin_pwd {
   local pwd="${PWD/#$HOME/~}"

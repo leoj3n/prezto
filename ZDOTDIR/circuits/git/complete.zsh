@@ -19,10 +19,10 @@ if (( ! $+commands[git] )); then
 fi
 
 #
-# Load dependencies.
+# Complete dependencies.
 #
 
-run 'helper'
+circuit 'helper'
 
 ################################################################################
 # Run
