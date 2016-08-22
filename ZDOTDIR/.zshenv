@@ -42,8 +42,7 @@
 
 if [[ -o LOGIN ]]; then
   export DELOREAN_ENV_EXISTS='yes'
-elif [[ -z "$DELOREAN_ENV_EXISTS" ]]; then
-  echo 'ZSHENV shlvl: ' $SHLVL
+elif [[ -o INTERACTIVE && -z "${DELOREAN_ENV_EXISTS}" ]]; then
   export DELOREAN_ENV_EXISTS='yes'
   [[ -s "${ZDOTDIR}/.zprofile" ]] && source "${ZDOTDIR}/.zprofile"
 fi
