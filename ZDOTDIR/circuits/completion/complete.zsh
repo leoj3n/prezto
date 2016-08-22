@@ -1,30 +1,10 @@
 #
-# Sets completion options.
+# Completes the DeLorean completion circuit.
 #
 # Authors:
 #   Robby Russell <robby@planetargon.com>
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
-
-# Return if requirements are not found.
-if [[ "$TERM" == 'dumb' ]]; then
-  return 1
-fi
-
-# Add zsh-completions to $fpath.
-fpath=("${0:h}/external/src" $fpath)
-
-#
-# Load the completion system ignoring insecure directories.
-#
-
-autoload -Uz compinit
-
-if [[ -z "${ZCOMPDUMP}" ]]; then
-  compinit -i
-else
-  compinit -i -C -d "${ZCOMPDUMP}"
-fi
 
 #
 # Options

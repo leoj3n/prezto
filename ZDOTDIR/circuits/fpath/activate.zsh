@@ -1,8 +1,5 @@
 #
-# Sets fpath to a flattened location.
-#
-# Authors:
-#   Joel Kuzmarski <leoj3n@gmail.com>
+# Activates the DeLorean fpath circuit.
 #
 
 ################################################################################
@@ -10,22 +7,21 @@
 ################################################################################
 
 #
-# Define activation phase variables (will be unset after activation phase).
+# Define activation phase variables (local unset after activation phase).
 #
 # Any activate.zsh sequenced after this will have access to these variables.
 #
 
-local ZCOMPDUMP="${TMPPREFIX}-zcompdump_${ZSH_VERSION}"
 local FLATFPATH="${TMPPREFIX}-fpath_${ZSH_VERSION}"
 
 #
 # Obliterate compiled files for all Zsh versions if we are time traveling.
 #
 
+# TODO: Outdate method.
 if (( $+JIGOWATTS )); then
   function {
     setopt LOCAL_OPTIONS EXTENDED_GLOB
-    rm "${TMPPREFIX}-zcompdump_"^*.zwc
     rm -r "${TMPPREFIX}-fpath_"*
   }
 fi
@@ -35,14 +31,11 @@ fi
 ################################################################################
 
 #
-# Do the main work using an anonymous function to avoid polluting the scope.
+# Flattens fpath if missing.
 #
 
+# Use an anonymous function to avoid polluting the scope.
 function {
-  #
-  # Flattens fpath if missing.
-  #
-
   if [[ ! -d "${FLATFPATH}" ]]; then
     zstyle -a ':delorean:circuit:fpath' blacklist 'blacklist'
     blacklist="^(${(j:|:)blacklist})"
@@ -60,17 +53,6 @@ function {
 
     [[ -s "${FLATFPATH}/compinit" ]] || {
       print "DeLorean[fpath]: Important files missing from ${FLATFPATH}" >&2
-      return 1
-    }
-  fi
-
-  #
-  # Regenerates .zcompdump if missing.
-  #
-
-  if [[ ! -s "${ZCOMPDUMP}" ]]; then
-    autoload -Uz compinit && compinit -i -d "${ZCOMPDUMP}" && zcompile "${ZCOMPDUMP}" || {
-      print "DeLorean[fpath]: Failed to generate and compile completion dump." >&2
       return 1
     }
   fi

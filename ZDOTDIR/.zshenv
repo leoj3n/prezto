@@ -1,5 +1,5 @@
 #
-# Forcefully define environment variables for all shell contexts.
+# Forcefully define environment variables for all shell contexts, for example:
 #
 # Variables defined here will always override the values of their parent context
 # because .zshenv will be sourced at the start of all contexts. For this reason,
@@ -76,7 +76,9 @@ fi
 # This would create the temporary file /tmp/zsh-temp_date which is inconsistent
 # with the user-local $TMPDIR defined above, so it is made to use $TMPDIR below.
 #
-# DeLorean makes use of $TMPPREFIX for it's temporary files.
+# DeLorean will make use of $TMPPREFIX for temporary files, for example:
+#
+#   /var/folders/kb/ydt74z19765cv9vb86rwvcrr0000gn/T/zsh-fpath_5.0.8
 #
 
 export TMPPREFIX="${TMPDIR%/}/zsh"
