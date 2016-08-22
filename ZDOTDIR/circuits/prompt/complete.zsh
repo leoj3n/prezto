@@ -22,8 +22,8 @@ unset prompt_argv
 #
 
 # Decodes a unicode glyph into a script-safe representation.
-alias glyph2hex='function { for g ($@) print -f "\\\x%s" $(printf $g | xxd -p -c1 -u) && print }'
-alias glyph2codepoint='function { for g ($@) print -n $g | iconv -f utf-8 -t UTF-32BE | xxd -p | sed -e "s/^0*/\\\U/" }'
+alias glyph2hex='function { for g ($@) print -f "\\\x%s" $(printf $g | xxd -p -c1 -u) && print; }'
+alias glyph2codepoint='function { for g ($@) print -n $g | iconv -f utf-8 -t UTF-32BE | xxd -p | sed -e "s/^0*/\\\U/"; }'
 
 # Previews every possible color to see how it looks in the terminal.
 alias colorlist='for code ({000..255}) print -P -- "$code: %F{$code}This is how your text would look like%f"'

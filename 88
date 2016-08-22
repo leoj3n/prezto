@@ -482,5 +482,6 @@ if (( $+change )); then
   fi
 fi
 
+unset DELOREAN_ENV_EXISTS
 export JIGOWATTS=1.21 
-exec zsh -l
+exec zsh -$-

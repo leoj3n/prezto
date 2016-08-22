@@ -1,14 +1,28 @@
 #
-# Executes commands at login pre-zshrc.
+# Run commands for login shells.
 #
-# Authors:
-#   Joel Kuzmarski <leoj3n@gmail.com>
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
+# Context:
+#   - [✔] Login.
+#   - [ ] Interactive.
+#   - [ ] Script.
 #
-
-###############################################################################
+# Order:
+#   - [ ] /etc/zshenv
+#   - [ ] ZDOTDIR/.zshenv
+#   - [ ] /etc/zprofile
+#   - [✔] ZDOTDIR/.zprofile
+#   - [ ] /etc/zshrc
+#   - [ ] ZDOTDIR/.zshrc
+#   - [ ] ZDOTDIR/flux-capacitor.zsh
+#   - [ ] /etc/zlogin
+#   - [ ] ZDOTDIR/.zlogin
+#   - [ ] ZDOTDIR/.zlogout
+#   - [ ] /etc/zlogout
+#
+echo 'ZPROFILE'
+################################################################################
 # Setopts
-###############################################################################
+################################################################################
 
 #
 # bash-style handling of spaces and parens.
@@ -23,15 +37,9 @@
 
 export WORDCHARS='*?[]~&;!$%^<>'
 
-###############################################################################
-# Custom scripting variables
-###############################################################################
-
-readonly CASKROOM='/opt/homebrew-cask/Caskroom'
-
-###############################################################################
+################################################################################
 # Variables
-###############################################################################
+################################################################################
 
 #
 # Browser
@@ -58,13 +66,6 @@ export MANPAGER='less -s -M +Gg'
 if [[ -z "$LANG" ]]; then
   export LANG='en_US.UTF-8'
 fi
-
-#
-# GTK
-#
-
-export GTK_PATH='/usr/local/lib/gtk-2.0'
-
 #
 # Go
 #
@@ -90,14 +91,41 @@ export NVM_DIR="${HOME}/.nvm"
 export HOMEBREW_CASK_OPTS='--appdir=/Applications'
 
 #
+# GTK
+#
+
+export GTK_PATH='/usr/local/lib/gtk-2.0'
+
+#
 # Text-Aid-Too
 #
 
 export TEXT_AID_TOO_EDITOR='gvim -f'
 
-###############################################################################
+################################################################################
+# Less
+################################################################################
+
+#
+# Set the default Less options.
+# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
+# Remove -X and -F (exit if the content fits on one screen) to enable it.
+#
+
+export LESS='-F -g -i -M -R -S -w -X -z-4'
+
+#
+# Set the Less input preprocessor.
+# Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
+#
+
+if (( $#commands[(i)lesspipe(|.sh)] )); then
+  export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
+fi
+
+################################################################################
 # Paths
-###############################################################################
+################################################################################
 
 #
 # Ensure path arrays do not contain duplicates.
@@ -148,60 +176,3 @@ fpath=(
   "${HOME}/.homesick/repos/homeshick/completions"
   ${fpath}
 )
-
-###############################################################################
-# Less
-###############################################################################
-
-#
-# Set the default Less options.
-# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
-# Remove -X and -F (exit if the content fits on one screen) to enable it.
-#
-
-export LESS='-F -g -i -M -R -S -w -X -z-4'
-
-#
-# Set the Less input preprocessor.
-# Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
-#
-
-if (( $#commands[(i)lesspipe(|.sh)] )); then
-  export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
-fi
-
-###############################################################################
-# Temporary Files
-###############################################################################
-
-if [[ ! -d "$TMPDIR" ]]; then
-  export TMPDIR="/tmp/$LOGNAME"
-  mkdir -p -m 700 "$TMPDIR"
-fi
-
-export TMPPREFIX="${TMPDIR%/}/zsh"
-
-###############################################################################
-# POMPT THEME (TODO: move)
-###############################################################################
-
-#
-# POWERLEVEL9K
-#
-
-export POWERLEVEL9K_INSTALLATION_PATH="${ZDOTDIR}/engines/prompt/external/powerlevel9k"
-export POWERLEVEL9K_MODE='awesome-fontconfig'
-export POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-export POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
-export POWERLEVEL9K_COLOR_SCHEME='light'
-export POWERLEVEL9K_STATUS_OK_BACKGROUND='black'
-export POWERLEVEL9K_SHORTEN_DELIMITER=''
-export POWERLEVEL9K_SHORTEN_DIR_LENGTH=4
-export POWERLEVEL9K_SHORTEN_STRATEGY='truncate_with_package_name'
-export POWERLEVEL9K_TIME_FORMAT="%D{%H:%M:%S} \uf017" # 
-export POWERLEVEL9K_OK_ICON='\uf00c'                  # 
-#export POWERLEVEL9K_HOME_SUB_ICON='📂'
-#export POWERLEVEL9K_APPLE_ICON='🍎'
-export POWERLEVEL9K_RAM_ELEMENTS=(ram_free)
-export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=('status' 'todo' 'dir' 'vcs')
-export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=('nvm' 'rvm' 'ram' 'background_jobs' 'time')

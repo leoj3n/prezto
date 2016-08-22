@@ -1,0 +1,1 @@
+while pids+=($(ps -p ${pids[-1]:-$$} -o ppid=)); do echo "$pids[*]"; done

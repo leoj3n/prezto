@@ -49,20 +49,25 @@ function circuit-activate {
   local circuit
 
   for circuit in "$argv[@]"; do
-    if zstyle -t ":delorean:circuit:$circuit" completed 'yes' 'no'; then
+    if zstyle -t ":delorean:circuit:$circuit" activated 'yes' 'no'; then
       continue
     elif [[ -s "${ZDOTDIR}/circuits/$circuit/activate.zsh" ]]; then
       source "${ZDOTDIR}/circuits/$circuit/activate.zsh"
+      if (( $? == 0 )); then
+        zstyle ":delorean:circuit:$circuit" activated 'yes'
+      else
+        zstyle ":delorean:circuit:$circuit" activated 'no'
+      fi
     fi
   done
+
+  ACTIVATION_PHASE_FINISHED='yes'
 
   # Welcome to the future!
   if (( JIGOWATTS == 1.21 )); then
     unset JIGOWATTS
-    exec zsh
+    exec zsh -$-
   fi
-
-  ACTIVATION_PHASE_FINISHED='yes'
 }
 
 #
@@ -101,7 +106,9 @@ function circuit-complete {
 
   # Attempt to complete each circuit.
   for circuit in "$circuits[@]"; do
-    if zstyle -t ":delorean:circuit:$circuit" completed 'yes' 'no'; then
+    if zstyle -t ":delorean:circuit:$circuit" activated 'no'; then
+      continue
+    elif zstyle -t ":delorean:circuit:$circuit" completed 'yes' 'no'; then
       continue
     elif [[ ! -d "${ZDOTDIR}/circuits/$circuit" ]]; then
       print "$0: no such circuit: $circuit" >&2
@@ -174,6 +181,16 @@ function circuit-timeline {
 #
 # Only allowed after the activation phase has finished.
 #
+# Can be used to:
+#   - Complete the circuits that a circuit depends on.
+#   - Complete circuits on-demand from the command-line.
+#
+# Use like:
+#
+#   circuit 'helper' 'git' 'utility'
+#
+# ...from within a circuit's completion.zsh, or on the command-line.
+#
 
 function circuit {
   if (( ! $+ACTIVATION_PHASE_FINISHED )); then
@@ -181,6 +198,7 @@ function circuit {
     return 1
   fi
   circuit-complete "$@" >/dev/null
+  #print "$ZSH_EVAL_CONTEXT"
 }
 
 ################################################################################
