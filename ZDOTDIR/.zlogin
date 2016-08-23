@@ -1,13 +1,32 @@
 #
 # Executes commands at login post-zshrc.
 #
-# Authors:
-#   Joel Kuzmarski <leoj3n@gmail.com>
+# Context:
+#   - [✔] Login.
+#   - [ ] Interactive.
+#   - [ ] Script.
+#
+# Order:
+#   - [ ] /etc/zshenv
+#   - [ ] ZDOTDIR/.zshenv
+#   - [ ] /etc/zprofile
+#   - [ ] ZDOTDIR/.zprofile
+#   - [ ] /etc/zshrc
+#   - [ ] ZDOTDIR/.zshrc
+#   - [ ] ZDOTDIR/flux-capacitor.zsh
+#   - [ ] /etc/zlogin
+#   - [✔] ZDOTDIR/.zlogin
+#   - [ ] ZDOTDIR/.zlogout
+#   - [ ] /etc/zlogout
 #
 
-# Print a random greeting (if STDIN and STDOUT are TTY).
-if (( ! $+JIGOWATTS && $+commands[fortune] )) && [[ -t 0 && -t 1 ]]; then
-  fortune -as
-  print
-fi
+# If STDERR is bound to a TTY.
+[[ -o INTERACTIVE && -t 2 ]] && {
 
+  # Print a random greeting.
+  if (( $+commands[fortune] )); then
+    fortune -as
+    print
+  fi
+
+} >&2

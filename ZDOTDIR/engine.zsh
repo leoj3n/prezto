@@ -66,7 +66,7 @@ function circuit-activate {
   # Welcome to the future!
   if (( JIGOWATTS == 1.21 )); then
     unset JIGOWATTS
-    exec zsh -$-
+    exec zsh
   fi
 }
 

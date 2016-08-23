@@ -484,4 +484,4 @@ fi
 
 unset DELOREAN_ENV_EXISTS
 export JIGOWATTS=1.21 
-exec zsh -$-
+exec zsh

@@ -1,14 +1,30 @@
 #
 # Executes commands at logout.
 #
-# Authors:
-#   Joel Kuczmarski <leoj3n@gmail.com>
+# Context:
+#   - [✔] Login.
+#   - [ ] Interactive.
+#   - [ ] Script.
+#
+# Order:
+#   - [ ] /etc/zshenv
+#   - [ ] ZDOTDIR/.zshenv
+#   - [ ] /etc/zprofile
+#   - [ ] ZDOTDIR/.zprofile
+#   - [ ] /etc/zshrc
+#   - [ ] ZDOTDIR/.zshrc
+#   - [ ] ZDOTDIR/flux-capacitor.zsh
+#   - [ ] /etc/zlogin
+#   - [ ] ZDOTDIR/.zlogin
+#   - [✔] ZDOTDIR/.zlogout
+#   - [ ] /etc/zlogout
 #
 
-# Say farewell (if STDIN and STDOUT are TTY).
-if [[ -t 0 && -t 1 ]]; then
-  cat <<-EOF
-SEE YOU IN THE FUTURE!
+# If STDERR is bound to a TTY.
+[[ -o INTERACTIVE && -t 2 ]] && {
 
-EOF
-fi
+  # Print the farewell.
+  print
+  print 'SEE YOU IN THE FUTURE!'
+
+} >&2

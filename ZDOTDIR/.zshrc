@@ -1,8 +1,10 @@
 #
 # Run commands for interactive shells.
 #
+# Note: Login shells are usually, but not always, interactive.
+#
 # Context:
-#   - [✔] Login.
+#   - [ ] Login.
 #   - [✔] Interactive.
 #   - [ ] Script.
 #
