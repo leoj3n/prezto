@@ -265,7 +265,7 @@ function fs() {
 
 # Pipe tree output into the less pager.
 function treep() {
-  if command -v tree>'/dev/null' 2>&1; then
+  if (( $+commands[tree] )); then
     tree -CN "$@" | less -r
   fi
 }

@@ -46,11 +46,11 @@ autoload -Uz compinit
 
 if [[ ! -s "${ZCOMPDUMP}" ]]; then #outdated...
   # Compile the dump.
-  autoload -Uz compinit && compinit -i -d "${ZCOMPDUMP}" && zcompile "${ZCOMPDUMP}" || {
+  compinit -i -d "${ZCOMPDUMP}" && zcompile "${ZCOMPDUMP}" || {
     print "DeLorean[completion]: Failed to generate and compile completion dump." >&2
     return 1
   }
 else
   # Use the already compiled dump.
-  compinit -i -C -d "${ZCOMPDUMP}"
+  compinit -C -d "${ZCOMPDUMP}"
 fi

@@ -39,10 +39,10 @@ unset min_zsh_version
 # Activates the circuits.
 #
 # The activation phase happens before the completion phase, and is the correct
-# place to regenerate outdated files or modify the environment before circuits
-# start completing. If DeLorean has reached 88 MPH, the $JIGOWATTS variable is
-# available and can be used to trigger cache regeneration or other slow tasks
-# that should only be run when DeLorean is time traveling to the future.
+# place to regenerate outdated files, or modify the environment before circuits
+# start to complete. If DeLorean has reached 88 MPH, the $JIGOWATTS variable is
+# set to 1.21 and can be used for triggering cache regeneration and other heavy
+# tasks that should only be run when DeLorean is time traveling to the future.
 #
 
 function circuit-activate {
