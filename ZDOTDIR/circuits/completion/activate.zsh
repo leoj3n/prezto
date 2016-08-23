@@ -15,9 +15,9 @@ if [[ "$TERM" == 'dumb' ]]; then
 fi
 
 #
-# Define activation phase variables (locals are unset after activation phase).
+# Define activation phase variables ("local" is unset after activation phase).
 #
-# Any activate.zsh sequenced after this will have access to these variables.
+# Any activate.zsh sequenced after this *will* have access to these variables.
 #
 
 local ZCOMPDUMP="${TMPPREFIX}-zcompdump_${ZSH_VERSION}"
@@ -45,12 +45,12 @@ autoload -Uz compinit
 #
 
 if [[ ! -s "${ZCOMPDUMP}" ]]; then #outdated...
-  # compule the dump
+  # Compile the dump.
   autoload -Uz compinit && compinit -i -d "${ZCOMPDUMP}" && zcompile "${ZCOMPDUMP}" || {
     print "DeLorean[completion]: Failed to generate and compile completion dump." >&2
     return 1
   }
 else
-  # use the already compiled dump
+  # Use the already compiled dump.
   compinit -i -C -d "${ZCOMPDUMP}"
 fi

@@ -193,7 +193,7 @@ Failed to rewind the hands of time for ${zshenv_loc}
 EOF
 }
 
-STDERR_ZSHENV_REVERT_FINISH () {
+STDERR_ZSHENV_REVERT_END () {
 cat <<EOF >&2
 
 ${prog_name}: Welcome to 1985.
@@ -213,7 +213,7 @@ Time to change the default shell to Zsh!
 EOF
 }
 
-STDERR_CHANGE_SHELL_FINISH () {
+STDERR_CHANGE_SHELL_END () {
 cat <<EOF >&2
 
 Default login shell is now ${SHELL}
@@ -231,10 +231,18 @@ To try again, run the following command at any time:
 EOF
 }
 
-STDERR_CHANGE_SHELL_PASSWORD () {
+STDERR_CHANGE_SHELL_WRONG () {
 cat <<EOF >&2
 
 Wrong password. Press CTRL-C to cancel.
+
+EOF
+}
+
+STDERR_CHANGE_SHELL_EMPTY () {
+cat <<EOF >&2
+
+Empty password. Press CTRL-C to cancel.
 
 EOF
 }
@@ -363,14 +371,13 @@ case "$@" in
   (past)
     if (( zshenv_stat )); then
       if (( zshenv_epoch )); then
-        if (( zshenv_epoch != zshenv_stat )); then
 
+        if (( zshenv_epoch != zshenv_stat )); then
           if ! read -q "?Remove ${zshenv_loc} even though it has unsaved changes [y/N]? " && print; then
             STDERR_ZSHENV_REMOVE_USER_ABORT
             exit 1
           fi
           print
-
         fi
 
         if [[ -s "${zshenv_loc}.past" ]]; then
@@ -388,12 +395,12 @@ case "$@" in
       fi
     fi
 
-    STDERR_ZSHENV_REVERT_FINISH
+    STDERR_ZSHENV_REVERT_END
     exit 0
   ;;
 
   #
-  # Generate a minimal circuit module using the passed name.
+  # Generate a minimal circuit using the passed name.
   #
 
   (circuit*)
@@ -444,9 +451,7 @@ if (( $+change )); then
           CHSH_ZSH_STDERR="$(chsh -s "${CHSH_ZSH}" 2>&1)"
           case $? in
             0)
-              # Great. It worked.
-              STDERR_CHANGE_SHELL_FINISH
-              # Update the $SHELL export for this session.
+              STDERR_CHANGE_SHELL_END
               SHELL="${CHSH_ZSH}"
               break
             ;;
@@ -458,7 +463,10 @@ if (( $+change )); then
             *)
               case "${CHSH_ZSH_STDERR}" in
                 *Credentials*)
-                  STDERR_CHANGE_SHELL_PASSWORD
+                  STDERR_CHANGE_SHELL_WRONG
+                ;;
+                *Empty*)
+                  STDERR_CHANGE_SHELL_EMPTY
                 ;;
                 *)
                   STDERR_CHANGE_SHELL_OTHER
@@ -470,10 +478,8 @@ if (( $+change )); then
         done
         trap - INT
       else
-        # Nope, it's a bogus path.
         STDERR_CHANGE_SHELL_BOGUS
       fi
-    # Else, suggest the user change the login shell manually.
     else
       STDERR_CHANGE_SHELL_MANUAL
     fi

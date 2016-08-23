@@ -7,9 +7,9 @@
 ################################################################################
 
 #
-# Define activation phase variables (local unset after activation phase).
+# Define activation phase variables ("local" is unset after activation phase).
 #
-# Any activate.zsh sequenced after this will have access to these variables.
+# Any activate.zsh sequenced after this *will* have access to these variables.
 #
 
 local FLATFPATH="${TMPPREFIX}-fpath_${ZSH_VERSION}"
