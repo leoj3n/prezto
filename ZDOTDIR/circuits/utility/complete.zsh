@@ -253,6 +253,10 @@ function find-exec {
   find . -type f -iname "*${1:-}*" -exec "${2:-file}" '{}' \;
 }
 
+function vim-recover {
+  vim -p $(find . -name "$1" | sed -e 's/.swp$//g;s/\/\./\//g;' | xargs echo)
+}
+
 # Displays user owned processes status.
 function psu {
   ps -U "${1:-$LOGNAME}" -o 'pid,%cpu,%mem,command' "${(@)argv[2,-1]}"

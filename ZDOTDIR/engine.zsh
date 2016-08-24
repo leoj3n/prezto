@@ -32,6 +32,138 @@ fi
 unset min_zsh_version
 
 ################################################################################
+# Phases
+################################################################################
+
+typeset -gA source_conductors
+typeset -gA interrupt_conductors
+typeset -gA load_conductors
+typeset -gA ground_conductors
+
+# Adds a conductor.
+function conductor-add {
+  local type callback priority
+
+  # Number of arguments.
+  if (( $# < 2 )); then
+    print "DeLorean: conductor-add requires type and callback."
+    return
+  fi
+
+  # Verify conductor type.
+  if (( $+${1}_conductors )); then
+    type="${1}_conductors"
+  else
+    print "DeLorean: no such conductor type: $1"
+    return
+  fi
+
+  # Verify callback function.
+  if (( $+functions[$2] )); then
+    callback="$2"
+  else
+    print "DeLorean: callback function does not exist: $2"
+    return
+  fi
+
+  # Verify conductor priority.
+  if [[ -n "$3" && "$3" == "${3%%[!0-9]*}" ]]; then
+    priority="$3"
+  else
+    priority=0
+  fi
+
+  # Add a callback with priority for conductor type.
+  eval "${type}[${callback}]=${priority}"
+}
+
+function conductor-call {
+  # Verify conductor type.
+  if (( $+${1}_conductors )); then
+    type="${1}_conductors"
+  else
+    print "DeLorean: no such conductor type: $1"
+    return
+  fi
+
+  # TODO: priority
+  for cb (${(k)${(P)type}[@]}) $cb
+}
+
+function nu-circuit {
+  local -a circuits
+  local circuit
+  local electron_glob='^([_.]*|prompt_*_setup|README*)(-.N:t)'
+
+  # $argv is overridden in the anonymous function.
+  circuits=("$argv[@]")
+
+  local past=1
+  local future=$(( ${#circuits} + 1 ))
+
+  # Source the circuits.
+  for circuit in "$circuits[@]"; do
+    if zstyle -t ":delorean:circuit:$circuit" sourced 'yes' 'no'; then
+      continue
+    elif [[ ! -d "${ZDOTDIR}/circuits/$circuit" ]]; then
+      print "$0: no such circuit: $circuit" >&2
+      continue
+    else
+      timeline "${circuit}" $(( past++ )) $future 
+
+      if [[ -s "${ZDOTDIR}/circuits/$circuit/$circuit.zsh" ]]; then
+        source "${ZDOTDIR}/circuits/$circuit/$circuit.zsh"
+      fi
+
+      if (( $? == 0 )); then
+        zstyle ":delorean:circuit:$circuit" sourced 'yes'
+      else
+        timeline "Great Scott! The ${circuit} circuit blew a fuse."
+        zstyle ":delorean:circuit:$circuit" sourced 'no'
+      fi
+
+      timeline
+    fi
+  done
+
+  (( $#CONTINUUM )) && return || unset CLEAR CONTINUUM
+
+  # Source conductors.
+  conductor-call source
+
+  # Add electrons to $fpath.
+  fpath=(${circuits:+${ZDOTDIR}/circuits/${^circuits}/electrons(/FN)} $fpath)
+
+  # Load electrons.
+  function {
+    local electron
+
+    setopt LOCAL_OPTIONS EXTENDED_GLOB
+
+    for electron in ${ZDOTDIR}/circuits/${^circuits}/electrons/$~electron_glob; do
+      autoload -Uz "$electron"
+    done
+  }
+
+  # Interrupt conductors.
+  conductor-call interrupt
+
+  # The future is now!
+  if (( JIGOWATTS == 1.21 )); then
+    unset JIGOWATTS
+    exec zsh
+  fi
+
+  # Load conductors.
+  conductor-call load
+
+  # Ground conductors.
+  conductor-call ground
+
+  unset CLEAR CONTINUUM
+}
+
+################################################################################
 # Functions
 ################################################################################
 
@@ -114,7 +246,7 @@ function circuit-complete {
       print "$0: no such circuit: $circuit" >&2
       continue
     else
-      circuit-timeline "${circuit}" $(( past++ )) $future 
+      timeline "${circuit}" $(( past++ )) $future 
 
       if [[ -s "${ZDOTDIR}/circuits/$circuit/complete.zsh" ]]; then
         source "${ZDOTDIR}/circuits/$circuit/complete.zsh"
@@ -123,7 +255,7 @@ function circuit-complete {
       if (( $? == 0 )); then
         zstyle ":delorean:circuit:$circuit" completed 'yes'
       else
-        circuit-timeline "Great Scott! The ${circuit} circuit blew a fuse."
+        timeline "Great Scott! The ${circuit} circuit blew a fuse."
 
         # Remove the $fpath entry.
         fpath[(r)${ZDOTDIR}/circuits/${circuit}/capabilities]=()
@@ -143,7 +275,7 @@ function circuit-complete {
         zstyle ":delorean:circuit:$circuit" completed 'no'
       fi
 
-      circuit-timeline
+      timeline
     fi
   done
 
@@ -156,7 +288,7 @@ function circuit-complete {
 #   ▞░░▓░░░░░░░░░░░░░░░░░░░▞ utility
 #
 
-function circuit-timeline {
+function timeline {
   (( $+3 )) && CONTINUUM+=("$1")
   local circuit="${(j:/:)CONTINUUM}"
   local len=1
@@ -192,7 +324,7 @@ function circuit-timeline {
 # ...from within a circuit's completion.zsh, or on the command-line.
 #
 
-function circuit {
+function old-one-off-circuit {
   if (( ! $+ACTIVATION_PHASE_FINISHED )); then
     print "$0: activation phase not yet finished: ${*}" >&2
     return 1
@@ -243,6 +375,5 @@ unset zfunction{s,}
 #
 
 zstyle -a ':delorean:sequence' circuit 'circuits'
-circuit-activate "$circuits[@]"
-circuit-complete "$circuits[@]"
+nu-circuit "$circuits[@]"
 unset circuits
