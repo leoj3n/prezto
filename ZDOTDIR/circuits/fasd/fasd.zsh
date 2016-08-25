@@ -7,7 +7,7 @@
 #
 
 # Load dependencies.
-engage 'editor'
+circuit 'editor'
 
 # Return if requirements are not found.
 if (( ! $+commands[fasd] )); then

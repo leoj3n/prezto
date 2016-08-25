@@ -8,7 +8,7 @@
 #
 
 # Load dependencies.
-engage 'ruby'
+circuit 'ruby'
 
 # Return if requirements are not found.
 if (( ! $+commands[bundle] )); then

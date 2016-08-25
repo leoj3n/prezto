@@ -12,7 +12,7 @@
 # Any activate.zsh sequenced after this *will* have access to these variables.
 #
 
-local FLATFPATH="${TMPPREFIX}-fpath_${ZSH_VERSION}"
+local FLATFPATH="${TMPPREFIX}-${ZSH_VERSION}-fpath.zwc"
 
 #
 # Obliterate compiled files for all Zsh versions if we are time traveling.
@@ -20,10 +20,7 @@ local FLATFPATH="${TMPPREFIX}-fpath_${ZSH_VERSION}"
 
 # TODO: Outdate method.
 if (( $+JIGOWATTS )); then
-  function {
-    setopt LOCAL_OPTIONS EXTENDED_GLOB
-    rm -r "${TMPPREFIX}-fpath_"*
-  }
+  rm "${FLATFPATH}"
 fi
 
 ################################################################################
@@ -34,8 +31,27 @@ fi
 # Flattens fpath if missing.
 #
 
-# Use an anonymous function to avoid polluting the scope.
 function {
+  if [[ ! -d "${FLATFPATH}" ]]; then
+    zstyle -a ':delorean:circuit:fpath' blacklist 'blacklist'
+    blacklist="^(${(j:|:)blacklist})"
+
+    # Anon func to restric glob and redirect "no match found" errors.
+    function {
+      setopt LOCAL_OPTIONS EXTENDED_GLOB
+      zcompile "${FLATFPATH}" "$fpath[@]/"$~blacklist
+      #for fp ("$fpath[@]") cp -n "${fp}/"$~blacklist "${FLATFPATH}"
+    } &>/dev/null
+
+    [[ zcompile -t "${FLATFPATH}" 'compinit' '_complete' ]] || {
+      print "DeLorean[fpath]: Important functions missing from ${FLATFPATH}" >&2
+      return 1
+    }
+  fi
+}
+
+# Use an anonymous function to avoid polluting the scope.
+function oldfpath {
   if [[ ! -d "${FLATFPATH}" ]]; then
     zstyle -a ':delorean:circuit:fpath' blacklist 'blacklist'
     blacklist="^(${(j:|:)blacklist})"

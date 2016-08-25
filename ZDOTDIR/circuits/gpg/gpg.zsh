@@ -37,7 +37,7 @@ if grep 'enable-ssh-support' "$_gpg_agent_conf" &> /dev/null; then
   _ssh_agent_env="$_gpg_agent_env"
 
   # Load the SSH module for additional processing.
-  engage 'ssh'
+  circuit 'ssh'
 
   # Updates the GPG-Agent TTY before every command since SSH does not set it.
   function _gpg-agent-update-tty {
