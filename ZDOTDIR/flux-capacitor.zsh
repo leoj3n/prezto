@@ -40,10 +40,8 @@ zstyle ':delorean:*:*' color 'yes'
 #
 
 zstyle ':delorean:sequence' circuit \
-  'fpath' \
   'environment' \
   'utility' \
-  'completion' \
   'python' \
   'perl' \
   'java' \

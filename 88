@@ -130,8 +130,14 @@ shift $((OPTIND - 1))
 # Zshenv errors.
 #
 
-STDERR_ZSHENV_HAS_BEEN_MODIFIED () {
-cat <<EOF >&2
+function STDERR_ZSHENV_{\
+HAS_BEEN_MODIFIED,\
+BACKUP_{PAST_CONFLICT,USER_ABORT},\
+SCHEMATIC_FAIL,\
+REMOVE_USER_ABORT,\
+REVERT_{BEGIN,FAIL,END}}
+{case "${0/STDERR_ZSHENV_/}" in
+  HAS_BEEN_MODIFIED) cat <<EOF >&2
 
 ${zshenv_loc} has been modified since the last temporal displacement!
 
@@ -142,145 +148,101 @@ ${zshenv_loc} -> ${prog_home}/ZDOTDIR/.zshenv
 Then remove ${zshenv_loc} and try again.
 
 EOF
-}
-
-STDERR_ZSHENV_BACKUP_PAST_CONFLICT () {
-cat <<EOF >&2
+;;BACKUP_PAST_CONFLICT) cat <<EOF >&2
 
 Backup failed for ${zshenv_loc}. Move it away and try again.
 
 EOF
-}
-
-STDERR_ZSHENV_BACKUP_USER_ABORT () {
-cat <<EOF >&2
+;;BACKUP_USER_ABORT) cat <<EOF >&2
 
 
 ${prog_name}: Aborting temporal displacement of ${zshenv_loc}
 
-EOF
-}
-
-STDERR_ZSHENV_SCHEMATIC_FAIL () {
-cat <<EOF >&2
+EOF 
+;;SCHEMATIC_FAIL) cat <<EOF >&2
 
 Temporal displacement of ${zshenv_loc} has failed.
 
 EOF
-}
-
-STDERR_ZSHENV_REMOVE_USER_ABORT () {
-cat <<EOF >&2
+;;REMOVE_USER_ABORT) cat <<EOF >&2
 
 ${prog_name}: Aborting removal of ${zshenv_loc}
 
 EOF
-}
-
-STDERR_ZSHENV_REVERT_BEGIN () {
-cat <<EOF >&2
+;;REVERT_BEGIN) cat <<EOF >&2
 
 ${prog_name}: Reverting ${zshenv_loc} to its original state.
 
 EOF
-}
-
-STDERR_ZSHENV_REVERT_FAIL () {
-cat <<EOF >&2
+;;REVERT_FAIL) cat <<EOF >&2
 
 Failed to rewind the hands of time for ${zshenv_loc}
 
 EOF
-}
-
-STDERR_ZSHENV_REVERT_END () {
-cat <<EOF >&2
+;;REVERT_END) cat <<EOF >&2
 
 ${prog_name}: Welcome to 1985.
 
 EOF
-}
+esac}
 
 #
 # Change shell errors.
 #
 
-STDERR_CHANGE_SHELL_BEGIN () {
-cat <<EOF >&2
+function STDERR_CHANGE_SHELL_{BEGIN,END,ABORT,WRONG,EMPTY,OTHER,BOGUS,MANUAL,UNCHANGED}
+{case "${0/STDERR_CHANGE_SHELL_/}" in
+  BEGIN) cat <<EOF >&2
 
 Time to change the default shell to Zsh!
 
 EOF
-}
-
-STDERR_CHANGE_SHELL_END () {
-cat <<EOF >&2
+;;END) cat <<EOF >&2
 
 Default login shell is now ${SHELL}
 
 EOF
-}
-
-STDERR_CHANGE_SHELL_ABORT () {
-cat <<EOF >&2
+;;ABORT) cat <<EOF >&2
 
 Change of default login shell has been cancelled!
 To try again, run the following command at any time:
     chsh -s "${CHSH_ZSH}"
 
 EOF
-}
-
-STDERR_CHANGE_SHELL_WRONG () {
-cat <<EOF >&2
+;;WRONG) cat <<EOF >&2
 
 Wrong password. Press CTRL-C to cancel.
 
 EOF
-}
-
-STDERR_CHANGE_SHELL_EMPTY () {
-cat <<EOF >&2
+;;EMPTY) cat <<EOF >&2
 
 Empty password. Press CTRL-C to cancel.
 
 EOF
-}
-
-STDERR_CHANGE_SHELL_OTHER () {
-cat <<EOF >&2
+;;OTHER) cat <<EOF >&2
 
 There was a problem changing the default login shell:
 
 ${CHSH_ZSH_STDERR}
 
 EOF
-}
-
-STDERR_CHANGE_SHELL_BOGUS () {
-cat <<EOF >&2
+;;BOGUS) cat <<EOF >&2
 
 Cannot change default login shell automatically because there is a bad Zsh entry in /etc/shells.
 
 EOF
-}
-
-STDERR_CHANGE_SHELL_MANUAL () {
-cat <<EOF >&2
+;;MANUAL) cat <<EOF >&2
 
 Cannot change the default login shell because this system does not have chsh.
 Please manually change your default login shell to ${CHSH_ZSH}!
 
 EOF
-}
-
-STDERR_CHANGE_SHELL_UNCHANGED () {
-cat <<EOF >&2
+;;UNCHANGED) cat <<EOF >&2
 
 Default login shell is already ${SHELL}
 
 EOF
-}
+esac}
 
 ################################################################################
 # Setup.

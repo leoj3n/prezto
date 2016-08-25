@@ -41,56 +41,62 @@ typeset -gA load_conductors
 typeset -gA ground_conductors
 
 # Adds a conductor.
-function conductor-add {
-  local type callback priority
+function conductor {
+  local type="$1" callback="$2" priority="$3"
+  local conductor="${type}_conductors"
 
   # Number of arguments.
   if (( $# < 2 )); then
-    print "DeLorean: conductor-add requires type and callback."
-    return
+    print "DeLorean: too few arguments for command:" >&2
+    print "    <$0 $*>" >&2
+    print "Correct usage:" >&2
+    print "    $0 type callback [priority=0]" >&2
+    return 1
   fi
 
   # Verify conductor type.
-  if (( $+${1}_conductors )); then
-    type="${1}_conductors"
-  else
-    print "DeLorean: no such conductor type: $1"
-    return
+  if ! (( ${(P)conductor+1} )); then
+    print "DeLorean: no such conductor of type${type:+" <$type>"} for command:" >&2
+    print "    <$0 $*>" >&2
+    return 1
   fi
 
-  # Verify callback function.
-  if (( $+functions[$2] )); then
-    callback="$2"
-  else
-    print "DeLorean: callback function does not exist: $2"
-    return
+  # Verify priority number.
+  if [[ -n "${priority}" && "${priority}" != "${priority%%[!0-9]*}" ]]; then
+    print "DeLorean: ignoring non-number conductor priority <${priority}> for command:" >&2
+    print "    <$0 $*>" >&2
+    unset priority
   fi
 
-  # Verify conductor priority.
-  if [[ -n "$3" && "$3" == "${3%%[!0-9]*}" ]]; then
-    priority="$3"
-  else
-    priority=0
-  fi
-
-  # Add a callback with priority for conductor type.
-  eval "${type}[${callback}]=${priority}"
+  # Add the conductor callback with priority.
+  eval "${conductor}[${callback}]=${priority:-0}"
 }
 
-function conductor-call {
+# TODO: priority
+function conduct {
+  local type="$1"
+  local conductor="${type}_conductors"
+  
   # Verify conductor type.
-  if (( $+${1}_conductors )); then
-    type="${1}_conductors"
-  else
-    print "DeLorean: no such conductor type: $1"
-    return
+  if ! (( ${(P)conductor+1} )); then
+    print "DeLorean: no such conductor of type${type:+" <$type>"} for command:" >&2
+    print "    <$0 $*>" >&2
+    return 1
   fi
 
-  # TODO: priority
-  for cb (${(k)${(P)type}[@]}) $cb
+  for cb in "${(k)${(P)conductor}[@]}"; do
+    # Verify callback function.
+    if (( ! $+functions[$cb] )); then
+      print "DeLorean: undefined callback function <${cb}> for command:" >&2
+      print "    <conductor ${type} ${cb}>" >&2
+      return
+    fi
+
+    "${cb}"
+  done
 }
 
-function nu-circuit {
+function circuit {
   local -a circuits
   local circuit
   local electron_glob='^([_.]*|prompt_*_setup|README*)(-.N:t)'
@@ -126,15 +132,19 @@ function nu-circuit {
     fi
   done
 
-  (( $#CONTINUUM )) && return || unset CLEAR CONTINUUM
+  if (( $#CONTINUUM )); then
+    return
+  else
+    unset CLEAR CONTINUUM
+  fi
 
-  # Source conductors.
-  conductor-call source
+  # "Source" conductors.
+  conduct source
 
   # Add electrons to $fpath.
   fpath=(${circuits:+${ZDOTDIR}/circuits/${^circuits}/electrons(/FN)} $fpath)
 
-  # Load electrons.
+  # Autoload electrons.
   function {
     local electron
 
@@ -145,8 +155,8 @@ function nu-circuit {
     done
   }
 
-  # Interrupt conductors.
-  conductor-call interrupt
+  # "Interrupt" conductors.
+  conduct interrupt
 
   # The future is now!
   if (( JIGOWATTS == 1.21 )); then
@@ -154,11 +164,11 @@ function nu-circuit {
     exec zsh
   fi
 
-  # Load conductors.
-  conductor-call load
+  # "Load" conductors.
+  conduct load
 
-  # Ground conductors.
-  conductor-call ground
+  # "Ground" conductors.
+  conduct ground
 
   unset CLEAR CONTINUUM
 }
@@ -375,5 +385,8 @@ unset zfunction{s,}
 #
 
 zstyle -a ':delorean:sequence' circuit 'circuits'
-nu-circuit "$circuits[@]"
+circuit "$circuits[@]"
 unset circuits
+
+#zcompile "${ZDOTDIR}/.zshrc"
+#zcompile "/usr/local/Cellar/zsh/5.2/share/zsh/functions"
