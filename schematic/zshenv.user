@@ -18,6 +18,8 @@
 # so the DeLorean .zshenv has to be sourced manually (as is done below).
 ################################################################################
 
+export DELOREAN_ZSHENV="${HOME}/.zshenv"
+
 export ZDOTDIR="__ZDOTDIR__"
 
 source "${ZDOTDIR}/.zshenv"

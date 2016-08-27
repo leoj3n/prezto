@@ -31,248 +31,234 @@ fi
 
 circuit 'mr.fusion'
 
+################################################################################
+# Workhorse.
+################################################################################
+
 #
-# Conductors.
+# Location of the completion dump.
 #
 
-conductor 'interrupt' 'completion-init'
-conductor 'load'      'completion-opt'
-conductor 'load'      'completion-zstyle'
+local ZCOMPDUMP="${TMPPREFIX}-${ZSH_VERSION}-zcompdump"
+
+#
+# Add zsh-completions to $fpath.
+#
+
+fpath=("${0:h}/external/src" $fpath)
+
+#
+# Load the Zsh module.
+#
+
+autoload -Uz compinit
+
+#
+# Regenerates .zcompdump if OUTDATED.
+#
+# Need to do OUTDATED because different version of Zsh may be at play.
+#
+
+if [[ ! -s "${ZCOMPDUMP}" ]]; then #outdated...
+  # Compile the dump.
+  compinit -i -d "${ZCOMPDUMP}" && zcompile "${ZCOMPDUMP}" || {
+    print "DeLorean[completion]: Failed to generate and compile completion dump." >&2
+    return 1
+  }
+else
+  # Use the already compiled dump.
+  compinit -C -d "${ZCOMPDUMP}"
+fi
 
 ################################################################################
-# Interrupt conductor.
+# Options.
 ################################################################################
 
-function completion-init {
-  #
-  # Location of the completion dump.
-  #
-
-  local ZCOMPDUMP="${TMPPREFIX}-${ZSH_VERSION}-zcompdump"
-
-  #
-  # Add zsh-completions to $fpath.
-  #
-
-  fpath=("${0:h}/external/src" $fpath)
-
-  #
-  # Load the Zsh module.
-  #
-
-  autoload -Uz compinit
-
-  #
-  # Regenerates .zcompdump if OUTDATED.
-  #
-  # Need to do OUTDATED because different version of Zsh may be at play.
-  #
-
-  if [[ ! -s "${ZCOMPDUMP}" ]]; then #outdated...
-    # Compile the dump.
-    compinit -i -d "${ZCOMPDUMP}" && zcompile "${ZCOMPDUMP}" || {
-      print "DeLorean[completion]: Failed to generate and compile completion dump." >&2
-      return 1
-    }
-  else
-    # Use the already compiled dump.
-    compinit -C -d "${ZCOMPDUMP}"
-  fi
-}
+setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
+setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
+setopt PATH_DIRS           # Perform path search even on command names with slashes.
+setopt AUTO_MENU           # Show completion menu on a successive tab press.
+setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
+setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a trailing slash.
+unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
+unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
 
 ################################################################################
-# Load conductors.
+# Zstyles.
 ################################################################################
 
-function completion-opt {
-  #
-  # Options
-  #
+#
+# Location of the completion cache.
+#
 
-  setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
-  setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
-  setopt PATH_DIRS           # Perform path search even on command names with slashes.
-  setopt AUTO_MENU           # Show completion menu on a successive tab press.
-  setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
-  setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a trailing slash.
-  unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
-  unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
-}
+local ZCOMPCACHE="${TMPPREFIX}-zcompcache_${ZSH_VERSION}"
 
-function completion-zstyle {
-  #
-  # Location of the completion cache.
-  #
+#
+# Use caching to make completion for commands such as dpkg and apt usable.
+#
 
-  local ZCOMPCACHE="${TMPPREFIX}-zcompcache_${ZSH_VERSION}"
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path "${ZCOMPCACHE}"
 
-  #
-  # Use caching to make completion for commands such as dpkg and apt usable.
-  #
+#
+# Case-insensitive (all), partial-word, and then substring completion.
+#
 
-  zstyle ':completion::complete:*' use-cache on
-  zstyle ':completion::complete:*' cache-path "${ZCOMPCACHE}"
+if zstyle -t ':delorean:circuit:completion:*' case-sensitive; then
+  zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+  setopt CASE_GLOB
+else
+  zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+  unsetopt CASE_GLOB
+fi
 
-  #
-  # Case-insensitive (all), partial-word, and then substring completion.
-  #
+#
+# Group matches and describe.
+#
 
-  if zstyle -t ':delorean:circuit:completion:*' case-sensitive; then
-    zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-    setopt CASE_GLOB
-  else
-    zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-    unsetopt CASE_GLOB
-  fi
+zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*:matches' group 'yes'
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
+zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' verbose yes
 
-  #
-  # Group matches and describe.
-  #
+#
+# Fuzzy match mistyped completions.
+#
 
-  zstyle ':completion:*:*:*:*:*' menu select
-  zstyle ':completion:*:matches' group 'yes'
-  zstyle ':completion:*:options' description 'yes'
-  zstyle ':completion:*:options' auto-description '%d'
-  zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
-  zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
-  zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
-  zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
-  zstyle ':completion:*:default' list-prompt '%S%M matches%s'
-  zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
-  zstyle ':completion:*' group-name ''
-  zstyle ':completion:*' verbose yes
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
 
-  #
-  # Fuzzy match mistyped completions.
-  #
+#
+# Increase the number of errors based on the length of the typed word.
+#
 
-  zstyle ':completion:*' completer _complete _match _approximate
-  zstyle ':completion:*:match:*' original only
-  zstyle ':completion:*:approximate:*' max-errors 1 numeric
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
 
-  #
-  # Increase the number of errors based on the length of the typed word.
-  #
+#
+# Don't complete unavailable commands.
+#
 
-  zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
+zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
 
-  #
-  # Don't complete unavailable commands.
-  #
+#
+# Array completion element sorting.
+#
 
-  zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
+zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 
-  #
-  # Array completion element sorting.
-  #
+#
+# Directories
+#
 
-  zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
+zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
+zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
+zstyle ':completion:*' squeeze-slashes true
 
-  #
-  # Directories
-  #
+#
+# History
+#
 
-  zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-  zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
-  zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
-  zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
-  zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*:history-words' stop yes
+zstyle ':completion:*:history-words' remove-all-dups yes
+zstyle ':completion:*:history-words' list false
+zstyle ':completion:*:history-words' menu yes
 
-  #
-  # History
-  #
+#
+# Environmental Variables
+#
 
-  zstyle ':completion:*:history-words' stop yes
-  zstyle ':completion:*:history-words' remove-all-dups yes
-  zstyle ':completion:*:history-words' list false
-  zstyle ':completion:*:history-words' menu yes
+zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
 
-  #
-  # Environmental Variables
-  #
+#
+# Populate hostname completion.
+#
 
-  zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
+zstyle -e ':completion:*:hosts' hosts 'reply=(
+  ${=${=${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) 2>/dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
+  ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*}
+  ${=${${${${(@M)${(f)"$(cat ~/.ssh/config 2>/dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
+)'
 
-  #
-  # Populate hostname completion.
-  #
+#
+# Don't complete uninteresting users...
+#
 
-  zstyle -e ':completion:*:hosts' hosts 'reply=(
-    ${=${=${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) 2>/dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
-    ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*}
-    ${=${${${${(@M)${(f)"$(cat ~/.ssh/config 2>/dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
-  )'
+zstyle ':completion:*:*:*:users' ignored-patterns \
+  adm amanda apache avahi beaglidx bin cacti canna clamav daemon \
+  dbus distcache dovecot fax ftp games gdm gkrellmd gopher \
+  hacluster haldaemon halt hsqldb ident junkbust ldap lp mail \
+  mailman mailnull mldonkey mysql nagios \
+  named netdump news nfsnobody nobody nscd ntp nut nx openvpn \
+  operator pcap postfix postgres privoxy pulse pvm quagga radvd \
+  rpc rpcuser rpm shutdown squid sshd sync uucp vcsa xfs '_*'
 
-  #
-  # Don't complete uninteresting users...
-  #
+#
+# ... unless we really want to.
+#
 
-  zstyle ':completion:*:*:*:users' ignored-patterns \
-    adm amanda apache avahi beaglidx bin cacti canna clamav daemon \
-    dbus distcache dovecot fax ftp games gdm gkrellmd gopher \
-    hacluster haldaemon halt hsqldb ident junkbust ldap lp mail \
-    mailman mailnull mldonkey mysql nagios \
-    named netdump news nfsnobody nobody nscd ntp nut nx openvpn \
-    operator pcap postfix postgres privoxy pulse pvm quagga radvd \
-    rpc rpcuser rpm shutdown squid sshd sync uucp vcsa xfs '_*'
+zstyle '*' single-ignored show
 
-  #
-  # ... unless we really want to.
-  #
+#
+# Ignore multiple entries.
+#
 
-  zstyle '*' single-ignored show
+zstyle ':completion:*:(rm|kill|diff):*' ignore-line other
+zstyle ':completion:*:rm:*' file-patterns '*:all-files'
 
-  #
-  # Ignore multiple entries.
-  #
+#
+# Kill
+#
 
-  zstyle ':completion:*:(rm|kill|diff):*' ignore-line other
-  zstyle ':completion:*:rm:*' file-patterns '*:all-files'
+zstyle ':completion:*:*:*:*:processes' command 'ps -u $LOGNAME -o pid,user,command -w'
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;36=0=01'
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:*:kill:*' force-list always
+zstyle ':completion:*:*:kill:*' insert-ids single
 
-  #
-  # Kill
-  #
+#
+# Man
+#
 
-  zstyle ':completion:*:*:*:*:processes' command 'ps -u $LOGNAME -o pid,user,command -w'
-  zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;36=0=01'
-  zstyle ':completion:*:*:kill:*' menu yes select
-  zstyle ':completion:*:*:kill:*' force-list always
-  zstyle ':completion:*:*:kill:*' insert-ids single
+zstyle ':completion:*:manuals' separate-sections true
+zstyle ':completion:*:manuals.(^1*)' insert-sections true
 
-  #
-  # Man
-  #
+#
+# Media Players
+#
 
-  zstyle ':completion:*:manuals' separate-sections true
-  zstyle ':completion:*:manuals.(^1*)' insert-sections true
+zstyle ':completion:*:*:mpg123:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
+zstyle ':completion:*:*:mpg321:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
+zstyle ':completion:*:*:ogg123:*' file-patterns '*.(ogg|OGG|flac):ogg\ files *(-/):directories'
+zstyle ':completion:*:*:mocp:*' file-patterns '*.(wav|WAV|mp3|MP3|ogg|OGG|flac):ogg\ files *(-/):directories'
 
-  #
-  # Media Players
-  #
+#
+# Mutt
+#
 
-  zstyle ':completion:*:*:mpg123:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
-  zstyle ':completion:*:*:mpg321:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
-  zstyle ':completion:*:*:ogg123:*' file-patterns '*.(ogg|OGG|flac):ogg\ files *(-/):directories'
-  zstyle ':completion:*:*:mocp:*' file-patterns '*.(wav|WAV|mp3|MP3|ogg|OGG|flac):ogg\ files *(-/):directories'
+if [[ -s "$HOME/.mutt/aliases" ]]; then
+  zstyle ':completion:*:*:mutt:*' menu yes select
+  zstyle ':completion:*:mutt:*' users ${${${(f)"$(<"$HOME/.mutt/aliases")"}#alias[[:space:]]}%%[[:space:]]*}
+fi
 
-  #
-  # Mutt
-  #
+#
+# SSH/SCP/RSYNC
+#
 
-  if [[ -s "$HOME/.mutt/aliases" ]]; then
-    zstyle ':completion:*:*:mutt:*' menu yes select
-    zstyle ':completion:*:mutt:*' users ${${${(f)"$(<"$HOME/.mutt/aliases")"}#alias[[:space:]]}%%[[:space:]]*}
-  fi
-
-  #
-  # SSH/SCP/RSYNC
-  #
-
-  zstyle ':completion:*:(scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
-  zstyle ':completion:*:(scp|rsync):*' group-order users files all-files hosts-domain hosts-host hosts-ipaddr
-  zstyle ':completion:*:ssh:*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
-  zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hosts-ipaddr
-  zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
-  zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
-  zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
-}
+zstyle ':completion:*:(scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
+zstyle ':completion:*:(scp|rsync):*' group-order users files all-files hosts-domain hosts-host hosts-ipaddr
+zstyle ':completion:*:ssh:*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
+zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hosts-ipaddr
+zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
+zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
+zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'

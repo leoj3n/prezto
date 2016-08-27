@@ -33,5 +33,9 @@ function coalesce {
 
 # Compares the "epoch" attribute of two files.
 function epoch-compare {
-  return 1 #outdated
+  function {
+    zgetattr "$1" 'epoch' primary_epoch &>/dev/null
+    zgetattr "$2" 'epoch' secondary_epoch &>/dev/null
+  } || return 2
+  return $(( primary_epoch != secondary_epoch ))
 }

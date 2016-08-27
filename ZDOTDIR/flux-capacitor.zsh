@@ -42,6 +42,7 @@ zstyle ':delorean:*:*' color 'yes'
 zstyle ':delorean:sequence' circuit \
   'environment' \
   'utility' \
+  'completion' \
   'python' \
   'perl' \
   'java' \

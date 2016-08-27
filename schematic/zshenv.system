@@ -17,4 +17,6 @@
 # found in $ZDOTDIR or $HOME, so the DeLorean .zshenv is sourced automatically.
 ################################################################################
 
+export DELOREAN_ZSHENV="/etc/zshenv"
+
 export ZDOTDIR="__ZDOTDIR__"
