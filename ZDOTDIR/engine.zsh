@@ -138,6 +138,8 @@ function circuit {
     unset CLEAR CONTINUUM
   fi
 
+  source "${ZDOTDIR}/circuits/fpath/fpath.zsh"
+
   # "Source" conductors.
   conduct source
 

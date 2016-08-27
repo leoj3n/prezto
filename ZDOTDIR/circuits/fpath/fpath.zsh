@@ -19,9 +19,11 @@ local FLATFPATH="${TMPPREFIX}-${ZSH_VERSION}-fpath.zwc"
 #
 
 # TODO: Outdate method.
-if (( $+JIGOWATTS )); then
-  rm "${FLATFPATH}"
+#if (( $+JIGOWATTS )); then
+if [[ -f "${FLATFPATH}" ]]; then
+  rm -f "${FLATFPATH}"
 fi
+#fi
 
 ################################################################################
 # Main
@@ -32,43 +34,33 @@ fi
 #
 
 function {
-  if [[ ! -d "${FLATFPATH}" ]]; then
+  if [[ ! -f "${FLATFPATH}" ]]; then
+    typeset -a zarr
+
     zstyle -a ':delorean:circuit:fpath' blacklist 'blacklist'
     blacklist="^(${(j:|:)blacklist})"
 
-    # Anon func to restric glob and redirect "no match found" errors.
-    function {
-      setopt LOCAL_OPTIONS EXTENDED_GLOB
-      zcompile "${FLATFPATH}" "$fpath[@]/"$~blacklist
-      #for fp ("$fpath[@]") cp -n "${fp}/"$~blacklist "${FLATFPATH}"
-    } &>/dev/null
+    setopt LOCAL_OPTIONS EXTENDED_GLOB
 
-    [[ zcompile -t "${FLATFPATH}" 'compinit' '_complete' ]] || {
+    for fp in "$fpath[@]"; do
+      local ztail=(${zarr:t})
+      for it in "${fp}/"$~blacklist; do
+        if [[ -z "${ztail[(r)${it:t}]}" ]]; then
+          if zcompile "${TMPPREFIX}-try-zcompile" "${it}" &>/dev/null; then
+            zarr+="${it}"
+          else
+            echo "CANNOT COMPILE: ${it}"
+          fi
+        else
+          echo "DUPLICATE: ${it}"
+        fi
+      done
+    done
+
+    zcompile "${FLATFPATH}" "$zarr[@]"
+
+    zcompile -t "${FLATFPATH}" 'compinit' '_complete' || {
       print "DeLorean[fpath]: Important functions missing from ${FLATFPATH}" >&2
-      return 1
-    }
-  fi
-}
-
-# Use an anonymous function to avoid polluting the scope.
-function oldfpath {
-  if [[ ! -d "${FLATFPATH}" ]]; then
-    zstyle -a ':delorean:circuit:fpath' blacklist 'blacklist'
-    blacklist="^(${(j:|:)blacklist})"
-
-    mkdir -p "${FLATFPATH}" || {
-      print "DeLorean[fpath]: Failed to create the fpath directory ${FLATFPATH}" >&2
-      return 1
-    }
-
-    # Anon func to restric glob and redirect "no match found" errors.
-    function {
-      setopt LOCAL_OPTIONS EXTENDED_GLOB
-      for fp ("$fpath[@]") cp -n "${fp}/"$~blacklist "${FLATFPATH}"
-    } &>/dev/null
-
-    [[ -s "${FLATFPATH}/compinit" ]] || {
-      print "DeLorean[fpath]: Important files missing from ${FLATFPATH}" >&2
       return 1
     }
   fi
