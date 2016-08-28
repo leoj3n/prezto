@@ -165,7 +165,7 @@ setopt INTERACTIVE_COMMENTS
 # Auto set to 'off' on dumb terminals.
 #
 
-zstyle ':delorean:circuit:prompt' theme 'pure'
+zstyle ':delorean:circuit:prompt' theme 'sorin'
 
 ################################################################################
 # Screen

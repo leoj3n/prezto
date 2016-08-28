@@ -51,15 +51,17 @@ fpath=("${0:h}/external/src" $fpath)
 # Load the Zsh module.
 #
 
-autoload -Uz compinit
-
+#autoload -Uz compinit
+autoload -Uz compinit && compinit -i
 #
 # Regenerates .zcompdump if OUTDATED.
 #
 # Need to do OUTDATED because different version of Zsh may be at play.
 #
 
-if [[ ! -s "${ZCOMPDUMP}" ]]; then #outdated...
+if (( 0 )); then
+if [[ ! -s "${ZCOMPDUMP}" ]] || (( $+JIGOWATTS )); then #outdated...
+  echo GEN COMPL DUMP
   # Compile the dump.
   compinit -i -d "${ZCOMPDUMP}" && zcompile "${ZCOMPDUMP}" || {
     print "DeLorean[completion]: Failed to generate and compile completion dump." >&2
@@ -68,6 +70,7 @@ if [[ ! -s "${ZCOMPDUMP}" ]]; then #outdated...
 else
   # Use the already compiled dump.
   compinit -C -d "${ZCOMPDUMP}"
+fi
 fi
 
 ################################################################################
@@ -91,14 +94,14 @@ unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
 # Location of the completion cache.
 #
 
-local ZCOMPCACHE="${TMPPREFIX}-zcompcache_${ZSH_VERSION}"
+local ZCOMPCACHE="${TMPPREFIX}-${ZSH_VERSION}-zcompcache"
 
 #
 # Use caching to make completion for commands such as dpkg and apt usable.
 #
 
-zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path "${ZCOMPCACHE}"
+#zstyle ':completion::complete:*' use-cache on
+#zstyle ':completion::complete:*' cache-path "${ZCOMPCACHE}"
 
 #
 # Case-insensitive (all), partial-word, and then substring completion.

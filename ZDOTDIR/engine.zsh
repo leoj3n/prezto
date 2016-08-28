@@ -75,14 +75,15 @@ function epoch-{uptodate,update} {
 # Set fpath to the flattened location.
 #
 
+local fpath_digest="${TMPPREFIX}-${ZSH_VERSION}-fpath.zwc"
 function fpath-setup {
-  local FLATFPATH="${TMPPREFIX}-${ZSH_VERSION}-fpath.zwc"
 
   function {
-    if ! epoch-uptodate "${FLATFPATH}"; then
+    if ! epoch-uptodate "${fpath_digest}"; then
       typeset -a zarr
 
-      zstyle -a ':delorean:circuit:fpath' blacklist 'blacklist'
+      #zstyle -a ':delorean:circuit:fpath' blacklist 'blacklist'
+      blacklist=('ztodo' 'zed')
       blacklist="^(${(j:|:)blacklist})"
 
       setopt LOCAL_OPTIONS EXTENDED_GLOB
@@ -91,7 +92,7 @@ function fpath-setup {
         local ztail=(${zarr:t})
         for it in "${fp}/"$~blacklist; do
           if [[ -z "${ztail[(r)${it:t}]}" ]]; then
-            if zcompile "${TMPPREFIX}-try-zcompile" "${it}" &>/dev/null; then
+            if zcompile -Uz "${TMPPREFIX}-try-zcompile" "${it}" &>/dev/null; then
               zarr+="${it}"
             else
               echo "CANNOT COMPILE: ${it}"
@@ -102,15 +103,15 @@ function fpath-setup {
         done
       done
 
-      zcompile "${FLATFPATH}" "$zarr[@]"
+      zcompile -Uz "${fpath_digest}" "$zarr[@]"
 
-      zcompile -t "${FLATFPATH}" 'compinit' '_complete' || {
-        print "DeLorean[fpath]: Important functions missing from ${FLATFPATH}" >&2
+      zcompile -t "${fpath_digest}" 'compinit' '_complete' || {
+        print "DeLorean[fpath]: Important functions missing from ${fpath_digest}" >&2
         return 1
       }
 
-      chmod 644 "${FLATFPATH}"
-      epoch-update "${FLATFPATH}"
+      chmod 644 "${fpath_digest}"
+      epoch-update "${fpath_digest}"
     fi
   }
 
@@ -118,19 +119,23 @@ function fpath-setup {
     print "DeLorean[fpath]: The fpath is left unchanged." >&2
     return 1
   else
-    fpath=("${FLATFPATH}")
+    #fpath=("${fpath_digest}" $fpath)
+    fpath=("${fpath_digest}")
+    autoload -w "${fpath_digest}"
   fi
 }
 
 function jigowatts {
   local files=('.zlogin' '.zlogout' '.zprofile' '.zshenv' '.zshrc' 'engine.zsh' 'flux-capacitor.zsh')
-  for file ("${files[@]}") zcompile "${ZDOTDIR}/${file}"
+  for file ("${files[@]}") zcompile -Uz "${ZDOTDIR}/${file}"
 }
 
+local digest=()
+local circuit_digest="${TMPPREFIX}-${ZSH_VERSION}-circuit.zwc"
 function circuit {
   local -a circuits
   local circuit
-  local electron_glob='^([_.]*|prompt_*_setup|README*)(-.N:t)'
+  local electron_glob='^(*[.zwc]|prompt_*_setup|README*)(-.N:t)'
 
   # $argv is overridden in the anonymous function.
   circuits=("$argv[@]")
@@ -138,19 +143,38 @@ function circuit {
   local past=1
   local future=$(( ${#circuits} + 1 ))
 
-  # Add electrons to $fpath.
-  fpath=(${circuits:+${ZDOTDIR}/circuits/${^circuits}/electrons(/FN)} $fpath)
+  if ! epoch-uptodate "${circuit_digest}"; then
+    echo CIRC DIG NOT UTD
+    for circuit in "$circuits[@]"; do
+      fpath=(${ZDOTDIR}/circuits/${circuit}/electrons(/FN) $fpath)
+      function {
+        local electron
 
-  # Autoload electrons.
-  function {
-    local electron
+        setopt LOCAL_OPTIONS EXTENDED_GLOB
 
-    setopt LOCAL_OPTIONS EXTENDED_GLOB
-
-    for electron in ${ZDOTDIR}/circuits/${^circuits}/electrons/$~electron_glob; do
-      autoload -Uz "$electron"
+        for electron in ${ZDOTDIR}/circuits/${circuit}/electrons/$~electron_glob; do
+          digest+="${ZDOTDIR}/circuits/${circuit}/electrons/$electron"
+        done
+        for electron in ${ZDOTDIR}/circuits/${circuit}/electrons/$~electron_glob; do
+          autoload -Uz "$electron"
+        done
+      }
     done
-  }
+  else
+    echo CIRC DIG IS UTD
+    for circuit in "$circuits[@]"; do
+      function {
+        local electron
+
+        setopt LOCAL_OPTIONS EXTENDED_GLOB
+
+        for electron in ${ZDOTDIR}/circuits/${circuit}/electrons/$~electron_glob; do
+          echo $electron | grep prompt
+          #autoload -Uz "$electron"
+        done
+      }
+    done
+  fi
 
   # Source the circuits.
   for circuit in "$circuits[@]"; do
@@ -197,13 +221,18 @@ function circuit {
     unset CLEAR CONTINUUM
   fi
 
+  if ! epoch-uptodate "${circuit_digest}"; then
+    #zcompile digest
+    zcompile -Uz "${circuit_digest}" "$digest[@]"
+    chmod 644 "${circuit_digest}"
+    epoch-update "${circuit_digest}"
+  fi
+
   # The future is now!
   if (( JIGOWATTS == 1.21 )); then
     unset JIGOWATTS
     exec zsh
   fi
-
-  unset CLEAR CONTINUUM
 }
 
 #
@@ -233,11 +262,11 @@ function timeline {
 }
 
 ################################################################################
-# Run
+# Vrooom.
 ################################################################################
 
 #
-# Sequence flux capacitor.
+# Read configuration from flux capacitor.
 #
 
 if [[ -s "${ZDOTDIR}/flux-capacitor.zsh" ]]; then
@@ -270,11 +299,24 @@ for zfunction ("$zfunctions[@]") autoload -Uz "$zfunction"
 unset zfunction{s,}
 
 #
-# Complete DeLorean circuits.
+# Sequence DeLorean circuits.
 #
 
 zstyle -a ':delorean:sequence' circuit 'circuits'
 #jigowatts
 fpath-setup
+#autoload -Uz VCS_INFO_get_data_git VCS_INFO_detect_git
+#fpath=("${circuit_digest}" $fpath)
+fpath=('/Users/leoj/.homesick/repos/prezto/ZDOTDIR/circuits/prompt/electrons' "${circuit_digest}" $fpath )
+autoload -w "${circuit_digest}"
+autoload -Uz compinit; compinit -i
+for compl in ${$(zcompile -t "${fpath_digest}"):t}; do
+  if [[ $compl[1] == '_' ]]; then
+    compdef $compl ${compl/_/}
+  fi
+done
+#circuit digest problem: need to know dependencies before compile, need dependencies up front...
+#arguably we have dependencies after first load then outdated compile, except if dynamic change prompt has dependency
+#if the dependency isnt in digest, that would need to be added into path manually
 circuit "$circuits[@]"
 unset circuits
