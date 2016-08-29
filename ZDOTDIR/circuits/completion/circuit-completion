@@ -57,8 +57,8 @@ local ZCOMPCACHE="${TMPPREFIX}-${ZSH_VERSION}-zcompcache"
 # Use caching to make completion for commands such as dpkg and apt usable.
 #
 
-#zstyle ':completion::complete:*' use-cache on
-#zstyle ':completion::complete:*' cache-path "${ZCOMPCACHE}"
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path "${ZCOMPCACHE}"
 
 #
 # Case-insensitive (all), partial-word, and then substring completion.
