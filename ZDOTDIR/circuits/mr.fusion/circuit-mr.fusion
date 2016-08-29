@@ -1,11 +1,13 @@
 #
-# Defines helper functions.
+# Mr. Fusion circuit, for when DeLorean needs a little extra juice.
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
+#   Joel Kuzmarski <leoj3n@gmail.com>
 #
 
-function circuit-helper {
+function circuit-mr.fusion {
+
   # Checks if a file can be autoloaded by trying to load it in a subshell.
   function is-autoloadable {
     ( unfunction $1 ; autoload -U +X $1 ) &> /dev/null
@@ -30,4 +32,14 @@ function circuit-helper {
     done
     return 1
   }
+
+  # Compares the "epoch" attribute of two files.
+  function epoch-compare {
+    function {
+      zgetattr "$1" 'epoch' primary_epoch &>/dev/null
+      zgetattr "$2" 'epoch' secondary_epoch &>/dev/null
+    } || return 2
+    return $(( primary_epoch != secondary_epoch ))
+  }
+
 }

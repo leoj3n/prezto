@@ -1,0 +1,12 @@
+#return 1
+
+function foobar {
+  echo 'Main foobar'
+}
+
+alias foo='ls -la'
+local jeje='jaja'
+goo='ber'
+export ting='tang'
+compdef meep=ls
+echo 'Init foobar'

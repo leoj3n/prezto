@@ -1,0 +1,298 @@
+#
+# Defines general aliases and functions.
+#
+# Authors:
+#   Joel Kuzmarski <leoj3n@gmail.com>
+#   Robby Russell <robby@planetargon.com>
+#   Suraj N. Kurapati <sunaku@gmail.com>
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+
+circuit 'mr.fusion' 'spectrum'
+
+function circuit-utility {
+
+  # Correct commands.
+  setopt CORRECT
+
+  #
+  # Aliases
+  #
+
+  # Disable correction.
+  alias ack='nocorrect ack'
+  alias cd='nocorrect cd'
+  alias cp='nocorrect cp'
+  alias ebuild='nocorrect ebuild'
+  alias gcc='nocorrect gcc'
+  alias gist='nocorrect gist'
+  alias grep='nocorrect grep'
+  alias heroku='nocorrect heroku'
+  alias ln='nocorrect ln'
+  alias man='nocorrect man'
+  alias mkdir='nocorrect mkdir'
+  alias mv='nocorrect mv'
+  alias mysql='nocorrect mysql'
+  alias rm='nocorrect rm'
+
+  # Disable globbing.
+  alias bower='noglob bower'
+  alias fc='noglob fc'
+  alias find='noglob find'
+  alias ftp='noglob ftp'
+  alias history='noglob history'
+  alias locate='noglob locate'
+  alias rake='noglob rake'
+  alias rsync='noglob rsync'
+  alias scp='noglob scp'
+  alias sftp='noglob sftp'
+
+  # Define general aliases.
+  alias _='sudo'
+  alias b='${(z)BROWSER}'
+  alias cp="${aliases[cp]:-cp} -i"
+  alias e='${(z)VISUAL:-${(z)EDITOR}}'
+  alias ln="${aliases[ln]:-ln} -i"
+  alias mkdir="${aliases[mkdir]:-mkdir} -p"
+  alias mv="${aliases[mv]:-mv} -i"
+  alias p='${(z)PAGER}'
+  alias po='popd'
+  alias pu='pushd'
+  alias rm="${aliases[rm]:-rm} -i"
+  alias type='type -a'
+  alias t='type'
+  function w3md() {
+    multimarkdown "$1" | w3m -T 'text/html'
+  }
+  grab() {
+    grab="$(eval "$@")"
+    echo ${grab}
+  }
+  function fancy-ctrl-z() {
+      if [[ $#BUFFER -eq 0 ]]
+      then
+          bg
+          zle redisplay
+      else
+          zle push-line-or-edit
+      fi
+  }
+  zle -N fancy-ctrl-z
+  bindkey '^Z' fancy-ctrl-z
+
+  # Push the entire current multiline construct onto the buffer stack and return
+  # to the top-level (PS1) prompt. If the current parser construct is only a
+  # single line, this is exactly like push-line. Next time the editor starts up or
+  # is popped with get-line, the construct will be popped off the top of the
+  # buffer stack and loaded into the editing buffer.
+  #bindkey "^Q" push-input
+
+  # ls
+  if is-callable 'dircolors'; then
+    # GNU Core Utilities
+    alias ls='ls --group-directories-first'
+
+    if zstyle -t ':delorean:circuit:utility:ls' color; then
+      if [[ -s "$HOME/.dir_colors" ]]; then
+        eval "$(dircolors --sh "$HOME/.dir_colors")"
+      else
+        eval "$(dircolors --sh)"
+      fi
+
+      alias ls="${aliases[ls]:-ls} --color=auto"
+    else
+      alias ls="${aliases[ls]:-ls} -F"
+    fi
+  else
+    # BSD Core Utilities
+    if zstyle -t ':delorean:circuit:utility:ls' color; then
+      # Define colors for BSD ls.
+      export LSCOLORS='exfxcxdxbxGxDxabagacad'
+
+      # Define colors for the completion system.
+      export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'
+
+      alias ls="${aliases[ls]:-ls} -G"
+    else
+      alias ls="${aliases[ls]:-ls} -F"
+    fi
+  fi
+
+  alias l='ls -1A'         # Lists in one column, hidden files.
+  alias ll='ls -lh'        # Lists human readable sizes.
+  alias lr='ll -R'         # Lists human readable sizes, recursively.
+  alias la='ll -A'         # Lists human readable sizes, hidden files.
+  alias lm='la | "$PAGER"' # Lists human readable sizes, hidden files through pager.
+  alias lx='ll -XB'        # Lists sorted by extension (GNU only).
+  alias lk='ll -Sr'        # Lists sorted by size, largest last.
+  alias lt='ll -tr'        # Lists sorted by date, most recent last.
+  alias lc='lt -c'         # Lists sorted by date, most recent last, shows change time.
+  alias lu='lt -u'         # Lists sorted by date, most recent last, shows access time.
+  alias sl='ls'            # I often screw this up.
+  alias cl='c; l'          # Clears the screen before listing in one column.
+  # List and grep.
+  function lsg() {
+    local keyword="$(echo "$@" |  sed 's/ /.*/g')"
+    ls -GgthrA | grep -iE "${keyword}"
+  }
+  # Lists hidden files.
+  function lsd() {
+    ls -Ad "${@:-$PWD}/".*
+  }
+  # Lists symbolic links.
+  function lss() {
+    ls -la "${@:-$PWD}" | grep .-\>
+  }
+  # Lists numerical permissions.
+  function lsmod() {
+    ls -l "${@:-$PWD}" | awk '{k=0;for(i=0;i<=8;i++) \
+      k+=((substr($1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf("%0o ",k);print}'
+  }
+
+  # Grep
+  if zstyle -t ':delorean:circuit:utility:grep' color; then
+    export GREP_COLOR='37;45'           # BSD.
+    export GREP_COLORS="mt=$GREP_COLOR" # GNU.
+
+    alias grep="${aliases[grep]:-grep} --color=auto"
+  fi
+
+  # Mac OS X Everywhere
+  if [[ "$OSTYPE" == darwin* ]]; then
+    alias o='open'
+  elif [[ "$OSTYPE" == cygwin* ]]; then
+    alias o='cygstart'
+    alias pbcopy='tee > /dev/clipboard'
+    alias pbpaste='cat /dev/clipboard'
+  else
+    alias o='xdg-open'
+
+    if (( $+commands[xclip] )); then
+      alias pbcopy='xclip -selection clipboard -in'
+      alias pbpaste='xclip -selection clipboard -out'
+    elif (( $+commands[xsel] )); then
+      alias pbcopy='xsel --clipboard --input'
+      alias pbpaste='xsel --clipboard --output'
+    fi
+  fi
+
+  alias pbc='pbcopy'
+  alias pbp='pbpaste'
+  alias -g vv='$(pbp)'
+  alias -g rr='${grab}'
+  alias cpy='tr -d "\n" | pbcopy'
+  alias pubkey='more ~"/.ssh/id_rsa.pub" | cpy | echo "Key copied to clipboard."'
+
+  # File Download
+  if (( $+commands[curl] )); then
+    alias get='curl --continue-at - --location --progress-bar --remote-name --remote-time'
+  elif (( $+commands[wget] )); then
+    alias get='wget --continue --progress=bar --timestamping'
+  fi
+
+  # Resource Usage
+  alias df='df -kh'
+  alias du='du -d1 -kh'
+
+  if (( $+commands[htop] )); then
+    alias top=htop
+  else
+    if [[ "$OSTYPE" == (darwin*|*bsd*) ]]; then
+      alias topc='top -o cpu'
+      alias topm='top -o vsize'
+    else
+      alias topc='top -o %CPU'
+      alias topm='top -o %MEM'
+    fi
+  fi
+
+  # Miscellaneous
+
+  # Serves a directory via HTTP.
+  alias http-serve='python -m SimpleHTTPServer'
+
+  # Reloads the default shell.
+  alias rel='unset DELOREAN_ENV_EXISTS; exec "${SHELL}"'
+
+  # Prints the SHA1 hash of a passed file.
+  alias sha='openssl sha1'
+
+  # Lists open files.
+  alias pp='sudo lsof -i'
+
+  #
+  # Functions
+  #
+
+  # Makes a directory and changes to it.
+  function mkcd {
+    [[ -n "$1" ]] && mkdir -p "$1" && builtin cd "$1"
+  }
+
+  # Changes to a directory and lists its contents.
+  function cdls {
+    builtin cd "$argv[-1]" && ls "${(@)argv[1,-2]}"
+  }
+
+  # Pushes an entry onto the directory stack and lists its contents.
+  function pushdls {
+    builtin pushd "$argv[-1]" && ls "${(@)argv[1,-2]}"
+  }
+
+  # Pops an entry off the directory stack and lists its contents.
+  function popdls {
+    builtin popd "$argv[-1]" && ls "${(@)argv[1,-2]}"
+  }
+
+  # Prints columns 1 2 3 ... n.
+  function slit {
+    awk "{ print ${(j:,:):-\$${^@}} }"
+  }
+
+  # Finds files and executes a command on them.
+  function find-exec {
+    find . -type f -iname "*${1:-}*" -exec "${2:-file}" '{}' \;
+  }
+
+  function vim-recover {
+    vim -p $(find . -name "$1" | sed -e 's/.swp$//g;s/\/\./\//g;' | xargs echo)
+  }
+
+  # Displays user owned processes status.
+  function psu {
+    ps -U "${1:-$LOGNAME}" -o 'pid,%cpu,%mem,command' "${(@)argv[2,-1]}"
+  }
+
+  # Search all files in the current directory for a string.
+  function fs() {
+    find "$1" -print0 | xargs -0 grep "${@:2}"
+  }
+
+  # Pipe tree output into the less pager.
+  function treep() {
+    if (( $+commands[tree] )); then
+      tree -CN "$@" | less -r
+    fi
+  }
+
+  # Tell me what it is.
+  function wat() {
+    echo
+    echo 'type:'
+    echo '-----'
+    echo
+    type "$1"
+    echo
+    echo 'which -a:'
+    echo '---------'
+    echo
+    which -a "$1"
+    echo
+    echo 'command -v:'
+    echo '-----------'
+    echo
+    command -v "$1"
+    echo
+  }
+
+}

@@ -9,8 +9,8 @@
 | ✓         |        | ✓         | Install or Uninstall script
 | ✓         |        | ✓         | No symlinks, no realpathing
 |           |        | ✓         | Does not dirty up $HOME dir
-|           |        | ✓         | Nonconfig location agnostic
-|           |        | ✓         | Manage settings with zstyle
+|           |        | ✓         | No-config location agnostic
+|           | ✓      | ✓         | Manage settings with zstyle
 |           |        | ✓         | Remove unused Zsh functions
 |           |        | ✓         | Aggressive variable caching
 |           |        | ✓         | External components manager

@@ -1,10 +1,30 @@
 #
-# This device is what makes time travel possible.
+# This device makes time travel possible.
 # 
 # Authors:
 #   Joel Kuzmarski <leoj3n@gmail.com>
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
+
+################################################################################
+# Circuits.
+################################################################################
+
+#
+# DeLorean circuits to sequence (the order matters).
+#
+
+zstyle ':delorean:sequence' circuit \
+  'environment' \
+  'utility' \
+  'completion' \
+  'editor' \
+  'history' \
+  'terminal' \
+  'directory' \
+  'syntax-highlighting' \
+  'history-substring-search' \
+  'prompt'
 
 ################################################################################
 # General
@@ -33,34 +53,6 @@ zstyle ':delorean:*:*' color 'yes'
 #
 
 #zstyle ':delorean:load' zfunction 'chpwd_recent_dirs' 'cdr' 'add-zsh-hook'
-
-#
-# Set the circuits to use.
-# The order matters.
-#
-
-zstyle ':delorean:sequence' circuit \
-  'environment' \
-  'utility' \
-  'completion' \
-  'python' \
-  'perl' \
-  'java' \
-  'ruby' \
-  'osx' \
-  'git' \
-  'fzf' \
-  'url' \
-  'internet' \
-  'filetype' \
-  'homebrew' \
-  'editor' \
-  'history' \
-  'terminal' \
-  'directory' \
-  'syntax-highlighting' \
-  'history-substring-search' \
-  'prompt'
 
 ################################################################################
 # Fpath

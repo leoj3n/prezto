@@ -39,8 +39,8 @@ unset min_zsh_version
 # Epoch check and set.
 #
 
-function epoch-{uptodate,update} {
-  [[ -f "$1" ]] || return 3
+function epoch-{exists,uptodate,update} {
+  [[ -w "$1" ]] || return 3
 
   zmodload zsh/attr
 
@@ -51,6 +51,14 @@ function epoch-{uptodate,update} {
   fi
 
   case "${0/epoch-/}" in
+
+    #
+    # Checks if the file has the "epoch" attribute.
+    #
+
+    exists)
+      zgetattr "$1" 'epoch' epoch_exists &>/dev/null && return 0 || return 1
+    ;;
 
     #
     # Compares the "epoch" attribute of two files.
@@ -75,27 +83,73 @@ function epoch-{uptodate,update} {
 # Set fpath to the flattened location.
 #
 
-local fpath_digest="${TMPPREFIX}-${ZSH_VERSION}-fpath.zwc"
-function fpath-setup {
+function fpath-flatten {
+  local flatten="${TMPPREFIX}-${ZSH_VERSION}-fpath"
 
   function {
-    if ! epoch-uptodate "${fpath_digest}"; then
-      typeset -a zarr
+    if ! epoch-uptodate "${flatten}"; then
 
-      #zstyle -a ':delorean:circuit:fpath' blacklist 'blacklist'
-      blacklist=('ztodo' 'zed')
+      echo DEBUG: Copy core funcs to "${flatten}"
+
+      zstyle -a ':delorean:circuit:fpath' blacklist 'blacklist'
       blacklist="^(${(j:|:)blacklist})"
+
+      if [[ -d "${flatten}" ]]; then
+        epoch-exists "${flatten}" && rm -r "${flatten}" || {
+          print "DeLorean[fpath]: Failed to remove the fpath directory ${flatten}" >&2
+          return 1
+        }
+      fi
+
+      mkdir -p "${flatten}" || {
+        print "DeLorean[fpath]: Failed to create the fpath directory ${flatten}" >&2
+        return 1
+      }
+
+      # Anon func to restric glob and redirect "no match found" errors.
+      function {
+        setopt LOCAL_OPTIONS EXTENDED_GLOB
+        for fp ("$fpath[@]") cp -n "${fp}/"$~blacklist "${flatten}"
+      } &>/dev/null
+
+      [[ -s "${flatten}/compinit" ]] || {
+        print "DeLorean[fpath]: Important files missing from ${flatten}" >&2
+        return 1
+      }
+
+      epoch-update "${flatten}"
+    fi
+  }
+
+  if (( $? )); then
+    print "delorean[fpath]: the fpath is left unchanged." >&2
+    return 1
+  else
+    fpath=("${flatten}")
+  fi
+}
+
+function fpath-digest {
+  local digest="${TMPPREFIX}-${ZSH_VERSION}-fpath.zwc"
+
+  function {
+    if ! epoch-uptodate "${digest}"; then
+
+      echo DEBUG: Create the digest "${digest}"
+
+      typeset -a zarr
 
       setopt LOCAL_OPTIONS EXTENDED_GLOB
 
       for fp in "$fpath[@]"; do
         local ztail=(${zarr:t})
-        for it in "${fp}/"$~blacklist; do
+        for it in "${fp}/"*; do
           if [[ -z "${ztail[(r)${it:t}]}" ]]; then
             if zcompile -Uz "${TMPPREFIX}-try-zcompile" "${it}" &>/dev/null; then
               zarr+="${it}"
             else
               echo "CANNOT COMPILE: ${it}"
+              print 'Consider adding it to the fpath blacklist.'
             fi
           else
             echo "DUPLICATE: ${it}"
@@ -103,25 +157,23 @@ function fpath-setup {
         done
       done
 
-      zcompile -Uz "${fpath_digest}" "$zarr[@]"
+      zcompile -Uz "${digest}" "$zarr[@]"
 
-      zcompile -t "${fpath_digest}" 'compinit' '_complete' || {
-        print "DeLorean[fpath]: Important functions missing from ${fpath_digest}" >&2
+      zcompile -t "${digest}" 'compinit' '_complete' || {
+        print "DeLorean[fpath]: Important functions missing from ${digest}" >&2
         return 1
       }
 
-      chmod 644 "${fpath_digest}"
-      epoch-update "${fpath_digest}"
+      chmod 644 "${digest}"
+      epoch-update "${digest}"
     fi
   }
 
   if (( $? )); then
-    print "DeLorean[fpath]: The fpath is left unchanged." >&2
+    print "delorean[fpath]: digest not appended to fpath." >&2
     return 1
   else
-    #fpath=("${fpath_digest}" $fpath)
-    fpath=("${fpath_digest}")
-    autoload -w "${fpath_digest}"
+    fpath=("${digest}" $fpath)
   fi
 }
 
@@ -130,8 +182,21 @@ function jigowatts {
   for file ("${files[@]}") zcompile -Uz "${ZDOTDIR}/${file}"
 }
 
+#
+# Add passed files to digest array.
+#
+
+# TODO: non-autoload version?
+function digest {
+  digest=("$@" $digest)
+}
+
+# digest array
 local digest=()
+# final digest location
 local circuit_digest="${TMPPREFIX}-${ZSH_VERSION}-circuit.zwc"
+local initiated_circuits=()
+local ZCOMPDUMP="${TMPPREFIX}-${ZSH_VERSION}-zcompdump"
 function circuit {
   local -a circuits
   local circuit
@@ -143,55 +208,170 @@ function circuit {
   local past=1
   local future=$(( ${#circuits} + 1 ))
 
+  if ! (( $#CONTINUUM )); then
+    # Q: should be version-dependent? or jigowatts?
+    # A: I think, may have version-specific includes to digest.
+    fpath=("${circuit_digest}" $fpath)
+    if epoch-uptodate "${circuit_digest}"; then
+      autoload -w "${circuit_digest}"
+    fi
+  fi
+
+  # Initiate the circuits.
+  for circuit in "$circuits[@]"; do
+    if zstyle -t ":delorean:circuit:$circuit" initiated 'yes' 'no'; then
+      continue
+    elif [[ ! -d "${ZDOTDIR}/circuits/$circuit" ]]; then
+      print "$0: no such circuit: $circuit" >&2
+      zstyle ":delorean:circuit:$circuit" initiated 'no'
+      continue
+    else
+      timeline "${circuit}" $(( past++ )) $future 
+
+      if (( $+functions[circuit-${circuit}] )); then
+        "circuit-${circuit}"
+      else
+        fpath=("${ZDOTDIR}/circuits/${circuit}" $fpath)
+        autoload -Uz +X "circuit-${circuit}" && "circuit-${circuit}"
+      fi
+
+      if (( $? == 0 )); then
+        initiated_circuits+=${circuit}
+        digest "${ZDOTDIR}/circuits/${circuit}/circuit-${circuit}" 
+        zstyle ":delorean:circuit:$circuit" initiated 'yes'
+      else
+        timeline "Great Scott! The ${circuit} circuit failed to initiate."
+        zstyle ":delorean:circuit:$circuit" initiated 'no'
+      fi
+
+      timeline
+    fi
+  done
+
+  if (( $#CONTINUUM )); then
+    return
+  else
+    unset CLEAR CONTINUUM
+  fi
+
+  local past=1
+  local future=$(( ${#initiated_circuits} + 1 ))
+
+  # Run the circuits.
+  for circuit in "$initiated_circuits[@]"; do
+    timeline "${circuit}" $(( past++ )) $future 
+
+    "circuit-${circuit}"
+
+    if (( $? != 0 )); then
+      timeline "Great Scott! The ${circuit} circuit blew a fuse."
+    fi
+
+    timeline
+  done
+
+  unset CLEAR CONTINUUM
+
+  autoload -Uz compinit
+
+  # CREATE THE DIGEST
   if ! epoch-uptodate "${circuit_digest}"; then
-    echo CIRC DIG NOT UTD
+    zcompile -Uz "${circuit_digest}" "$digest[@]"
+    chmod 644 "${circuit_digest}"
+    epoch-update "${circuit_digest}"
+    # fpath is janked up, some primary already autoloaded
+    # Eh... it's probably okay for this session (maybe clean by hand)
+    autoload -w "${circuit_digest}"
+    compinit -i -d "${ZCOMPDUMP}" && zcompile "${ZCOMPDUMP}" || {
+      print "DeLorean[completion]: Failed to generate and compile completion dump." >&2
+      return 1
+    }
+  else
+    compinit -C -d "${ZCOMPDUMP}"
+  fi
+
+  # ALL DeLorean stuff IS marked for autoload-ing at this point
+
+  # TODO: Consider separate digests for completions and normal functions
+  for compl in ${$(zcompile -t "${circuit_digest}"):t}; do
+    if [[ $compl[1] == '_' ]]; then
+      compdef $compl ${compl/_/}
+    fi
+  done
+}
+
+function oldcircuits {
+
+  # ONLY RUNS IF DIGEST NEEDS TO BE REGENERATED
+  if ! epoch-uptodate "${circuit_digest}"; then
+
+    echo
+    echo DEBUG: Update circuit digest
+    echo
+
     for circuit in "$circuits[@]"; do
+
+      # HAVE to add to fpath so can autoload before putting in digest
+      # Q: Can autload by fullpath? THEN I WOULD NOT HAVE TO F WITH THE FPATH!
+      # A: Unfortunately, no, you have to pollute the fpath :(
+      # -- perhaps clean up fpath after digest is alive? jigowatts maybe just takes care of it?
       fpath=(${ZDOTDIR}/circuits/${circuit}/electrons(/FN) $fpath)
+
       function {
         local electron
 
         setopt LOCAL_OPTIONS EXTENDED_GLOB
 
+        # save for later
         for electron in ${ZDOTDIR}/circuits/${circuit}/electrons/$~electron_glob; do
           digest+="${ZDOTDIR}/circuits/${circuit}/electrons/$electron"
         done
+
+        # mark electron for autoload now
         for electron in ${ZDOTDIR}/circuits/${circuit}/electrons/$~electron_glob; do
           autoload -Uz "$electron"
         done
       }
     done
-  else
-    echo CIRC DIG IS UTD
-    for circuit in "$circuits[@]"; do
-      function {
-        local electron
-
-        setopt LOCAL_OPTIONS EXTENDED_GLOB
-
-        for electron in ${ZDOTDIR}/circuits/${circuit}/electrons/$~electron_glob; do
-          echo $electron | grep prompt
-          #autoload -Uz "$electron"
-        done
-      }
-    done
   fi
+
+
+  #
+  # TANGENT if there was no issue with PRIMARY functions not being able to source things...
+  #
+  # COULD hard-code path like:
+  #   
+  #   source ${ZDOTDIR}/circuits/myself/other/zsh-something/something.plugin.zsh
+  #
+  # For this part we could...
+  #   Systematically ADD all the CIRCUIT directories to the FPATH
+  #     -> Actually, if recursive maybe just EACH sequenced circuit
+  #   Autoload -Uz each PRIMARY function
+  #   CALL each PRIMARY function (e.g: completion-circuit, editor-circuit)
+  #   THIS will initialize each sequenced circuit...
+  #     BUT what if they call a dependency circuit?
+  #     -> MAY call f.ex: circuit-other
+  #     -> MAY have already been called...
+  #     -> How do we know if a circuit has already been initialized?
+  #       ...OR can we make it safe to call a circuit multiple times?
+  #         => Probably just use zstyle initialized 'yes' 'no' ....
+  #   INIT of CIRCUITS will be simple, and not need funcs autoloaded yet...
+  #     -> WILL tell us FULL list incl. deps 
+  #     -> could parse $functions[*-circuit]
+  #       -> BUT what about ORDER!?
+  #       -> PERHAPS (probably) need to keep a list of sequence in order
+  #   NEXT, ONCE INIT'd, we need to:
+  #     -> REMOVE all circuit paths from fpath
+  #     -> Create the circuit DIGEST from full list
+  #     -> autoload -w the circuit digest
+  #     -> COMPDEF all the completions (that are in the circuit digest)
+  #   CALL each PRIMARY function AGAIN!!!
+  #   
+  #   NOW the shell is setup and ready to go... May not need jigowatts
+  #
 
   # Source the circuits.
   for circuit in "$circuits[@]"; do
-    # if no DIGEST ( because we don't know dependencies )
-    #   add circuit to fpath
-    # fi
-    #
-    # -- autoload all the crap it has to offer
-    # autoload circuit-function
-    # autoload circuit electrons
-    # execute circuit ( execution may recurse to add more circuits )
-    #
-    # ( now we know all dependencies in fpath )
-    # 
-    # if CONTINUUM == 0
-    #   all circuits in fpath -> zcompile digest
-
     if zstyle -t ":delorean:circuit:$circuit" sourced 'yes' 'no'; then
       continue
     elif [[ ! -d "${ZDOTDIR}/circuits/$circuit" ]]; then
@@ -221,11 +401,13 @@ function circuit {
     unset CLEAR CONTINUUM
   fi
 
+  # CREATE THE DIGEST
+  # zcompile all the electrons and completions
   if ! epoch-uptodate "${circuit_digest}"; then
-    #zcompile digest
     zcompile -Uz "${circuit_digest}" "$digest[@]"
     chmod 644 "${circuit_digest}"
     epoch-update "${circuit_digest}"
+    # fpath is janked up, electrons autoloaded
   fi
 
   # The future is now!
@@ -233,6 +415,27 @@ function circuit {
     unset JIGOWATTS
     exec zsh
   fi
+
+  # add circuit digest to fpath
+  fpath=("${circuit_digest}" $fpath)
+
+  # MARK electrons AND completions for autoload-ing!
+  autoload -w "${circuit_digest}"
+
+  # ALL DeLorean stuff IS marked for autoload-ing at this point
+  # THIS is needed for "compdef"
+  # Should be fine considering any addon completions should be in the fpath by now.... this is about the end of the road.
+  # HOW does this interact with the COMPLETION circuit though???
+  autoload -Uz compinit; compinit -D
+  for compl in ${$(zcompile -t "${circuit_digest}"):t}; do
+    if [[ $compl[1] == '_' ]]; then
+      #echo def $compl
+      compdef $compl ${compl/_/}
+    #else
+      #echo AUTOLOAD $compl
+      #autoload -Uz $compl
+    fi
+  done
 }
 
 #
@@ -304,19 +507,21 @@ unset zfunction{s,}
 
 zstyle -a ':delorean:sequence' circuit 'circuits'
 #jigowatts
-fpath-setup
-#autoload -Uz VCS_INFO_get_data_git VCS_INFO_detect_git
-#fpath=("${circuit_digest}" $fpath)
-fpath=('/Users/leoj/.homesick/repos/prezto/ZDOTDIR/circuits/prompt/electrons' "${circuit_digest}" $fpath )
-autoload -w "${circuit_digest}"
-autoload -Uz compinit; compinit -i
-for compl in ${$(zcompile -t "${fpath_digest}"):t}; do
-  if [[ $compl[1] == '_' ]]; then
-    compdef $compl ${compl/_/}
-  fi
-done
+fpath-flatten
+fpath-digest
+# idea for prompts: each prompt own circuit, adds self to fpath and has prompt_*_fpath
+fpath=('/Users/leoj/.homesick/repos/prezto/ZDOTDIR/circuits/prompt/electrons' $fpath)
+circuit "$circuits[@]"
+unset circuits
+
+
+
+
+
+
+
+
+
 #circuit digest problem: need to know dependencies before compile, need dependencies up front...
 #arguably we have dependencies after first load then outdated compile, except if dynamic change prompt has dependency
 #if the dependency isnt in digest, that would need to be added into path manually
-circuit "$circuits[@]"
-unset circuits

@@ -7,10 +7,6 @@
 #   Joel Kuzmarski <leoj3n@gmail.com>
 #
 
-################################################################################
-# Setup.
-################################################################################
-
 #
 # Not enough plutonium.
 #
@@ -20,58 +16,19 @@ if [[ "$TERM" == 'dumb' ]]; then
 fi
 
 #
-# Cleanup on failure. TODO: ?
-#
-
-#trap 'echo code $?' EXIT; return 1
-
-#
 # Dependencies.
 #
 
 circuit 'mr.fusion'
 
-################################################################################
-# Workhorse.
-################################################################################
-
 #
-# Location of the completion dump.
+# Add zsh-completions to digest.
 #
 
-local ZCOMPDUMP="${TMPPREFIX}-${ZSH_VERSION}-zcompdump"
+# TODO: make blackist-configurable
+digest "${ZDOTDIR}/circuits/completion/external/src/"(_ansible|_bower|_vagrant)
 
-#
-# Add zsh-completions to $fpath.
-#
-
-fpath=("${0:h}/external/src" $fpath)
-
-#
-# Load the Zsh module.
-#
-
-#autoload -Uz compinit
-autoload -Uz compinit && compinit -i
-#
-# Regenerates .zcompdump if OUTDATED.
-#
-# Need to do OUTDATED because different version of Zsh may be at play.
-#
-
-if (( 0 )); then
-if [[ ! -s "${ZCOMPDUMP}" ]] || (( $+JIGOWATTS )); then #outdated...
-  echo GEN COMPL DUMP
-  # Compile the dump.
-  compinit -i -d "${ZCOMPDUMP}" && zcompile "${ZCOMPDUMP}" || {
-    print "DeLorean[completion]: Failed to generate and compile completion dump." >&2
-    return 1
-  }
-else
-  # Use the already compiled dump.
-  compinit -C -d "${ZCOMPDUMP}"
-fi
-fi
+function circuit-completion {
 
 ################################################################################
 # Options.
@@ -265,3 +222,5 @@ zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hos
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
+
+}

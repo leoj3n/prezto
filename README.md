@@ -1,7 +1,5 @@
 # DeLorean
 
-Sends your [Zsh][] back to the future!
-
 Run `./88` to get up to speed.
 
 Circuits
@@ -47,7 +45,7 @@ Copyright &copy; 2011-2015 Sorin Ionescu and contributors.
 
 Copyright &copy; 2009-2011 Robby Russell and contributors.
 
-Thanks to [@spcmd][] for the DeLorean ascii art.
+Thanks also to [@spcmd][] for the DeLorean ascii art.
 
 ```DeLorean
    __---~~~~--__                      __--~~~~---__
@@ -75,7 +73,6 @@ Thanks to [@spcmd][] for the DeLorean ascii art.
     you're going to see some serious shit!
 ```
 
-[Zsh]: http://www.zsh.org
 [git]: ZDOTDIR/circuits/git
 [directory]: ZDOTDIR/circuits/directory
 [homebrew]: ZDOTDIR/circuits/homebrew

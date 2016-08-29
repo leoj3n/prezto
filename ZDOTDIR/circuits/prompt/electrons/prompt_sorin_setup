@@ -30,7 +30,7 @@
 #
 
 # Complete dependencies.
-circuit 'helper'
+circuit 'mr.fusion'
 
 function prompt_sorin_pwd {
   local pwd="${PWD/#$HOME/~}"
