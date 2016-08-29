@@ -5,6 +5,8 @@
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
+fpath=("${ZDOTDIR}/circuits/prompt/electrons" $fpath)
+
 function circuit-prompt {
 
   # Load and execute the prompt theming system.

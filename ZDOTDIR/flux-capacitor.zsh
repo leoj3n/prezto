@@ -18,6 +18,7 @@ zstyle ':delorean:sequence' circuit \
   'environment' \
   'utility' \
   'completion' \
+  'git' \
   'editor' \
   'history' \
   'terminal' \

@@ -202,7 +202,6 @@ function circuit {
   local circuit
   local electron_glob='^(*[.zwc]|prompt_*_setup|README*)(-.N:t)'
 
-  # $argv is overridden in the anonymous function.
   circuits=("$argv[@]")
 
   local past=1
@@ -300,144 +299,6 @@ function circuit {
   done
 }
 
-function oldcircuits {
-
-  # ONLY RUNS IF DIGEST NEEDS TO BE REGENERATED
-  if ! epoch-uptodate "${circuit_digest}"; then
-
-    echo
-    echo DEBUG: Update circuit digest
-    echo
-
-    for circuit in "$circuits[@]"; do
-
-      # HAVE to add to fpath so can autoload before putting in digest
-      # Q: Can autload by fullpath? THEN I WOULD NOT HAVE TO F WITH THE FPATH!
-      # A: Unfortunately, no, you have to pollute the fpath :(
-      # -- perhaps clean up fpath after digest is alive? jigowatts maybe just takes care of it?
-      fpath=(${ZDOTDIR}/circuits/${circuit}/electrons(/FN) $fpath)
-
-      function {
-        local electron
-
-        setopt LOCAL_OPTIONS EXTENDED_GLOB
-
-        # save for later
-        for electron in ${ZDOTDIR}/circuits/${circuit}/electrons/$~electron_glob; do
-          digest+="${ZDOTDIR}/circuits/${circuit}/electrons/$electron"
-        done
-
-        # mark electron for autoload now
-        for electron in ${ZDOTDIR}/circuits/${circuit}/electrons/$~electron_glob; do
-          autoload -Uz "$electron"
-        done
-      }
-    done
-  fi
-
-
-  #
-  # TANGENT if there was no issue with PRIMARY functions not being able to source things...
-  #
-  # COULD hard-code path like:
-  #   
-  #   source ${ZDOTDIR}/circuits/myself/other/zsh-something/something.plugin.zsh
-  #
-  # For this part we could...
-  #   Systematically ADD all the CIRCUIT directories to the FPATH
-  #     -> Actually, if recursive maybe just EACH sequenced circuit
-  #   Autoload -Uz each PRIMARY function
-  #   CALL each PRIMARY function (e.g: completion-circuit, editor-circuit)
-  #   THIS will initialize each sequenced circuit...
-  #     BUT what if they call a dependency circuit?
-  #     -> MAY call f.ex: circuit-other
-  #     -> MAY have already been called...
-  #     -> How do we know if a circuit has already been initialized?
-  #       ...OR can we make it safe to call a circuit multiple times?
-  #         => Probably just use zstyle initialized 'yes' 'no' ....
-  #   INIT of CIRCUITS will be simple, and not need funcs autoloaded yet...
-  #     -> WILL tell us FULL list incl. deps 
-  #     -> could parse $functions[*-circuit]
-  #       -> BUT what about ORDER!?
-  #       -> PERHAPS (probably) need to keep a list of sequence in order
-  #   NEXT, ONCE INIT'd, we need to:
-  #     -> REMOVE all circuit paths from fpath
-  #     -> Create the circuit DIGEST from full list
-  #     -> autoload -w the circuit digest
-  #     -> COMPDEF all the completions (that are in the circuit digest)
-  #   CALL each PRIMARY function AGAIN!!!
-  #   
-  #   NOW the shell is setup and ready to go... May not need jigowatts
-  #
-
-  # Source the circuits.
-  for circuit in "$circuits[@]"; do
-    if zstyle -t ":delorean:circuit:$circuit" sourced 'yes' 'no'; then
-      continue
-    elif [[ ! -d "${ZDOTDIR}/circuits/$circuit" ]]; then
-      print "$0: no such circuit: $circuit" >&2
-      continue
-    else
-      timeline "${circuit}" $(( past++ )) $future 
-
-      if [[ -s "${ZDOTDIR}/circuits/$circuit/$circuit.zsh" ]]; then
-        source "${ZDOTDIR}/circuits/$circuit/$circuit.zsh"
-      fi
-
-      if (( $? == 0 )); then
-        zstyle ":delorean:circuit:$circuit" sourced 'yes'
-      else
-        timeline "Great Scott! The ${circuit} circuit blew a fuse."
-        zstyle ":delorean:circuit:$circuit" sourced 'no'
-      fi
-
-      timeline
-    fi
-  done
-
-  if (( $#CONTINUUM )); then
-    return
-  else
-    unset CLEAR CONTINUUM
-  fi
-
-  # CREATE THE DIGEST
-  # zcompile all the electrons and completions
-  if ! epoch-uptodate "${circuit_digest}"; then
-    zcompile -Uz "${circuit_digest}" "$digest[@]"
-    chmod 644 "${circuit_digest}"
-    epoch-update "${circuit_digest}"
-    # fpath is janked up, electrons autoloaded
-  fi
-
-  # The future is now!
-  if (( JIGOWATTS == 1.21 )); then
-    unset JIGOWATTS
-    exec zsh
-  fi
-
-  # add circuit digest to fpath
-  fpath=("${circuit_digest}" $fpath)
-
-  # MARK electrons AND completions for autoload-ing!
-  autoload -w "${circuit_digest}"
-
-  # ALL DeLorean stuff IS marked for autoload-ing at this point
-  # THIS is needed for "compdef"
-  # Should be fine considering any addon completions should be in the fpath by now.... this is about the end of the road.
-  # HOW does this interact with the COMPLETION circuit though???
-  autoload -Uz compinit; compinit -D
-  for compl in ${$(zcompile -t "${circuit_digest}"):t}; do
-    if [[ $compl[1] == '_' ]]; then
-      #echo def $compl
-      compdef $compl ${compl/_/}
-    #else
-      #echo AUTOLOAD $compl
-      #autoload -Uz $compl
-    fi
-  done
-}
-
 #
 # Prints the chronal location on a timeline.
 #
@@ -506,22 +367,7 @@ unset zfunction{s,}
 #
 
 zstyle -a ':delorean:sequence' circuit 'circuits'
-#jigowatts
 fpath-flatten
 fpath-digest
-# idea for prompts: each prompt own circuit, adds self to fpath and has prompt_*_fpath
-fpath=('/Users/leoj/.homesick/repos/prezto/ZDOTDIR/circuits/prompt/electrons' $fpath)
 circuit "$circuits[@]"
 unset circuits
-
-
-
-
-
-
-
-
-
-#circuit digest problem: need to know dependencies before compile, need dependencies up front...
-#arguably we have dependencies after first load then outdated compile, except if dynamic change prompt has dependency
-#if the dependency isnt in digest, that would need to be added into path manually
